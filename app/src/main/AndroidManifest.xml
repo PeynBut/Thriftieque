@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Thriftique"
         tools:targetApi="31">
         <activity
+            android:name=".SignUp"
+            android:exported="false" />
+        <activity
             android:name=".LogIn"
             android:exported="false" />
         <activity
@@ -27,7 +30,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

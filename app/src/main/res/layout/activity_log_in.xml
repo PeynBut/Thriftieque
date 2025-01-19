@@ -79,7 +79,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/Forgot_password"
+            android:id="@+id/forgotPassword"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -91,7 +91,7 @@
         </TextView>
 
         <Button
-            android:id="@+id/LogIn_bnt"
+            android:id="@+id/LogInBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#33BF3F"
@@ -103,15 +103,15 @@
         </Button>
 
         <TextView
-            android:id="@+id/New_Account"
-            android:layout_width="400dp"
+            android:id="@+id/newAccount"
+            android:layout_width="359dp"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:paddingTop="5dp"
+            android:gravity="center"
             android:paddingHorizontal="10dp"
-            android:text="Do you have an account? Create"
-            android:textSize="15dp"
-            android:gravity="center">
+            android:paddingTop="5dp"
+            android:text="@string/new_account_text"
+            android:textSize="15sp">
 
         </TextView>
 

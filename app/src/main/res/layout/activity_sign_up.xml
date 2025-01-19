@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SignUp">
+
+
+    <ImageView
+        android:id="@+id/backbtn"
+        android:layout_marginTop="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_backspace_24"/>
+    <!-- Logo Image -->
+    <ImageView
+        android:id="@+id/logo_image"
+        android:layout_width="200dp"
+        android:layout_height="121dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_android_black_24dp"
+        />
+
+
+
+    <TextView
+        
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Sign up"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-black" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:weightSum="2">
+
+        <!-- First Name Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/firstName"
+            android:layout_width="0dp"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="First Name"
+            android:layout_marginEnd="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Last Name Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/LastName"
+            android:layout_width="0dp"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Last Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- First Name Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:hint="Email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Last Name Field -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:hint="Password"
+            android:layout_marginTop="8dp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/Confirm_toggle_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:id="@+id/confirmPassword"
+            android:hint="Confirm Password"
+            android:layout_marginTop="8dp"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/toggle_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/LogIn_bnt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#33BF3F"
+            android:layout_marginTop="10dp"
+            android:hint="Sign up"
+            android:textColorHint="@color/white"/>
+
+        <TextView
+            android:id="@+id/alrady_have_account"
+            android:layout_width="359dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:gravity="center"
+            android:paddingHorizontal="10dp"
+            android:paddingTop="5dp"
+            android:text="@string/Already_have_account"
+            android:textSize="15sp"/>
+
+    </LinearLayout>
+    
+    
+
+
+
+</LinearLayout>
