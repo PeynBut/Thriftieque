@@ -71,9 +71,15 @@ class SignUp : AppCompatActivity() {
             if (email.isEmpty()) {
                 et_email.error = "Please enter your email"
                 isValid = false
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                et_email.error = "Please enter a valid email address"
+                isValid = false
             }
             if (pass.isEmpty()) {
                 password.error = "Please enter your password"
+                isValid = false
+            }else if(pass.length < 8){
+                password.error = "Password must be at least 8 characters"
                 isValid = false
             }
             if (confirmPass.isEmpty()) {
@@ -87,13 +93,13 @@ class SignUp : AppCompatActivity() {
 
             // Proceed only if all fields are valid
             if (isValid) {
-                val intent = Intent(this, LogIn::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
         }
 
         alreadyHaveAccount.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, LogIn::class.java)
             startActivity(intent)
         }
     }
