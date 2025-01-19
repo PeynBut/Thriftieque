@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogIn"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/logo_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_android_black_24dp">
+
+    </ImageView>
+    <TextView
+        android:id="@+id/logo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome To Thriftieque"
+        android:textSize="25sp"
+        android:fontFamily="sans-serif-black">
+
+    </TextView>
+
+    <TextView
+        android:id="@+id/slogan_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="LogIn to continue"
+        android:textSize="18sp">
+
+    </TextView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/username"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/black">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_toggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/Forgot_password"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:text="Forgot Password?"
+            android:textSize="15dp">
+
+        </TextView>
+
+        <Button
+            android:id="@+id/LogIn_bnt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#33BF3F"
+            android:layout_marginTop="5dp"
+            android:paddingTop="5dp"
+            android:hint="Login"
+            android:textColorHint="@color/white">
+
+        </Button>
+
+        <TextView
+            android:id="@+id/New_Account"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:paddingTop="5dp"
+            android:paddingHorizontal="10dp"
+            android:text="Do you have an account? Create"
+            android:textSize="15dp"
+            android:gravity="center">
+
+        </TextView>
+
+    </LinearLayout>
+</LinearLayout>
