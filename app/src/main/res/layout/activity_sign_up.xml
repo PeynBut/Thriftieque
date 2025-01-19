@@ -10,13 +10,14 @@
     tools:context=".SignUp">
 
 
+    <!-- Logo Image -->
     <ImageView
         android:id="@+id/backbtn"
-        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/baseline_backspace_24"/>
-    <!-- Logo Image -->
+        android:layout_marginTop="30dp"
+        android:src="@drawable/baseline_backspace_24" />
+
     <ImageView
         android:id="@+id/logo_image"
         android:layout_width="200dp"
@@ -44,7 +45,7 @@
 
         <!-- First Name Field -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/firstName"
+            android:id="@+id/et_firstname"
             android:layout_width="0dp"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_height="wrap_content"
@@ -53,13 +54,14 @@
             android:layout_marginEnd="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_firstname_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Last Name Field -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/LastName"
+            android:id="@+id/et_lastname"
             android:layout_width="0dp"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
             android:layout_height="wrap_content"
@@ -67,6 +69,7 @@
             android:hint="Last Name">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_lastname_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -80,13 +83,14 @@
 
         <!-- First Name Field -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/Email"
+            android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
             android:hint="Email">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_email_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -102,21 +106,21 @@
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/Confirm_toggle_password"
+                android:id="@+id/password_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
-            android:id="@+id/confirmPassword"
             android:hint="Confirm Password"
             android:layout_marginTop="8dp"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/toggle_password"
+                android:id="@+id/confirmPassword_toggle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -142,9 +146,4 @@
             android:textSize="15sp"/>
 
     </LinearLayout>
-    
-    
-
-
-
 </LinearLayout>
