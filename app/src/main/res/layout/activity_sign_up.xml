@@ -20,11 +20,10 @@
 
     <ImageView
         android:id="@+id/logo_image"
-        android:layout_width="200dp"
-        android:layout_height="121dp"
+        android:layout_width="236dp"
+        android:layout_height="153dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_android_black_24dp"
-        />
+        android:src="@drawable/logo" />
 
 
 

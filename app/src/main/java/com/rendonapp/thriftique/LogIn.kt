@@ -57,18 +57,24 @@ class LogIn : AppCompatActivity() {
             // Check for empty fields
             if (username.isEmpty()) {
                 usernameLayout.error = "Please enter your username"
+            }else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()){
+                usernameLayout.error = "Please enter a valid email address"
+                usernameEditText.setOnFocusChangeListener { _, hasFocus ->
+                    if (!hasFocus) {
+                        usernameLayout.error = "Please enter a valid email address"
+                    }
             }
             if (password.isEmpty()) {
                 passwordLayout.error = "Please enter your password"
+            }else if(password.length < 8){
+                passwordLayout.error = "Password must be at least 8 characters"
             }
 
             // Proceed if no errors
-            if (username.isNotEmpty() && password.isNotEmpty()) {
-                // Navigate to the next activity
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+          if (usernameLayout.error == null && passwordLayout.error == null && username.isNotEmpty() && password.isNotEmpty()){
+              val intent = Intent(this, MainActivity::class.java)
+              startActivity(intent)
+          }
         }
 
         // Handle forgot password click
@@ -83,4 +89,5 @@ class LogIn : AppCompatActivity() {
             startActivity(intent)
         }
     }
+}
 }
