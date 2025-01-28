@@ -70,32 +70,39 @@ class SignUp : AppCompatActivity() {
     }
 
     // Register user using Retrofit
-    private fun registerUser(firstname: String, lastname: String, email: String, pass: String) {
+    private fun registerUser(firstname: String, lastname: String, email: String, password: String) {
         val progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Registering User...")
         progressDialog.show()
 
-        val user = User(firstname, lastname, email, pass)
+        // Create the user object
+        val user = User(firstname, lastname, email, password)
 
-        // Assume you are passing a valid token
-        val token = "your_token_here"
+        // Log the user data being sent
+        Log.d("SignUp", "Registering user: $user")
 
+        // Call the Retrofit API
         RetrofitClient.getClient()
             .create(ApiService::class.java)
-            .registerUser("Bearer $token", user)
+            .registerUser(user) // Pass the user object
             .enqueue(object : Callback<ApiResponse> {
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                     progressDialog.dismiss()
 
+                    // Log the response
+                    Log.d("SignUp", "Response: ${response.body()}")
+
                     if (response.isSuccessful) {
                         val apiResponse = response.body()
                         if (apiResponse?.error == false) {
-                            // Registration success, show success message and navigate
+                            // Registration successful
+                            Log.d("SignUp", "Registration successful")
                             Toast.makeText(this@SignUp, "Registration Successful", Toast.LENGTH_SHORT).show()
                             startActivity(Intent(this@SignUp, MainActivity::class.java))
                             finish()
                         } else {
-                            // Registration failed, show the message
+                            // Registration failed
+                            Log.e("SignUp", "Registration failed: ${apiResponse?.message}")
                             Toast.makeText(this@SignUp, "Registration Failed: ${apiResponse?.message}", Toast.LENGTH_SHORT).show()
                         }
                     } else {
@@ -107,8 +114,8 @@ class SignUp : AppCompatActivity() {
 
                 override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                     progressDialog.dismiss()
-                    // Log the error message and show a user-friendly message
-                    Log.e("RetrofitError", "Failure message: ${t.message}")
+                    // Handle failure
+                    Log.e("SignUp", "RetrofitError: ${t.message}")
                     Toast.makeText(this@SignUp, "Registration Failed: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -142,7 +149,12 @@ class SignUp : AppCompatActivity() {
                 val email = et_email.text.toString().trim()
                 val pass = password.text.toString().trim()
 
+                // Log the input data
+                Log.d("SignUp", "Input data - FirstName: $firstname, LastName: $lastname, Email: $email")
+
                 registerUser(firstname, lastname, email, pass)
+            } else {
+                Log.e("SignUp", "Validation failed")
             }
         }
 
