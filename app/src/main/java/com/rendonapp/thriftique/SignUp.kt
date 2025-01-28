@@ -1,7 +1,9 @@
 package com.rendonapp.thriftique
 
+import ApiResponse
+import ApiService
+import User
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -11,16 +13,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.*
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
 import com.google.android.material.textfield.TextInputEditText
-import org.json.JSONException
-import org.json.JSONObject
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
-import android.net.NetworkInfo
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SignUp : AppCompatActivity() {
 
@@ -33,83 +29,7 @@ class SignUp : AppCompatActivity() {
     private lateinit var signUpBtn: Button
     private lateinit var alreadyHaveAccount: TextView
 
-    private fun registerUser(firstname: String, lastname: String, email: String, pass: String) {
-        // Show a progress dialog while the request is in progress
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Registering User...")
-        progressDialog.show()
-
-        // Log the URL for debugging purposes
-        Log.d("NetworkRequest", "URL: ${Constant.URL_REGISTER}")
-
-        // StringRequest to send POST data
-        val stringRequest = object : StringRequest(
-            Request.Method.POST,
-            Constant.URL_REGISTER,  // The URL endpoint
-            { response ->
-                progressDialog.dismiss()  // Dismiss the progress dialog when the response is received
-                try {
-                    val jsonResponse = JSONObject(response)  // Parse the response
-                    val success = jsonResponse.getBoolean("success")
-                    val message = jsonResponse.getString("message")
-                    Log.d("ServerResponse", "Success: $success, Message: $message")
-
-                    // Handle the response based on success or failure
-                    if (success) {
-                        Toast.makeText(this, "Registration Successful: $message", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    } else {
-                        Toast.makeText(this, "Registration Failed: $message", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: JSONException) {
-                    e.printStackTrace()
-                    Toast.makeText(this, "Error parsing response: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            },
-            { error ->
-                progressDialog.dismiss()  // Dismiss the progress dialog on error
-                val errorMessage = when (error) {
-                    is TimeoutError -> "Request timed out. Please try again."
-                    is NoConnectionError -> "No internet connection detected. Please check your network settings."
-                    is AuthFailureError -> "Authentication failed. Please check your credentials."
-                    is ServerError -> "Server error. Please try again later."
-                    is NetworkError -> "Network error. Please check your connection and try again."
-                    is ParseError -> "Error parsing data from the server."
-                    else -> "An unexpected error occurred."
-                }
-
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-                Log.e("VolleyError", error.message ?: "Unknown error")
-            }
-        ) {
-            override fun getParams(): Map<String, String> {
-                // Add the POST data parameters (mimicking cURL data)
-                return hashMapOf(
-                    "firstname" to firstname,
-                    "lastname" to lastname,
-                    "email" to email,
-                    "password" to pass
-                )
-            }
-        }
-
-        // Add the request to the RequestQueue
-        Volley.newRequestQueue(this).add(stringRequest)
-    }
-
-
-
-
-    fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetwork
-        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-
-        return networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-    }
-
-
+    // Validate user inputs
     private fun validateInputs(): Boolean {
         val firstname = et_firstname.text.toString().trim()
         val lastname = et_lastname.text.toString().trim()
@@ -149,6 +69,52 @@ class SignUp : AppCompatActivity() {
         return isValid
     }
 
+    // Register user using Retrofit
+    private fun registerUser(firstname: String, lastname: String, email: String, pass: String) {
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Registering User...")
+        progressDialog.show()
+
+        val user = User(firstname, lastname, email, pass)
+
+        // Assume you are passing a valid token
+        val token = "your_token_here"
+
+        RetrofitClient.getClient()
+            .create(ApiService::class.java)
+            .registerUser("Bearer $token", user)
+            .enqueue(object : Callback<ApiResponse> {
+                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                    progressDialog.dismiss()
+
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
+                        if (apiResponse?.error == false) {
+                            // Registration success, show success message and navigate
+                            Toast.makeText(this@SignUp, "Registration Successful", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@SignUp, MainActivity::class.java))
+                            finish()
+                        } else {
+                            // Registration failed, show the message
+                            Toast.makeText(this@SignUp, "Registration Failed: ${apiResponse?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        // Handle unsuccessful response from the server
+                        Log.e("RegistrationError", "Server Error: ${response.code()} ${response.message()}")
+                        Toast.makeText(this@SignUp, "Failed to register user. Please try again.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                    progressDialog.dismiss()
+                    // Log the error message and show a user-friendly message
+                    Log.e("RetrofitError", "Failure message: ${t.message}")
+                    Toast.makeText(this@SignUp, "Registration Failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    // Set up the UI and handle user interaction
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,7 +127,7 @@ class SignUp : AppCompatActivity() {
         et_email = findViewById(R.id.et_email_edit)
         password = findViewById(R.id.password_edit)
         confirmPassword = findViewById(R.id.confirmPassword_toggle)
-        signUpBtn = findViewById(R.id.LogIn_bnt)  // Renamed for clarity
+        signUpBtn = findViewById(R.id.LogIn_bnt)
         alreadyHaveAccount = findViewById(R.id.alrady_have_account)
 
         // Set up listeners
