@@ -1,7 +1,7 @@
-package com.rendonapp.thriftique
+package Authentication
 
 import ApiResponse
-import ApiService
+import api.ApiService
 import User
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -13,7 +13,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import api.RetrofitClient
 import com.google.android.material.textfield.TextInputEditText
+import com.rendonapp.thriftique.MainActivity
+import com.rendonapp.thriftique.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

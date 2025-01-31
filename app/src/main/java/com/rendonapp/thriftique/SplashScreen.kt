@@ -1,6 +1,7 @@
 package com.rendonapp.thriftique
 
 
+import Authentication.LogIn
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle

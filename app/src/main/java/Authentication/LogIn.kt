@@ -1,16 +1,15 @@
-package com.rendonapp.thriftique
+package Authentication
 
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.rendonapp.thriftique.MainActivity
+import com.rendonapp.thriftique.R
 
 class LogIn : AppCompatActivity() {
     // Declare variables for views

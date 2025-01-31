@@ -1,5 +1,3 @@
-import java.lang.Error
-
 data class User(
     val firstName: String,
     val lastName: String,
