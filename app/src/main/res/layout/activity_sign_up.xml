@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/color"
     tools:context="Authentication.SignUp">
 
 
@@ -18,23 +19,20 @@
         android:layout_marginTop="30dp"
         android:src="@drawable/baseline_backspace_24" />
 
-    <ImageView
-        android:id="@+id/logo_image"
-        android:layout_width="236dp"
-        android:layout_height="153dp"
-        android:layout_gravity="center"
-        android:src="@drawable/logo" />
-
-
-
     <TextView
-        
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:textColor="#71879D"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="60sp"
+        android:layout_marginBottom="30dp"
         android:layout_gravity="center"
-        android:text="Sign up"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-black" />
+        android:layout_marginStart="72dp"
+        android:layout_marginEnd="61dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Sign Up"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -128,7 +126,7 @@
             android:id="@+id/LogIn_bnt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#33BF3F"
+            android:backgroundTint="#71879D"
             android:layout_marginTop="10dp"
             android:hint="Register"
             android:textColorHint="@color/white"/>

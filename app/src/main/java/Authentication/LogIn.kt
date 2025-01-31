@@ -1,9 +1,12 @@
 package Authentication
 
-
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
@@ -20,6 +23,8 @@ class LogIn : AppCompatActivity() {
     private lateinit var forgotPassword: TextView
     private lateinit var logInBtn: Button
     private lateinit var newAccount: TextView
+    private lateinit var textView: TextView
+    private lateinit var backBtn: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,17 @@ class LogIn : AppCompatActivity() {
 
         // Initialize views
         initializeViews()
+
+        // Apply gradient to TextView (Login text)
+        val paint = textView.paint
+        val textWidth = paint.measureText(textView.text.toString()) // Calculate width of text
+
+        // Apply LinearGradient shader with correct colors
+        val shader = LinearGradient(0f, 0f, textWidth, textView.textSize,
+            Color.parseColor("#71879D"), Color.parseColor("#FFE87C"), Shader.TileMode.CLAMP)
+
+        // Set the shader to the TextView paint
+        paint.shader = shader
 
         // Set up click listeners
         setupListeners()
@@ -41,6 +57,8 @@ class LogIn : AppCompatActivity() {
         forgotPassword = findViewById(R.id.forgotPassword)
         logInBtn = findViewById(R.id.LogInBtn)
         newAccount = findViewById(R.id.newAccount)
+        backBtn = findViewById(R.id.backbtn)
+        textView = findViewById(R.id.textView)
     }
 
     // Function to set up click listeners
@@ -57,24 +75,21 @@ class LogIn : AppCompatActivity() {
             // Check for empty fields
             if (username.isEmpty()) {
                 usernameLayout.error = "Please enter your username"
-            }else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()){
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
                 usernameLayout.error = "Please enter a valid email address"
-                usernameEditText.setOnFocusChangeListener { _, hasFocus ->
-                    if (!hasFocus) {
-                        usernameLayout.error = "Please enter a valid email address"
-                    }
             }
+
             if (password.isEmpty()) {
                 passwordLayout.error = "Please enter your password"
-            }else if(password.length < 8){
+            } else if (password.length < 8) {
                 passwordLayout.error = "Password must be at least 8 characters"
             }
 
             // Proceed if no errors
-          if (usernameLayout.error == null && passwordLayout.error == null && username.isNotEmpty() && password.isNotEmpty()){
-              val intent = Intent(this, MainActivity::class.java)
-              startActivity(intent)
-          }
+            if (usernameLayout.error == null && passwordLayout.error == null && username.isNotEmpty() && password.isNotEmpty()) {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         // Handle forgot password click
@@ -88,6 +103,11 @@ class LogIn : AppCompatActivity() {
             val intent = Intent(this, SignUp::class.java) // Replace with your Sign Up activity
             startActivity(intent)
         }
+
+        // Handle back button click
+        backBtn.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out) // Apply fade transition
+        }
     }
-}
 }

@@ -6,38 +6,46 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:hardwareAccelerated="false"
         android:networkSecurityConfig="@xml/network_security_config"
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="Thriftique"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Thriftique"
         tools:targetApi="31">
+
         <activity
             android:name="Authentication.SignUp"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
+
         <activity
             android:name="Authentication.LogIn"
             android:exported="false"
             android:windowSoftInputMode="adjustResize"/>
+
         <activity
             android:name=".SplashScreen"
             android:exported="true"
             tools:ignore="MissingClass">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

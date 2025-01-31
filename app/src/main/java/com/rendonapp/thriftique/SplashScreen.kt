@@ -1,7 +1,7 @@
 package com.rendonapp.thriftique
 
 
-import Authentication.LogIn
+
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -42,7 +42,7 @@ class SplashScreen : AppCompatActivity() {
 
         // Transition to MainActivity after 3 seconds
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, LogIn::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish() // Close this activity to prevent going back to it
         }, 3000) // 3000 ms = 3 seconds

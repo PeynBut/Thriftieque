@@ -6,6 +6,9 @@ import User
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -31,6 +34,66 @@ class SignUp : AppCompatActivity() {
     private lateinit var confirmPassword: TextInputEditText
     private lateinit var signUpBtn: Button
     private lateinit var alreadyHaveAccount: TextView
+    private lateinit var textView: TextView
+
+    // Set up the UI and handle user interaction
+    @SuppressLint("MissingInflatedId")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_sign_up)
+
+        // Initialize views
+        backBtn = findViewById(R.id.backbtn)
+        et_firstname = findViewById(R.id.et_firstname_edit)
+        et_lastname = findViewById(R.id.et_lastname_edit)
+        et_email = findViewById(R.id.et_email_edit)
+        password = findViewById(R.id.password_edit)
+        confirmPassword = findViewById(R.id.confirmPassword_toggle)
+        signUpBtn = findViewById(R.id.LogIn_bnt)
+        alreadyHaveAccount = findViewById(R.id.alrady_have_account)
+        textView = findViewById(R.id.textView) // Initialize textView
+
+        // Apply gradient to TextView (Login text)
+        val paint = textView.paint
+        val textWidth = paint.measureText(textView.text.toString()) // Calculate width of text
+
+        // Apply LinearGradient shader with correct colors
+        val shader = LinearGradient(
+            0f, 0f, textWidth, textView.textSize,
+            Color.parseColor("#71879D"), Color.parseColor("#FFE87C"),
+            Shader.TileMode.CLAMP
+        )
+
+        // Set the shader to the TextView paint
+        paint.shader = shader
+
+        // Set up listeners
+        backBtn.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out) // Apply fade transition
+        }
+
+        signUpBtn.setOnClickListener {
+            if (validateInputs()) {
+                val firstname = et_firstname.text.toString().trim()
+                val lastname = et_lastname.text.toString().trim()
+                val email = et_email.text.toString().trim()
+                val pass = password.text.toString().trim()
+
+                // Log the input data
+                Log.d("SignUp", "Input data - FirstName: $firstname, LastName: $lastname, Email: $email")
+
+                registerUser(firstname, lastname, email, pass)
+            } else {
+                Log.e("SignUp", "Validation failed")
+            }
+        }
+
+        alreadyHaveAccount.setOnClickListener {
+            startActivity(Intent(this, LogIn::class.java))
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out) // Apply fade transition
+        }
+    }
 
     // Validate user inputs
     private fun validateInputs(): Boolean {
@@ -102,6 +165,7 @@ class SignUp : AppCompatActivity() {
                             Log.d("SignUp", "Registration successful")
                             Toast.makeText(this@SignUp, "Registration Successful", Toast.LENGTH_SHORT).show()
                             startActivity(Intent(this@SignUp, MainActivity::class.java))
+                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out) // Apply fade transition
                             finish()
                         } else {
                             // Registration failed
@@ -122,47 +186,5 @@ class SignUp : AppCompatActivity() {
                     Toast.makeText(this@SignUp, "Registration Failed: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
-    }
-
-    // Set up the UI and handle user interaction
-    @SuppressLint("MissingInflatedId")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
-
-        // Initialize views
-        backBtn = findViewById(R.id.backbtn)
-        et_firstname = findViewById(R.id.et_firstname_edit)
-        et_lastname = findViewById(R.id.et_lastname_edit)
-        et_email = findViewById(R.id.et_email_edit)
-        password = findViewById(R.id.password_edit)
-        confirmPassword = findViewById(R.id.confirmPassword_toggle)
-        signUpBtn = findViewById(R.id.LogIn_bnt)
-        alreadyHaveAccount = findViewById(R.id.alrady_have_account)
-
-        // Set up listeners
-        backBtn.setOnClickListener {
-            startActivity(Intent(this, LogIn::class.java))
-        }
-
-        signUpBtn.setOnClickListener {
-            if (validateInputs()) {
-                val firstname = et_firstname.text.toString().trim()
-                val lastname = et_lastname.text.toString().trim()
-                val email = et_email.text.toString().trim()
-                val pass = password.text.toString().trim()
-
-                // Log the input data
-                Log.d("SignUp", "Input data - FirstName: $firstname, LastName: $lastname, Email: $email")
-
-                registerUser(firstname, lastname, email, pass)
-            } else {
-                Log.e("SignUp", "Validation failed")
-            }
-        }
-
-        alreadyHaveAccount.setOnClickListener {
-            startActivity(Intent(this, LogIn::class.java))
-        }
     }
 }
