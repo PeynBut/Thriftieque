@@ -1,12 +1,12 @@
 package com.rendonapp.thriftique
 
 import Authentication.LogIn
-import Authentication.SignUp
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android.SignUp
 import com.rendonapp.thriftique.R
 
 class MainActivity : AppCompatActivity() {

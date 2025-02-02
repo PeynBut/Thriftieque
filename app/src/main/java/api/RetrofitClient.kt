@@ -1,20 +1,17 @@
-package api
-
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-        private const val BASE_URL = "http://192.168.100.184/android/includes/v1/"
+    private const val BASE_URL = "http://192.168.100.184/android/"
 
-        private var retrofit: Retrofit? = null
-
-        fun getClient(): Retrofit {
-            if (retrofit == null) {
-                retrofit = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-            }
-            return retrofit!!
-        }
+    val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
+
+    val instance: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
+    }
+}

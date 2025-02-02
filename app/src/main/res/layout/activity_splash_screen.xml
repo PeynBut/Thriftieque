@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif"
-        android:text="Theiftieque"
+        android:text="Thriftique"
         android:textColor="#75832E"
         android:textSize="38dp"
         app:layout_constraintEnd_toEndOf="parent"

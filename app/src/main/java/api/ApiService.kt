@@ -1,15 +1,10 @@
-package api
-
-import ApiResponse
-import User
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiService {
-
-    @POST("android/includes/v1/RegisterUsers.php")  // Endpoint for registration (adjust as needed)
-    fun registerUser(
-        @Body user: User  // Pass the User object as the body
-    ): Call<ApiResponse>
+    @POST("includes/v1/RegisterUsers.php")
+    fun registerUser(@Body registerRequest: User): Call<ApiResponse>
+    @POST("includes/v1/userLogin.php")
+    fun loginUser(@Body request: LoginRequest): Call<LoginResponse>
 }
