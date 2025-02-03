@@ -1,7 +1,6 @@
 package Authentication
 
-import LoginRequest
-import LoginResponse
+
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -14,6 +13,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android.SignUp
+import com.example.android.models.LoginRequest
+import com.example.android.models.LoginResponse
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.rendonapp.thriftique.Homepage

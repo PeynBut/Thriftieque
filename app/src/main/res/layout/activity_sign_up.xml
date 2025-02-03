@@ -8,10 +8,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/color"
-    tools:context="Authentication.SignUp">
+    tools:context="com.example.android.SignUp">
 
-
-    <!-- Logo Image -->
+    <!-- Back Button -->
     <ImageView
         android:id="@+id/backbtn"
         android:layout_width="wrap_content"
@@ -19,6 +18,7 @@
         android:layout_marginTop="30dp"
         android:src="@drawable/baseline_backspace_24" />
 
+    <!-- Title -->
     <TextView
         android:id="@+id/textView"
         android:textColor="#71879D"
@@ -30,9 +30,9 @@
         android:layout_marginEnd="61dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="Sign Up"
-        />
+        android:text="Sign Up"/>
 
+    <!-- Name Fields -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         android:padding="16dp"
         android:weightSum="2">
 
-        <!-- First Name Field -->
+        <!-- First Name -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_firstname"
             android:layout_width="0dp"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Last Name Field -->
+        <!-- Last Name -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_lastname"
             android:layout_width="0dp"
@@ -72,13 +72,14 @@
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- First Name Field -->
+        <!-- Email Field -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_email"
             android:layout_width="match_parent"
@@ -92,7 +93,7 @@
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Last Name Field -->
+        <!-- Password Field -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/Password"
             android:layout_width="match_parent"
@@ -105,8 +106,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Confirm Password Field -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/confirmPassword"
             android:layout_width="match_parent"
@@ -119,27 +123,58 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/confirmPassword_toggle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- 📍 Address Field (Newly Added) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/et_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:hint="Address"
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_address_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox"
+            android:hint="Phone Number"
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_phone_number_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Register Button -->
         <Button
             android:id="@+id/LogIn_bnt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#71879D"
             android:layout_marginTop="10dp"
-            android:hint="Register"
-            android:textColorHint="@color/white"/>
+            android:text="Register"
+            android:textColor="@android:color/white"/>
 
+        <!-- Already Have an Account? -->
         <TextView
-            android:id="@+id/alrady_have_account"
-            android:layout_width="359dp"
+            android:id="@+id/already_have_account"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:gravity="center"
             android:paddingHorizontal="10dp"
             android:paddingTop="5dp"
-            android:text="@string/Already_have_account"
+            android:text="Already have an account?"
             android:textSize="15sp"/>
 
     </LinearLayout>
