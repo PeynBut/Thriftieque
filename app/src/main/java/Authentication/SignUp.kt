@@ -2,8 +2,9 @@ package com.example.android
 
 import ApiService
 import Authentication.LogIn
+import Authentication.RegisterPart2
 import android.annotation.SuppressLint
-import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
@@ -11,13 +12,15 @@ import android.graphics.Shader
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.android.models.ApiResponse
-import com.example.android.models.User
+import com.example.android.models.RegisterPart1
+import com.google.android.material.textfield.TextInputEditText
 import com.rendonapp.thriftique.MainActivity
 import com.rendonapp.thriftique.R
-import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,8 +32,6 @@ class SignUp : AppCompatActivity() {
     private lateinit var etEmail: TextInputEditText
     private lateinit var etPassword: TextInputEditText
     private lateinit var etConfirmPassword: TextInputEditText
-    private lateinit var etPhoneNumber: TextInputEditText
-    private lateinit var etAddress: TextInputEditText
     private lateinit var signUpBtn: Button
     private lateinit var alreadyHaveAccount: TextView
     private lateinit var textView: TextView
@@ -47,8 +48,6 @@ class SignUp : AppCompatActivity() {
         etEmail = findViewById(R.id.et_email_edit)
         etPassword = findViewById(R.id.password_edit)
         etConfirmPassword = findViewById(R.id.confirmPassword_toggle)
-        etPhoneNumber = findViewById(R.id.et_phone_number_edit)
-        etAddress = findViewById(R.id.et_address_edit)
         signUpBtn = findViewById(R.id.LogIn_bnt)
         alreadyHaveAccount = findViewById(R.id.already_have_account)
         textView = findViewById(R.id.textView)
@@ -78,14 +77,32 @@ class SignUp : AppCompatActivity() {
                 val lastname = etLastname.text.toString().trim()
                 val email = etEmail.text.toString().trim()
                 val pass = etPassword.text.toString().trim()
-                val phoneNumber = etPhoneNumber.text.toString().trim()
-                val userAddress = etAddress.text.toString().trim()
+                val confirmpass = etConfirmPassword.text.toString().trim()
 
-                Log.d("SignUp", "Registering: FirstName=$firstname, LastName=$lastname, Email=$email, Phone=$phoneNumber, Address=$userAddress")
+                Log.d("SignUp", "Registering: FirstName=$firstname, LastName=$lastname, Email=$email")
 
-                registerUser(firstname, lastname, email, pass, phoneNumber, userAddress)
+                registerUser(firstname, lastname, email, pass, confirmpass)
             } else {
                 Log.e("SignUp", "Validation failed")
+            }
+        }
+    }
+
+    private fun updateProgressView(step: Int) {
+        val step1 = findViewById<View>(R.id.step1)
+        val step2 = findViewById<View>(R.id.step2)
+        val progressLine = findViewById<View>(R.id.progress_line)
+
+        when (step) {
+            1 -> {
+                step1.setBackgroundResource(R.drawable.progress_active)
+                progressLine.setBackgroundColor(ContextCompat.getColor(this, R.color.gray))
+                step2.setBackgroundResource(R.drawable.progress_inactive)
+            }
+            2 -> {
+                step1.setBackgroundResource(R.drawable.progress_active)
+                progressLine.setBackgroundColor(ContextCompat.getColor(this, R.color.active))
+                step2.setBackgroundResource(R.drawable.progress_active)
             }
         }
     }
@@ -96,16 +113,12 @@ class SignUp : AppCompatActivity() {
         val email = etEmail.text.toString().trim()
         val pass = etPassword.text.toString().trim()
         val confirmPass = etConfirmPassword.text.toString().trim()
-        val phoneNumber = etPhoneNumber.text.toString().trim()
-        val userAddress = etAddress.text.toString().trim()
 
         etFirstname.error = null
         etLastname.error = null
         etEmail.error = null
         etPassword.error = null
         etConfirmPassword.error = null
-        etPhoneNumber.error = null
-        etAddress.error = null
 
         var isValid = true
 
@@ -129,26 +142,24 @@ class SignUp : AppCompatActivity() {
             etConfirmPassword.error = "Passwords do not match"
             isValid = false
         }
-        if (phoneNumber.isEmpty() || !Patterns.PHONE.matcher(phoneNumber).matches()) {
-            etPhoneNumber.error = "Please enter a valid phone number"
-            isValid = false
-        }
-        if (userAddress.isEmpty()) {
-            etAddress.error = "Please enter your address"
-            isValid = false
-        }
 
         return isValid
     }
 
-    private fun registerUser(firstname: String, lastname: String, email: String, password: String, phoneNumber: String, address: String) {
-        val progressDialog = AlertDialog.Builder(this)
-            .setCancelable(false)
-            .create()
+    private fun registerUser(
+        firstname: String,
+        lastname: String,
+        email: String,
+        password: String,
+        confirmPassword: String
+    ) {
+        val progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Registering...")
+        progressDialog.setCancelable(false)
         progressDialog.show()
 
-        val user = User(firstname, lastname, email, password, phoneNumber ?: "", null, null, address)
-
+        // Ensure RegisterPart1 includes confirmPassword
+        val user = RegisterPart1(firstname, lastname, email, password, confirmPassword)
 
         Log.d("SignUp", "Sending request: $user")
 
@@ -162,17 +173,30 @@ class SignUp : AppCompatActivity() {
                     val apiResponse = response.body()
                     if (apiResponse != null && !apiResponse.error) {
                         Log.d("SignUp", "Registration successful")
-                        Toast.makeText(this@SignUp, "Registration Successful", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@SignUp, MainActivity::class.java))
+                        Toast.makeText(
+                            this@SignUp,
+                            "Step 1 Complete! Proceed to Step 2",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this@SignUp, RegisterPart2::class.java)
+                        intent.putExtra("email", email)
+                        startActivity(intent)
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                        finish()
                     } else {
                         Log.e("SignUp", "Failed: ${apiResponse?.message ?: "Unknown error"}")
-                        Toast.makeText(this@SignUp, "Registration Failed: ${apiResponse?.message ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@SignUp,
+                            "Registration Failed: ${apiResponse?.message ?: "Unknown error"}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     Log.e("SignUp", "Server Error: ${response.code()} ${response.message()}")
-                    Toast.makeText(this@SignUp, "Failed to register user. Try again.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@SignUp,
+                        "Failed to register user. Try again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
