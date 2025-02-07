@@ -26,7 +26,7 @@
             />
 
         <activity
-            android:name=".Homepage"
+            android:name=".homepage"
             android:exported="true" />
         <activity
             android:name="com.example.android.SignUp"

@@ -17,7 +17,7 @@ import com.example.android.models.LoginRequest
 import com.example.android.models.LoginResponse
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.rendonapp.thriftique.Homepage
+import com.rendonapp.thriftique.homepage
 import com.rendonapp.thriftique.MainActivity
 import com.rendonapp.thriftique.R
 import retrofit2.Call
@@ -124,7 +124,7 @@ class LogIn : AppCompatActivity() {
                     if (responseBody.id != null && responseBody.token != null) {
                         Toast.makeText(this@LogIn, "Login Successful", Toast.LENGTH_SHORT).show()
 
-                        val intent = Intent(this@LogIn, Homepage::class.java)
+                        val intent = Intent(this@LogIn, homepage::class.java)
                         startActivity(intent)
                         finish()
                     } else {
