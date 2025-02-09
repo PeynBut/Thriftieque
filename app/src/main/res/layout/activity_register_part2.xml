@@ -70,8 +70,11 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_phone_edit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:maxLength="11"/>
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <!-- Address Fields -->
     <LinearLayout
@@ -153,7 +156,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_postalCode_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="4"/>
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
