@@ -1,12 +1,15 @@
 package Authentication
 
-
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,7 +20,7 @@ import com.example.android.models.LoginRequest
 import com.example.android.models.LoginResponse
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.rendonapp.thriftique.homepage
+import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.MainActivity
 import com.rendonapp.thriftique.R
 import retrofit2.Call
@@ -34,10 +37,14 @@ class LogIn : AppCompatActivity() {
     private lateinit var newAccount: TextView
     private lateinit var textView: TextView
     private lateinit var backBtn: ImageView
+    private lateinit var vibrator: Vibrator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_log_in)
+
+        // Initialize Vibrator
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         // Initialize views
         initializeViews()
@@ -72,7 +79,10 @@ class LogIn : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        logInBtn.setOnClickListener {
+        logInBtn.setOnClickListener { view ->
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            vibrate()
+
             val username = usernameEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
@@ -96,13 +106,23 @@ class LogIn : AppCompatActivity() {
             loginUser(username, password)
         }
 
-        newAccount.setOnClickListener {
+        newAccount.setOnClickListener { view ->
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            vibrate()
             startActivity(Intent(this, SignUp::class.java))
         }
 
-        backBtn.setOnClickListener {
+        backBtn.setOnClickListener { view ->
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            vibrate()
             startActivity(Intent(this, MainActivity::class.java))
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+        }
+
+        forgotPassword.setOnClickListener { view ->
+            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            vibrate()
+            Toast.makeText(this, "Forgot Password Clicked", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -120,15 +140,13 @@ class LogIn : AppCompatActivity() {
                 if (response.isSuccessful && responseBody != null) {
                     Log.d("LoginDebug", "Response Body: $responseBody")
 
-                    // ✅ Fix: Check if `id` and `token` exist instead of `status`
                     if (responseBody.id != null && responseBody.token != null) {
                         Toast.makeText(this@LogIn, "Login Successful", Toast.LENGTH_SHORT).show()
 
-                        val intent = Intent(this@LogIn, homepage::class.java)
+                        val intent = Intent(this@LogIn, Homepage::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        // ✅ Handle missing fields properly
                         val errorMessage = responseBody.message ?: "Invalid Credentials"
                         Toast.makeText(this@LogIn, errorMessage, Toast.LENGTH_SHORT).show()
                     }
@@ -143,5 +161,15 @@ class LogIn : AppCompatActivity() {
                 Toast.makeText(this@LogIn, "Network error: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
+    }
+
+    // Function to handle vibration feedback
+    private fun vibrate() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator.vibrate(50)
+        }
     }
 }

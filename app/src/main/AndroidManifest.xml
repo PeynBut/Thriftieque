@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
 
     <application
         android:allowBackup="true"
@@ -20,13 +22,19 @@
         android:theme="@style/Theme.Thriftique"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity android:name="clothing.ItemDetailActivity"/>
         <activity
             android:name="Authentication.RegisterPart2"
             android:exported="true"
             />
+        <activity android:name=".SeeAllItemsActivity" />
+        <activity android:name=".CartActivity"
+            tools:ignore="Instantiatable">
+            <!-- You can specify intent filters here if needed -->
+        </activity>
 
         <activity
-            android:name=".homepage"
+            android:name=".Homepage"
             android:exported="true" />
         <activity
             android:name="com.example.android.SignUp"

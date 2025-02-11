@@ -24,6 +24,10 @@ import com.rendonapp.thriftique.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.os.Vibrator
+import android.os.VibrationEffect
+import android.content.Context
+
 
 class SignUp : AppCompatActivity() {
     private lateinit var backBtn: ImageView
@@ -63,6 +67,20 @@ class SignUp : AppCompatActivity() {
         backBtn.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            vibrateDevice(50)
+            if (validateInputs()) {
+                val firstname = etFirstname.text.toString().trim()
+                val lastname = etLastname.text.toString().trim()
+                val email = etEmail.text.toString().trim()
+                val pass = etPassword.text.toString().trim()
+                val confirmpass = etConfirmPassword.text.toString().trim()
+
+                Log.d("SignUp", "Registering: FirstName=$firstname, LastName=$lastname, Email=$email")
+
+                registerUser(firstname, lastname, email, pass, confirmpass)
+            } else {
+                Log.e("SignUp", "Validation failed")
+            }
         }
 
         alreadyHaveAccount.setOnClickListener {
@@ -87,6 +105,17 @@ class SignUp : AppCompatActivity() {
             }
         }
     }
+    private fun vibrateDevice(duration: Long = 100) {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) { // Check if the device supports vibration
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(duration)
+            }
+        }
+    }
+
 
     private fun updateProgressView(step: Int) {
         val step1 = findViewById<View>(R.id.step1)
@@ -143,8 +172,13 @@ class SignUp : AppCompatActivity() {
             isValid = false
         }
 
+        if (!isValid) {
+            vibrateDevice(200) // Vibrate for 200ms on validation error
+        }
+
         return isValid
     }
+
 
     private fun registerUser(
         firstname: String,
