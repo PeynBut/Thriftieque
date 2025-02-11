@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:cardCornerRadius="10dp"
+    android:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"> <!-- Align the items vertically in the center -->
+
+        <!-- Product Image -->
+        <ImageView
+            android:id="@+id/cartItemImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/long_sleeve"
+        android:layout_marginEnd="12dp" />
+
+        <!-- Product Name (ID) and Quantity -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/cartItemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Product ID: Sample"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/cartItemQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quantity: 1"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Remove Button -->
+    <Button
+        android:id="@+id/btnRemove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Remove" />
+
+</LinearLayout>
+    </androidx.cardview.widget.CardView>

@@ -16,5 +16,8 @@ interface ApiService {
 
     @POST("includes/v1/RegisterPart2.php")
     fun registerUserPart2(@Body registerRequest: RegisterUserRequest): Call<ApiResponse>
+
+    @POST("includes/v1/Cart/cart.php")
+    fun addToCart(@Body cartItem: clothing.CartItem): Call<ApiResponse>
 }
 

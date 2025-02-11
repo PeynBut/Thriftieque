@@ -50,3 +50,8 @@ data class LoginResponse(
     @SerializedName("error") val error: Boolean = false,
     @SerializedName("message") val message: String? = ""
 )
+
+data class CartItem(
+    @SerializedName("user_id") val userId: String, // User who is adding the item to the cart
+    @SerializedName("product_id") val productId: Int // ID of the product being added
+)

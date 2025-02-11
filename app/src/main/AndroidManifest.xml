@@ -28,7 +28,7 @@
             android:exported="true"
             />
         <activity android:name=".SeeAllItemsActivity" />
-        <activity android:name=".CartActivity"
+        <activity android:name="clothing.CartActivity"
             tools:ignore="Instantiatable">
             <!-- You can specify intent filters here if needed -->
         </activity>
