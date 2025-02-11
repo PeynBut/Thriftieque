@@ -18,7 +18,7 @@ class CartAdapter(
 
     // ViewHolder class that holds references to UI components for each cart item
     inner class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val productName: TextView = view.findViewById(R.id.cartItemName)
+        val productName: TextView = view.findViewById(R.id.label)
         val productQuantity: TextView = view.findViewById(R.id.cartItemQuantity)
         val removeButton: Button = view.findViewById(R.id.btnRemove)
 

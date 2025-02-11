@@ -44,6 +44,7 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.2")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.2")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
+    implementation ("androidx.cardview:cardview:1.0.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

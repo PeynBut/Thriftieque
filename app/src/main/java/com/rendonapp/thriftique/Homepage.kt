@@ -25,8 +25,8 @@ class Homepage : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var clothingAdapter: ClothingAdapter
     private lateinit var itemList: List<ClothingItem>
-    private lateinit var tv_seeAll : TextView
-    private lateinit var cart : ImageView
+    private lateinit var tv_seeAll: TextView
+    private lateinit var cart: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,12 +39,14 @@ class Homepage : AppCompatActivity() {
         cart = findViewById(R.id.cart)
 
         tv_seeAll.setOnClickListener {
+            vibrate() // Trigger vibration on text click
             val intent = Intent(this, SeeAllItemsActivity::class.java)
             startActivity(intent)
         }
 
         // Handle the Cart icon click
         cart.setOnClickListener {
+            vibrate() // Trigger vibration on icon click
             val intent = Intent(this, CartActivity::class.java)
             startActivity(intent)
         }
@@ -111,4 +113,3 @@ class Homepage : AppCompatActivity() {
         }
     }
 }
-
