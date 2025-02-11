@@ -1,6 +1,7 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"> <!-- Ensure ID is correct -->
 
     <!-- Main Content Layout -->
@@ -91,13 +92,14 @@
 
     </LinearLayout>
 
-    <!-- Navigation Drawer (Ensure ID is correct) -->
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start">
-        <!-- Add menu items here -->
-    </com.google.android.material.navigation.NavigationView>
+        android:layout_gravity="start"
+        app:menu="@menu/nav_menu"
+        app:headerLayout="@layout/nav_header"
+        android:background="@android:color/white"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

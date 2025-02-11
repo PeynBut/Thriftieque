@@ -5,12 +5,11 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.view.Gravity
-import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -59,31 +58,27 @@ class CartActivity : AppCompatActivity() {
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
-
-        // Menu button listener with vibration
-        menu.setOnClickListener {
-            vibrate() // Trigger vibration
-            drawerLayout.openDrawer(Gravity.NO_GRAVITY) // Open the drawer when menu clicked
-        }
     }
 
-    // Setup the Navigation Drawer
+    // 📌 Setup the Navigation Drawer
     private fun setupNavigationDrawer() {
-        // Ensure these IDs are correct
         drawerLayout = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
 
+        // Make sure the DrawerLayout is the correct parent and NavigationView is correctly referenced
         if (drawerLayout == null || navigationView == null) {
             Log.e("CartActivity", "DrawerLayout or NavigationView not found!")
             return
         }
 
-        // Initialize ActionBarDrawerToggle
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav)
+        // Initialize the ActionBarDrawerToggle
+        toggle = ActionBarDrawerToggle(
+            this, drawerLayout, R.string.open_nav, R.string.close_nav
+        )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // Handle Navigation Drawer item clicks
+        // Handle navigation items
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, Homepage::class.java))
@@ -94,8 +89,13 @@ class CartActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
             true
         }
-    }
+        // Menu button listener with vibration
+        menu.setOnClickListener {
+            vibrate() // Trigger vibration
+            drawerLayout.openDrawer(GravityCompat.START) // Open the drawer when menu clicked
+        }
 
+    }
 
     // Remove item logic
     private fun removeItem(cartItem: CartItem) {
