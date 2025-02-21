@@ -4,6 +4,7 @@ import com.example.android.models.LoginResponse
 import com.example.android.models.Product
 import com.example.android.models.RegisterPart1
 import com.example.android.models.RegisterUserRequest
+import com.rendonapp.thriftique.CartItem
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,7 +22,7 @@ interface ApiService {
     fun registerUserPart2(@Body registerRequest: RegisterUserRequest): Call<ApiResponse>
 
     @POST("includes/v1/Cart/cart.php")
-    fun addToCart(@Body cartItem: com.rendonapp.thriftique.CartItem.CREATOR): Call<ApiResponse>  // Updated to accept CartItem
+    fun addToCart(@Body cartItem: CartItem): Call<ApiResponse>
 
     @POST("includes/v1/Products/products.php")
     fun createProduct(@Body product: Product?): Call<ApiResponse?>?

@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
-        android:gravity="center_vertical"> <!-- Align the items vertically in the center -->
+        android:gravity="center_vertical">
 
         <!-- Product Image -->
         <ImageView
@@ -17,37 +22,46 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/long_sleeve"
-        android:layout_marginEnd="12dp" />
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Product Image"
+            android:scaleType="centerCrop" />
 
         <!-- Product Name (ID) and Quantity -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/label"
+            <TextView
+                android:id="@+id/label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Product ID: Sample"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cartItemQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quantity: 1"
+                android:textSize="14sp"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <!-- Remove Button -->
+        <Button
+            android:id="@+id/btnRemove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Product ID: Sample"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/cartItemQuantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quantity: 1"
-            android:textSize="14sp" />
+            android:text="Remove"
+            android:backgroundTint="#CA1313"
+            android:textColor="@android:color/white"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp"
+        android:layout_marginStart="8dp" /> <!-- Added margin for spacing -->
     </LinearLayout>
-
-    <!-- Remove Button -->
-    <Button
-        android:id="@+id/btnRemove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remove" />
-
-</LinearLayout>
-    </androidx.cardview.widget.CardView>
+</androidx.cardview.widget.CardView>

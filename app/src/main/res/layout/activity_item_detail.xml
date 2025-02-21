@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:fillViewport="true"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,13 +13,15 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Product Image -->
+        <!-- Product Image with Rounded Corners -->
         <ImageView
             android:id="@+id/product_image"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="280dp"
+            android:layout_height="280dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/polo" />
+            android:src="@drawable/polo"
+            android:background="@drawable/rounded_background"
+            android:elevation="4dp"/>
 
         <!-- Product Title -->
         <TextView
@@ -26,19 +31,28 @@
             android:text="Product Title"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/poppins"/>
 
-        <!-- Product Description -->
-        <TextView
-            android:id="@+id/product_description"
+        <!-- Product Description Card -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Product Description"
-            android:textSize="16sp"
+            android:background="@drawable/card_background"
+            android:padding="12dp"
             android:layout_marginTop="8dp"
-            android:padding="8dp"
-            android:background="@android:color/darker_gray"
-            android:textColor="@android:color/white"/>
+            android:elevation="3dp">
+
+            <TextView
+                android:id="@+id/product_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Product Description"
+                android:textSize="16sp"
+                android:textColor="@color/dark_gray"
+                android:fontFamily="@font/poppins"/>
+        </LinearLayout>
 
         <!-- Product Price -->
         <TextView
@@ -46,21 +60,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="$0.00"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@android:color/holo_green_dark"
-            android:layout_marginTop="12dp"/>
+            android:textColor="@color/primary_color"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/poppins"/>
 
         <!-- Add to Cart Button -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_add_to_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Add to Cart"
-            android:backgroundTint="@android:color/holo_blue_dark"
-            android:textColor="@android:color/white"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
+            app:cornerRadius="50dp"
             android:layout_marginTop="16dp"
-            android:padding="10dp"/>
+            android:textSize="16sp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
     </LinearLayout>
 

@@ -5,50 +5,56 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rendonapp.thriftique.CartItem
 import com.rendonapp.thriftique.R
-import kotlin.reflect.KFunction1
 
-// In CartAdapter, ensure you're using the correct CartItem class
 class CartAdapter(
     private val context: Context,
-    private val itemList: List<CartItem>,  // Ensure this is CartItem from the correct package
-    private val layoutType: Int,
-    private val itemClickListener: (CartItem) -> Unit,  // Correct type for itemClickListener
-    private val removeClickListener: (CartItem) -> Unit  // Correct type for removeClickListener
-) : RecyclerView.Adapter<CartAdapter.ClothingViewHolder>() {
-    // Your code remains the same
+    private var itemList: List<CartItem>,
+    private val itemClickListener: (CartItem) -> Unit, // Click listener for item clicks
+    private val removeClickListener: (CartItem) -> Unit // Click listener for remove actions
+) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
+    inner class CartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val productIdTextView: TextView = itemView.findViewById(R.id.label)
+        private val quantityTextView: TextView = itemView.findViewById(R.id.cartItemQuantity)
+        private val removeButton: Button = itemView.findViewById(R.id.btnRemove)
 
+        fun bind(cartItem: CartItem) {
+            productIdTextView.text = "Product ID: ${cartItem.productId}"
+            quantityTextView.text = "Quantity: ${cartItem.quantity}"
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClothingViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_clothing, parent, false)
-        return ClothingViewHolder(view)
+            // Set up item click listener
+            itemView.setOnClickListener {
+                itemClickListener(cartItem) // Trigger the item click action
+            }
+
+            // Set up the remove button click listener
+            removeButton.setOnClickListener {
+                removeClickListener(cartItem) // Trigger the remove action
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: ClothingViewHolder, position: Int) {
-        val item = itemList[position]
-        holder.name.text = item.productId.toString() // Use productId from com.example.android.models.CartItem
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.cart_item, parent, false)
+        return CartViewHolder(view)
+    }
 
-        // Handle item click (open item details or navigate)
-        holder.itemView.setOnClickListener {
-            itemClickListener(item) // Trigger item click listener
-        }
+    override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
+        val cartItem = itemList[position]
+        holder.bind(cartItem)
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
 
-    inner class ClothingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val name: TextView = itemView.findViewById(R.id.product_title)
-        val price: TextView = itemView.findViewById(R.id.product_price)
-        val image: ImageView = itemView.findViewById(R.id.product_image)
+    // Method to update the item list
+    fun updateItems(newItems: List<CartItem>) {
+        itemList = newItems
+        notifyDataSetChanged()
     }
 }
-
-
-

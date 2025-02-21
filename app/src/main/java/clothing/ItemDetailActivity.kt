@@ -1,4 +1,4 @@
-package clohing
+package com.rendonapp.thriftique
 
 import ClothingItem
 import android.app.Activity
@@ -40,16 +40,14 @@ class ItemDetailActivity : Activity() {
         // Retrieve item data from intent
         clothingItem = intent.getSerializableExtra("ITEM_DATA") as? ClothingItem
 
-        if (clothingItem != null) {
+        clothingItem?.let { item ->
             // Set item details safely
-            clothingItem?.let { item ->
-                itemImage?.setImageResource(item.imageResId)
-                itemTitle?.text = item.title
-                itemDescription?.text = "Product Description:\n${item.description}"
-                itemPrice?.text = "$${item.price}" // Use price property instead of getPrice()
-            }
-        } else {
-            // If the item is null, show a toast or handle the error accordingly
+            itemImage?.setImageResource(item.imageResId)
+            itemTitle?.text = item.title
+            itemDescription?.text = "Product Description:\n${item.description}"
+            itemPrice?.text = "$${item.price}" // Use price property
+        } ?: run {
+            // If the item is null, show a toast
             Toast.makeText(this, "Error: Item data not found", Toast.LENGTH_SHORT).show()
         }
 
@@ -73,22 +71,25 @@ class ItemDetailActivity : Activity() {
         }
 
         // Create a cart item object
-        val cartItem = CartItem(userId.toString(), clothingItem?.id ?: -1)
+        val cartItem = CartItem(userId, clothingItem!!.id, 1) // Pass userId as Int and quantity as 1
 
         // API call to add item to the cart
-        RetrofitClient.instance.addToCart(CartItem).enqueue(object : Callback<ApiResponse?> {
+        RetrofitClient.instance.addToCart(cartItem).enqueue(object : Callback<ApiResponse?> {
             override fun onResponse(call: Call<ApiResponse?>, response: Response<ApiResponse?>) {
                 if (response.isSuccessful && response.body() != null) {
-                    Toast.makeText(this@ItemDetailActivity, "Added to Cart!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ItemDetailActivity, "Added to Cart!", Toast.LENGTH_SHORT)
+                        .show()
                     vibrate() // Trigger vibration feedback when item is added
                 } else {
-                    Toast.makeText(this@ItemDetailActivity, "Failed to add item", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ItemDetailActivity, "Failed to add item", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse?>, t: Throwable) {
                 Log.e("ItemDetail", "Error adding to cart: ${t.message}")
-                Toast.makeText(this@ItemDetailActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ItemDetailActivity, "Error: ${t.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
     }
@@ -96,7 +97,7 @@ class ItemDetailActivity : Activity() {
     // Function to trigger vibration feedback
     private fun vibrate() {
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-        if (vibrator != null && vibrator.hasVibrator()) {
+        if (vibrator.hasVibrator()) {
             vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
         }
     }

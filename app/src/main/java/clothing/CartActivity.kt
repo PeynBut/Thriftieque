@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
-import com.rendonapp.thriftique.CartItem // Import the correct CartItem
+import com.rendonapp.thriftique.CartItem // Import your CartItem class
 
 class CartActivity : AppCompatActivity() {
 
@@ -28,6 +28,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
 
+    // In CartActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
@@ -40,38 +41,36 @@ class CartActivity : AppCompatActivity() {
         // Initialize RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Add sample data to cartList (replace with actual data if available)
-        cartList.add(CartItem("101", 2)) // Sample CartItem (productId, quantity)
-        cartList.add(CartItem("102", 1))
-        cartList.add(CartItem("103", 3))
-
-        // Setup the RecyclerView Adapter with proper CartItem type
-        cartAdapter = CartAdapter(
-            this,
-            itemList = cartList,
-            layoutType = 1, // 1 for list layout (change to 2 for grid layout)
-            itemClickListener = { cartItem ->
-                // Handle item click (navigate to item details, or leave empty if no action needed)
-            },
-            removeClickListener = { cartItem ->
-                removeItem(cartItem) // Pass CartItem to the removeItem function
-            }
-        )
+        // Provide itemClickListener as a lambda (empty for now, can be implemented later)
+        cartAdapter = CartAdapter(this, cartList, { /* Handle item click */ }, ::removeItem)
 
         recyclerView.adapter = cartAdapter
+
+        // Sample data for the cart (replace with your data source)
+        loadSampleData()
 
         // Setup Navigation Drawer
         setupNavigationDrawer()
 
         // Back button listener with vibration
         backBtn.setOnClickListener {
-            vibrate() // Trigger vibration
+            vibrate()
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
     }
 
-    // 📌 Setup the Navigation Drawer
+
+    private fun loadSampleData() {
+        cartList.apply {
+            add(CartItem(1, 101, 2)) // Sample CartItem with userId, productId, and quantity
+            add(CartItem(1, 102, 1))
+            add(CartItem(1, 103, 3))
+        }
+        cartAdapter.notifyDataSetChanged() // Notify adapter about data changes
+    }
+
+
     private fun setupNavigationDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
@@ -81,38 +80,31 @@ class CartActivity : AppCompatActivity() {
             return
         }
 
-        toggle = ActionBarDrawerToggle(
-            this, drawerLayout, R.string.open_nav, R.string.close_nav
-        )
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // Handle navigation items
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, Homepage::class.java))
-                R.id.nav_profile -> startActivity(Intent(this, Homepage::class.java)) // Use actual ProfileActivity
-                R.id.nav_settings -> startActivity(Intent(this, Homepage::class.java)) // Use actual SettingsActivity
-                R.id.nav_logout -> finish()
+                // Add your other navigation actions here
             }
             drawerLayout.closeDrawers()
             true
         }
 
         menu.setOnClickListener {
-            vibrate() // Trigger vibration
-            drawerLayout.openDrawer(GravityCompat.START) // Open the drawer when menu clicked
+            vibrate()
+            drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 
-    // Remove item logic
     private fun removeItem(cartItem: CartItem) {
-        cartList.remove(cartItem) // Remove CartItem from the list
-        cartAdapter.notifyDataSetChanged() // Refresh the RecyclerView
+        cartList.remove(cartItem)
+        cartAdapter.notifyDataSetChanged()
         Toast.makeText(this, "Removed ${cartItem.productId} from cart", Toast.LENGTH_SHORT).show()
     }
 
-    // Vibration Feedback
     private fun vibrate() {
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {

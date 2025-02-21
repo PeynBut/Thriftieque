@@ -1,22 +1,22 @@
 package com.rendonapp.thriftique
 
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import clohing.ItemDetailActivity
 import clothing.CartActivity
 import clothing.CartAdapter
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 class Homepage : AppCompatActivity() {
@@ -24,31 +24,47 @@ class Homepage : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var recyclerView: RecyclerView
     private lateinit var clothingAdapter: CartAdapter
-    private lateinit var itemList: List<CartItem> // Change to CartItem
-    private lateinit var tv_seeAll: TextView
-    private lateinit var cart: ImageView
+    private lateinit var homeClothingItems: List<CartItem>
+    private lateinit var seeAllClothingItems: List<CartItem>
+    private var cartItems: MutableList<CartItem> = mutableListOf()
+    private lateinit var tvSeeAll: TextView
+    private lateinit var bottomNavigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
 
+        // Sample data for Homepage
+        homeClothingItems = listOf(
+            CartItem(userId = 1, productId = 201, quantity = 1),
+            CartItem(userId = 1, productId = 202, quantity = 1)
+        )
+
+        // Sample data for See All
+        seeAllClothingItems = listOf(
+            CartItem(userId = 1, productId = 301, quantity = 1),
+            CartItem(userId = 1, productId = 302, quantity = 1)
+        )
+
+        // Initialize the RecyclerView and Adapter
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = GridLayoutManager(this, 2)
+        clothingAdapter = CartAdapter(this, homeClothingItems, this::onItemClicked, this::onAddToCartClicked)
+        recyclerView.adapter = clothingAdapter
+
+        bottomNavigationView = findViewById(R.id.bottom_navigation)
         setupNavigationDrawer()
-        setupRecyclerView()
 
-        tv_seeAll = findViewById(R.id.tv_seeAll)
-        cart = findViewById(R.id.cart)
+        tvSeeAll = findViewById(R.id.tv_seeAll)
+        val cart = findViewById<ImageView>(R.id.cart)
 
-        tv_seeAll.setOnClickListener {
-            vibrate() // Trigger vibration on text click
-            val intent = Intent(this, SeeAllItemsActivity::class.java)
-            startActivity(intent)
+        tvSeeAll.setOnClickListener {
+            vibrate()
+            startActivity(Intent(this, SeeAllItemsActivity::class.java))
         }
-
-        // Handle the Cart icon click
         cart.setOnClickListener {
-            vibrate() // Trigger vibration on icon click
-            val intent = Intent(this, CartActivity::class.java)
-            startActivity(intent)
+            vibrate()
+            startActivity(Intent(this, CartActivity::class.java))
         }
     }
 
@@ -56,13 +72,16 @@ class Homepage : AppCompatActivity() {
     private fun setupNavigationDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
+        val toolbar = findViewById<MaterialToolbar>(R.id.menu) // Ensure toolbar is correctly set in XML
 
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav)
+        setSupportActionBar(toolbar)
+
+        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        findViewById<View>(R.id.menu).setOnClickListener {
-            drawerLayout.openDrawer(navigationView)
+        toolbar.setNavigationOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
         }
 
         navigationView.setNavigationItemSelectedListener { item ->
@@ -75,45 +94,30 @@ class Homepage : AppCompatActivity() {
             drawerLayout.closeDrawers()
             true
         }
-    }
 
-    // 📌 Setup RecyclerView for CartItems
-    private fun setupRecyclerView() {
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(this, 2) // Dynamic grid layout
-
-        // Sample data for CartItems (this data should match CartItem properties)
-        itemList = listOf(
-            CartItem("1", 101), // Assuming CartItem has userId and productId
-            CartItem("1", 102),
-            CartItem("1", 103),
-            CartItem("1", 104)
-        )
-
-        // Set up adapter with item click listener
-        clothingAdapter = CartAdapter(this, itemList, 1, this::onItemClicked, this::onRemoveItemClicked)
-
-        recyclerView.adapter = clothingAdapter
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_message, R.id.nav_home, R.id.nav_profile -> true
+                else -> false
+            }
+        }
     }
 
     // 📌 Function triggered when an item is clicked
     private fun onItemClicked(item: CartItem) {
-        vibrate() // Vibrate on click
+        vibrate()
         val intent = Intent(this, ItemDetailActivity::class.java)
-        intent.putExtra("ITEM_DATA", item) // Pass the CartItem instead of ClothingItem
-
+        intent.putExtra("ITEM_DATA", item) // Ensure CartItem implements Parcelable
         startActivity(intent)
     }
 
-    // 📌 Function triggered when remove button is clicked
-    private fun onRemoveItemClicked(item: CartItem) {
-        // Handle item removal logic here (maybe update cart, etc.)
-        // You can update the adapter and remove the item from the list
-        val updatedList = itemList.toMutableList()
-        updatedList.remove(item)
-        clothingAdapter = CartAdapter(this, updatedList, 1, this::onItemClicked, this::onRemoveItemClicked)
-        recyclerView.adapter = clothingAdapter
-        vibrate() // Trigger vibration on remove action
+    // 📌 Function triggered when add to cart button is clicked
+    private fun onAddToCartClicked(item: CartItem) {
+        if (!cartItems.contains(item)) {
+            cartItems.add(item)
+            // Optionally, show a message to the user that the item has been added
+            // Example: Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // 📌 Vibration Feedback

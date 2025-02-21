@@ -35,6 +35,7 @@ android {
     }
 }
 
+
 dependencies {
     implementation ("com.google.android.gms:play-services-location:18.0.0")
     implementation("androidx.core:core-splashscreen:1.0.0")

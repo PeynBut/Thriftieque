@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android.models.ApiResponse
 import com.example.android.models.RegisterUserRequest
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
@@ -23,37 +24,36 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RegisterPart2 : AppCompatActivity() {
+
     private lateinit var backBtn: ImageView
     private lateinit var etPhone: TextInputEditText
     private lateinit var etBarangay: TextInputEditText
     private lateinit var etMunicipality: TextInputEditText
-    private lateinit var etCountry: TextInputEditText
     private lateinit var etProvince: TextInputEditText
+    private lateinit var etCountry: TextInputEditText
     private lateinit var etPostalCode: TextInputEditText
-    private lateinit var registerButton: Button
+    private lateinit var registerButton: MaterialButton
     private lateinit var vibrator: Vibrator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register_part2)
+        setContentView(R.layout.activity_register_part2) // ✅ Ensure this matches the correct XML file
 
-        // Initialize Vibrator
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
-        // Initialize views
+        // Initialize views AFTER setting the content view
         backBtn = findViewById(R.id.backbtn)
-        etPhone = findViewById(R.id.et_phone_edit)
-        etBarangay = findViewById(R.id.et_barangay_edit)
-        etMunicipality = findViewById(R.id.et_municipality_edit)
-        etCountry = findViewById(R.id.et_country_edit)
-        etProvince = findViewById(R.id.et_province_edit)
-        etPostalCode = findViewById(R.id.et_postalCode_edit)
+        etPhone = findViewById(R.id.et_phone)
+        etBarangay = findViewById(R.id.et_barangay)
+        etMunicipality = findViewById(R.id.et_municipality)
+        etProvince = findViewById(R.id.et_province)
+        etCountry = findViewById(R.id.et_country)
+        etPostalCode = findViewById(R.id.et_postal_code)
         registerButton = findViewById(R.id.registerButton)
 
-        backBtn.setOnClickListener { view ->
-            view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            vibrate()
-            finish()
+        // Set up click listener for back button
+        backBtn.setOnClickListener {
+            finish() // Go back to the previous activity
         }
 
         registerButton.setOnClickListener { view ->

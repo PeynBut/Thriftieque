@@ -1,7 +1,5 @@
 package com.rendonapp.thriftique
 
-
-import com.rendonapp.thriftique.CartItem // Import the correct CartItem
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +8,6 @@ import android.os.Vibrator
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import clohing.ItemDetailActivity
 import clothing.CartAdapter
 import kotlin.math.max
 
@@ -29,7 +26,7 @@ class SeeAllItemsActivity : Activity() {
         recyclerView?.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
 
         // Set up CartAdapter with click listeners
-        cartAdapter = CartAdapter(this, itemList, 1, { item ->
+        cartAdapter = CartAdapter(this, itemList, { item ->
             this.onItemClicked(item) // Item click listener
         }, { item ->
             this.onRemoveClicked(item) // Remove button click listener
@@ -53,15 +50,15 @@ class SeeAllItemsActivity : Activity() {
     }
 
     private val sampleClothingItems: List<CartItem>
-        // Sample data for testing (using CartItem from com.example.android.models)
         get() {
             val items: MutableList<CartItem> = ArrayList()
-            items.add(CartItem(userId = "1", productId = 1)) // Sample CartItem
-            items.add(CartItem(userId = "1", productId = 2))
-            items.add(CartItem(userId = "1", productId = 3))
-            items.add(CartItem(userId = "1", productId = 4))
+            items.add(CartItem(userId = 1, productId = 1, quantity = 1)) // Sample CartItem
+            items.add(CartItem(userId = 1, productId = 2, quantity = 1))
+            items.add(CartItem(userId = 1, productId = 3, quantity = 1))
+            items.add(CartItem(userId = 1, productId = 4, quantity = 1))
             return items
         }
+
 
     // Function triggered when an item is clicked
     private fun onItemClicked(item: CartItem) {
