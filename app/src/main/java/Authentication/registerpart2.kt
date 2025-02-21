@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.android.models.ApiResponse
 import com.example.android.models.RegisterUserRequest
 import com.google.android.material.textfield.TextInputEditText
+import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -118,17 +119,17 @@ class RegisterPart2 : AppCompatActivity() {
         apiService.registerUserPart2(userDetails).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 progressDialog.dismiss()
+                Log.d("API Response", "Response Code: ${response.code()}, Body: ${response.body()}")
 
-                Log.d("API Response", "Response: ${response.body()}")
-
-                if (response.isSuccessful) {
+                if (response.isSuccessful && response.body() != null) {
                     Toast.makeText(this@RegisterPart2, "Registration Complete", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@RegisterPart2, LogIn::class.java))
+                    startActivity(Intent(this@RegisterPart2, Homepage::class.java))
                     finish()
                 } else {
-                    Toast.makeText(this@RegisterPart2, "Registration failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RegisterPart2, "Registration failed: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
                 }
             }
+
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                 progressDialog.dismiss()
@@ -139,11 +140,6 @@ class RegisterPart2 : AppCompatActivity() {
 
     // Function to handle vibration feedback
     private fun vibrate() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator.vibrate(50)
-        }
+        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 }

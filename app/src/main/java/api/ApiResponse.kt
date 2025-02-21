@@ -11,23 +11,22 @@ data class RegisterPart1(
     val confirmPassword: String  // Add this field
 )
 
-
 // ✅ Register Part 2 (Address & Location)
-data class RegisterUserRequest (
+data class RegisterUserRequest(
     val barangay: String,
     val municipality: String,
     val country: String,
     val province: String,
     @SerializedName("postal_code") val postalCode: String, // Ensuring correct JSON field mapping
-    val postalCode1: String
+    @SerializedName("postalCode1") val postalCode1: String  // Corrected field name
 )
-
 
 // ✅ API Generic Response
 data class ApiResponse(
-    @SerializedName("error") val error: Boolean = false,
-    @SerializedName("message") val message: String? = null,
-    @SerializedName("token") val token: String? = null
+    val error: Boolean = false,
+    val message: String? = null,
+    val product: Product? = null,
+    val products: List<Product>? = null // Ensure proper field usage with nullability
 )
 
 // ✅ Login Request Model
@@ -51,7 +50,16 @@ data class LoginResponse(
     @SerializedName("message") val message: String? = ""
 )
 
+// Cart Item Model
 data class CartItem(
     @SerializedName("user_id") val userId: String, // User who is adding the item to the cart
     @SerializedName("product_id") val productId: Int // ID of the product being added
+)
+
+// Product Model
+data class Product(
+    val id: Int = 0,
+    val name: String? = null,
+    val description: String? = null,
+    val price: Double = 0.0
 )

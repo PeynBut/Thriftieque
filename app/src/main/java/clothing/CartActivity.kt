@@ -13,10 +13,10 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.models.CartItem
 import com.google.android.material.navigation.NavigationView
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
+import com.rendonapp.thriftique.CartItem // Import the correct CartItem
 
 class CartActivity : AppCompatActivity() {
 
@@ -30,7 +30,7 @@ class CartActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_cart) // Ensure correct layout is set
+        setContentView(R.layout.activity_cart)
 
         // Initialize views
         backBtn = findViewById(R.id.back_btn)
@@ -39,14 +39,25 @@ class CartActivity : AppCompatActivity() {
 
         // Initialize RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-        cartList.add(CartItem("101", 2)) // Sample data
+
+        // Add sample data to cartList (replace with actual data if available)
+        cartList.add(CartItem("101", 2)) // Sample CartItem (productId, quantity)
         cartList.add(CartItem("102", 1))
         cartList.add(CartItem("103", 3))
 
-        // Setup the RecyclerView Adapter
-        cartAdapter = CartAdapter(this, cartList) { cartItem ->
-            removeItem(cartItem)
-        }
+        // Setup the RecyclerView Adapter with proper CartItem type
+        cartAdapter = CartAdapter(
+            this,
+            itemList = cartList,
+            layoutType = 1, // 1 for list layout (change to 2 for grid layout)
+            itemClickListener = { cartItem ->
+                // Handle item click (navigate to item details, or leave empty if no action needed)
+            },
+            removeClickListener = { cartItem ->
+                removeItem(cartItem) // Pass CartItem to the removeItem function
+            }
+        )
+
         recyclerView.adapter = cartAdapter
 
         // Setup Navigation Drawer
@@ -65,13 +76,11 @@ class CartActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
 
-        // Make sure the DrawerLayout is the correct parent and NavigationView is correctly referenced
         if (drawerLayout == null || navigationView == null) {
             Log.e("CartActivity", "DrawerLayout or NavigationView not found!")
             return
         }
 
-        // Initialize the ActionBarDrawerToggle
         toggle = ActionBarDrawerToggle(
             this, drawerLayout, R.string.open_nav, R.string.close_nav
         )
@@ -82,24 +91,23 @@ class CartActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, Homepage::class.java))
-                R.id.nav_profile -> startActivity(Intent(this, Homepage::class.java))
-                R.id.nav_settings -> startActivity(Intent(this, Homepage::class.java))
+                R.id.nav_profile -> startActivity(Intent(this, Homepage::class.java)) // Use actual ProfileActivity
+                R.id.nav_settings -> startActivity(Intent(this, Homepage::class.java)) // Use actual SettingsActivity
                 R.id.nav_logout -> finish()
             }
             drawerLayout.closeDrawers()
             true
         }
-        // Menu button listener with vibration
+
         menu.setOnClickListener {
             vibrate() // Trigger vibration
             drawerLayout.openDrawer(GravityCompat.START) // Open the drawer when menu clicked
         }
-
     }
 
     // Remove item logic
     private fun removeItem(cartItem: CartItem) {
-        cartList.remove(cartItem)
+        cartList.remove(cartItem) // Remove CartItem from the list
         cartAdapter.notifyDataSetChanged() // Refresh the RecyclerView
         Toast.makeText(this, "Removed ${cartItem.productId} from cart", Toast.LENGTH_SHORT).show()
     }

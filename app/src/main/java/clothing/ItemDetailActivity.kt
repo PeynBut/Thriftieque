@@ -1,7 +1,6 @@
-package clothing
+package clohing
 
 import ClothingItem
-import RetrofitClient
 import android.app.Activity
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -12,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.example.android.models.ApiResponse
+import com.rendonapp.thriftique.CartItem
 import com.rendonapp.thriftique.R
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,14 +31,14 @@ class ItemDetailActivity : Activity() {
         setContentView(R.layout.activity_item_detail)
 
         // Initialize views
-        itemImage = findViewById<ImageView>(R.id.product_image)
-        itemTitle = findViewById<TextView>(R.id.product_title)
-        itemDescription = findViewById<TextView>(R.id.product_description)
-        itemPrice = findViewById<TextView>(R.id.product_price)
+        itemImage = findViewById(R.id.product_image)
+        itemTitle = findViewById(R.id.product_title)
+        itemDescription = findViewById(R.id.product_description)
+        itemPrice = findViewById(R.id.product_price)
         addToCartButton = findViewById(R.id.btn_add_to_cart)
 
         // Retrieve item data from intent
-        clothingItem = intent.getSerializableExtra("ITEM_DATA") as ClothingItem?
+        clothingItem = intent.getSerializableExtra("ITEM_DATA") as? ClothingItem
 
         if (clothingItem != null) {
             // Set item details safely
@@ -48,6 +48,9 @@ class ItemDetailActivity : Activity() {
                 itemDescription?.text = "Product Description:\n${item.description}"
                 itemPrice?.text = "$${item.price}" // Use price property instead of getPrice()
             }
+        } else {
+            // If the item is null, show a toast or handle the error accordingly
+            Toast.makeText(this, "Error: Item data not found", Toast.LENGTH_SHORT).show()
         }
 
         // Set up the add to cart button
@@ -63,11 +66,17 @@ class ItemDetailActivity : Activity() {
             return
         }
 
+        // Check if clothingItem is null or missing ID
+        if (clothingItem == null || clothingItem?.id == null) {
+            Toast.makeText(this, "Invalid item", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         // Create a cart item object
-        val cartItem = CartItem(userId, clothingItem?.id ?: -1, 1)
+        val cartItem = CartItem(userId.toString(), clothingItem?.id ?: -1)
 
         // API call to add item to the cart
-        RetrofitClient.instance.addToCart(cartItem).enqueue(object : Callback<ApiResponse?> {
+        RetrofitClient.instance.addToCart(CartItem).enqueue(object : Callback<ApiResponse?> {
             override fun onResponse(call: Call<ApiResponse?>, response: Response<ApiResponse?>) {
                 if (response.isSuccessful && response.body() != null) {
                     Toast.makeText(this@ItemDetailActivity, "Added to Cart!", Toast.LENGTH_SHORT).show()

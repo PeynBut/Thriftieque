@@ -15,8 +15,7 @@ import com.rendonapp.thriftique.R
 class ClothingAdapter(
     private val context: Context,
     private val itemList: List<ClothingItem>,
-    onItemClick1: Int,
-    private val onItemClick: (ClothingItem) -> Unit // ✅ Click Listener){}
+    private val onItemClick: (ClothingItem) -> Unit // ✅ Click Listener
 ) : RecyclerView.Adapter<ClothingAdapter.ClothingViewHolder>() {
 
     inner class ClothingViewHolder(view: View) : RecyclerView.ViewHolder(view) {

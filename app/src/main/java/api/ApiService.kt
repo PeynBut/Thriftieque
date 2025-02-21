@@ -1,11 +1,14 @@
 import com.example.android.models.ApiResponse
 import com.example.android.models.LoginRequest
 import com.example.android.models.LoginResponse
+import com.example.android.models.Product
 import com.example.android.models.RegisterPart1
 import com.example.android.models.RegisterUserRequest
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("includes/v1/RegisterPart1.php")
@@ -18,6 +21,20 @@ interface ApiService {
     fun registerUserPart2(@Body registerRequest: RegisterUserRequest): Call<ApiResponse>
 
     @POST("includes/v1/Cart/cart.php")
-    fun addToCart(@Body cartItem: clothing.CartItem): Call<ApiResponse>
-}
+    fun addToCart(@Body cartItem: com.rendonapp.thriftique.CartItem.CREATOR): Call<ApiResponse>  // Updated to accept CartItem
 
+    @POST("includes/v1/Products/products.php")
+    fun createProduct(@Body product: Product?): Call<ApiResponse?>?
+
+    @POST("includes/v1/Products/products.php")
+    fun updateProduct(@Body product: Product?): Call<ApiResponse?>?
+
+    @POST("includes/v1/Products/products.php")
+    fun deleteProduct(@Body product: Product?): Call<ApiResponse?>?
+
+    @GET("includes/v1/Products/products.php")
+    fun getProductById(@Query("id") id: Int): Call<ApiResponse?>?
+
+    @GET("includes/v1/Products/products.php")
+    fun getProducts(): Call<ApiResponse?>?
+}

@@ -1,6 +1,6 @@
 package com.rendonapp.thriftique
 
-import ClothingItem
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,17 +14,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import clohing.ItemDetailActivity
 import clothing.CartActivity
-import clothing.ClothingAdapter
-import clothing.ItemDetailActivity
+import clothing.CartAdapter
 import com.google.android.material.navigation.NavigationView
 
 class Homepage : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var recyclerView: RecyclerView
-    private lateinit var clothingAdapter: ClothingAdapter
-    private lateinit var itemList: List<ClothingItem>
+    private lateinit var clothingAdapter: CartAdapter
+    private lateinit var itemList: List<CartItem> // Change to CartItem
     private lateinit var tv_seeAll: TextView
     private lateinit var cart: ImageView
 
@@ -77,32 +77,43 @@ class Homepage : AppCompatActivity() {
         }
     }
 
-    // 📌 Setup RecyclerView for Clothing Items
+    // 📌 Setup RecyclerView for CartItems
     private fun setupRecyclerView() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(this, 2) // Dynamic grid layout
 
-        // Sample data for testing
+        // Sample data for CartItems (this data should match CartItem properties)
         itemList = listOf(
-            ClothingItem(1, "T-Shirt", R.drawable.cool_tshirt, "Comfortable cotton t-shirt", 19.99, 1),
-            ClothingItem(2, "Jeans", R.drawable.skinny_jeans, "Stylish blue jeans", 39.99, 1),
-            ClothingItem(3, "Jacket", R.drawable.long_sleeve, "Warm winter jacket", 59.99, 1),
-            ClothingItem(4, "Dress", R.drawable.blouse, "Elegant evening dress", 29.99, 1)
+            CartItem("1", 101), // Assuming CartItem has userId and productId
+            CartItem("1", 102),
+            CartItem("1", 103),
+            CartItem("1", 104)
         )
 
         // Set up adapter with item click listener
-        clothingAdapter = ClothingAdapter(this, itemList, 1, this::onItemClicked)
+        clothingAdapter = CartAdapter(this, itemList, 1, this::onItemClicked, this::onRemoveItemClicked)
 
         recyclerView.adapter = clothingAdapter
     }
 
     // 📌 Function triggered when an item is clicked
-    private fun onItemClicked(item: ClothingItem) {
+    private fun onItemClicked(item: CartItem) {
         vibrate() // Vibrate on click
         val intent = Intent(this, ItemDetailActivity::class.java)
-        intent.putExtra("ITEM_DATA", item)
+        intent.putExtra("ITEM_DATA", item) // Pass the CartItem instead of ClothingItem
 
         startActivity(intent)
+    }
+
+    // 📌 Function triggered when remove button is clicked
+    private fun onRemoveItemClicked(item: CartItem) {
+        // Handle item removal logic here (maybe update cart, etc.)
+        // You can update the adapter and remove the item from the list
+        val updatedList = itemList.toMutableList()
+        updatedList.remove(item)
+        clothingAdapter = CartAdapter(this, updatedList, 1, this::onItemClicked, this::onRemoveItemClicked)
+        recyclerView.adapter = clothingAdapter
+        vibrate() // Trigger vibration on remove action
     }
 
     // 📌 Vibration Feedback
