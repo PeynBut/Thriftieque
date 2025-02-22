@@ -1,5 +1,6 @@
 package com.rendonapp.thriftique
 
+import profile.ProfileActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +19,7 @@ import clothing.CartAdapter
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import message.MessageActivity
 
 class Homepage : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -86,21 +88,46 @@ class Homepage : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> startActivity(Intent(this, Homepage::class.java))
-                R.id.nav_profile -> startActivity(Intent(this, Homepage::class.java))
-                R.id.nav_settings -> startActivity(Intent(this, Homepage::class.java))
-                R.id.nav_logout -> finish()
+                R.id.nav_home -> {
+                    drawerLayout.closeDrawers()
+                    true
+                }
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java)) // ✅ Corrected
+                    true
+                }
+                R.id.nav_settings -> {
+                    startActivity(Intent(this, Homepage::class.java)) // ✅ Corrected
+                    true
+                }
+                R.id.nav_logout -> {
+                    finish()
+                    true
+                }
+                else -> false
             }
-            drawerLayout.closeDrawers()
-            true
         }
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_message, R.id.nav_home, R.id.nav_profile -> true
+                R.id.nav_home -> true // Stays on Home
+                R.id.nav_message -> {
+                    startActivity(Intent(this, MessageActivity::class.java))
+                    false
+                }
+                R.id.nav_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    false
+                }
                 else -> false
             }
         }
+    }
+
+    // ✅ Fix the hover issue when coming back from another activity
+    override fun onResume() {
+        super.onResume()
+        bottomNavigationView.selectedItemId = R.id.nav_home // Ensures Home is selected when resuming
     }
 
     // 📌 Function triggered when an item is clicked
@@ -115,7 +142,6 @@ class Homepage : AppCompatActivity() {
     private fun onAddToCartClicked(item: CartItem) {
         if (!cartItems.contains(item)) {
             cartItems.add(item)
-            // Optionally, show a message to the user that the item has been added
             // Example: Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show()
         }
     }
