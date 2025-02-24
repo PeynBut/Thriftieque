@@ -1,4 +1,5 @@
-package profile
+package com.rendonapp.thriftique
+
 
 
 import android.content.Intent
@@ -8,10 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
+import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
-import com.rendonapp.thriftique.orders.OrderHistoryActivity
-import com.rendonapp.thriftique.wishlist.WishlistActivity
-import com.rendonapp.thriftique.settings.SettingsActivity
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -35,17 +34,17 @@ class ProfileActivity : AppCompatActivity() {
 
         // 🛒 Navigate to Order History
         btnOrders.setOnClickListener {
-            startActivity(Intent(this, OrderHistoryActivity::class.java))
+            startActivity(Intent(this, Homepage::class.java))
         }
 
         // ❤️ Navigate to Wishlist
         btnWishlist.setOnClickListener {
-            startActivity(Intent(this, WishlistActivity::class.java))
+            startActivity(Intent(this, Homepage::class.java))
         }
 
         // ⚙️ Navigate to Settings
         btnSettings.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
+            startActivity(Intent(this, Homepage::class.java))
         }
 
         // 🚪 Logout

@@ -24,18 +24,22 @@ interface ApiService {
     @POST("includes/v1/Cart/cart.php")
     fun addToCart(@Body cartItem: CartItem): Call<ApiResponse>
 
-    @POST("includes/v1/Products/products.php")
-    fun createProduct(@Body product: Product?): Call<ApiResponse?>?
+    @POST("includes/v1/Products/products.php?action=create")
+    fun createProduct(@Body product: Product): Call<ApiResponse>
 
-    @POST("includes/v1/Products/products.php")
-    fun updateProduct(@Body product: Product?): Call<ApiResponse?>?
+    @POST("includes/v1/Products/products.php?action=update")
+    fun updateProduct(@Body product: Product): Call<ApiResponse>
 
-    @POST("includes/v1/Products/products.php")
-    fun deleteProduct(@Body product: Product?): Call<ApiResponse?>?
-
-    @GET("includes/v1/Products/products.php")
-    fun getProductById(@Query("id") id: Int): Call<ApiResponse?>?
+    @POST("includes/v1/Products/products.php?action=delete")
+    fun deleteProduct(@Body product: Product): Call<ApiResponse>
 
     @GET("includes/v1/Products/products.php")
-    fun getProducts(): Call<ApiResponse?>?
+    fun getProductById(@Query("id") id: Int): Call<ApiResponse>
+
+    @GET("includes/v1/Products/products.php")
+    fun getProducts(): Call<ApiResponse>
+
+
+
 }
+

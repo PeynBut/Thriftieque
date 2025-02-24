@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/white">
@@ -11,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:title="Profile"
-        android:navigationIcon="@drawable/ic_back"
+        android:navigationIcon="@drawable/baseline_backspace_24"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
 
     <!-- Profile Section -->
@@ -26,9 +27,9 @@
             android:id="@+id/profileImage"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/ic_user"
+            android:src="@drawable/user"
             android:scaleType="centerCrop"
-            android:background="@drawable/profile_circle"/>
+            android:background="@drawable/car_ui_divider"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -73,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="My Orders"
-                android:drawableLeft="@drawable/ic_orders"
+                android:drawableLeft="@drawable/house"
                 android:background="?attr/selectableItemBackground"/>
 
             <Button
@@ -81,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Wishlist"
-                android:drawableLeft="@drawable/ic_wishlist"
+                android:drawableLeft="@drawable/blouse"
                 android:background="?attr/selectableItemBackground"/>
 
             <Button
@@ -89,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Settings"
-                android:drawableLeft="@drawable/ic_settings"
+                android:drawableLeft="@drawable/settings"
                 android:background="?attr/selectableItemBackground"/>
 
             <Button
@@ -97,8 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Logout"
-                android:textColor="@color/red"
-                android:drawableLeft="@drawable/ic_logout"
+                android:textColor="@color/gray"
+                android:drawableLeft="@drawable/aklogo"
                 android:background="?attr/selectableItemBackground"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

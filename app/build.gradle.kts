@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id ("kotlin-parcelize") // ✅ Required for @Parcelize
+
 }
 
 android {
@@ -37,6 +39,9 @@ android {
 
 
 dependencies {
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
     implementation ("com.google.android.gms:play-services-location:18.0.0")
     implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("com.android.volley:volley:1.2.0")

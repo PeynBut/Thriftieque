@@ -1,6 +1,8 @@
 package com.example.android.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 // ✅ Register Part 1 (Basic User Info)
 data class RegisterPart1(
@@ -13,20 +15,23 @@ data class RegisterPart1(
 
 // ✅ Register Part 2 (Address & Location)
 data class RegisterUserRequest(
+    val phone: String,  // ✅ Added phone number field
     val barangay: String,
     val municipality: String,
     val country: String,
     val province: String,
-    @SerializedName("postal_code") val postalCode: String, // Ensuring correct JSON field mapping
-    @SerializedName("postalCode1") val postalCode1: String  // Corrected field name
+    @SerializedName("postal_code") val postalCode: String
 )
+
+
 
 // ✅ API Generic Response
 data class ApiResponse(
     val error: Boolean = false,
     val message: String? = null,
     val product: Product? = null,
-    val products: List<Product>? = null // Ensure proper field usage with nullability
+    val products: List<Product>? = null, // Ensure proper field usage with nullability
+    val data: List<Product> // or List<Product_see> depending on your use case
 )
 
 // ✅ Login Request Model
@@ -57,9 +62,18 @@ data class CartItem(
 )
 
 // Product Model
+@Parcelize
 data class Product(
-    val id: Int = 0,
-    val name: String? = null,
-    val description: String? = null,
-    val price: Double = 0.0
+    val id: Int,
+    val name: String,
+    val description: String,
+    val price: Double,
+    val image: String
+) : Parcelable
+
+data class Product_see(
+    val id: Int,
+    val name: String,
+    val image: String,
+    val price: Double
 )

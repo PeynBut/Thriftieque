@@ -1,42 +1,26 @@
 package clothing
 
+
+
+
+
+import com.rendonapp.thriftique.CartItem
+import com.rendonapp.thriftique.R
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.rendonapp.thriftique.CartItem
-import com.rendonapp.thriftique.R
+import com.bumptech.glide.Glide
 
 class CartAdapter(
     private val context: Context,
-    private var itemList: List<CartItem>,
-    private val itemClickListener: (CartItem) -> Unit, // Click listener for item clicks
-    private val removeClickListener: (CartItem) -> Unit // Click listener for remove actions
+    private val cartList: MutableList<CartItem>,
+    private val itemClickListener: (CartItem) -> Unit,
+    private val removeClickListener: (CartItem) -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
-
-    inner class CartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val productIdTextView: TextView = itemView.findViewById(R.id.label)
-        private val quantityTextView: TextView = itemView.findViewById(R.id.cartItemQuantity)
-        private val removeButton: Button = itemView.findViewById(R.id.btnRemove)
-
-        fun bind(cartItem: CartItem) {
-            productIdTextView.text = "Product ID: ${cartItem.productId}"
-            quantityTextView.text = "Quantity: ${cartItem.quantity}"
-
-            // Set up item click listener
-            itemView.setOnClickListener {
-                itemClickListener(cartItem) // Trigger the item click action
-            }
-
-            // Set up the remove button click listener
-            removeButton.setOnClickListener {
-                removeClickListener(cartItem) // Trigger the remove action
-            }
-        }
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.cart_item, parent, false)
@@ -44,17 +28,30 @@ class CartAdapter(
     }
 
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
-        val cartItem = itemList[position]
-        holder.bind(cartItem)
+        val cartItem = cartList[position]
+
+        holder.tvProductName.text = cartItem.productName
+        holder.tvProductPrice.text = "$${cartItem.productPrice}"
+        holder.tvQuantity.text = "Qty: ${cartItem.quantity}"
+
+        // Load the product image dynamically
+        Glide.with(context)
+            .load(cartItem.productImage)
+            .placeholder(R.drawable.user) // Placeholder while loading
+            .into(holder.ivProductImage)
+
+        holder.itemView.setOnClickListener { itemClickListener(cartItem) }
+        holder.btnRemove.setOnClickListener { removeClickListener(cartItem) }
     }
 
-    override fun getItemCount(): Int {
-        return itemList.size
-    }
+    override fun getItemCount(): Int = cartList.size
 
-    // Method to update the item list
-    fun updateItems(newItems: List<CartItem>) {
-        itemList = newItems
-        notifyDataSetChanged()
+    class CartViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val ivProductImage: ImageView = itemView.findViewById(R.id.ivProductImage)
+        val tvProductName: TextView = itemView.findViewById(R.id.tvProductName)
+        val tvProductPrice: TextView = itemView.findViewById(R.id.tvProductPrice)
+        val tvQuantity: TextView = itemView.findViewById(R.id.tvQuantity)
+        val btnRemove: ImageView = itemView.findViewById(R.id.btnRemove)
     }
 }
+

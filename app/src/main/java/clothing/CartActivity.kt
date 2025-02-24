@@ -33,22 +33,21 @@ class CartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
 
-        // Initialize views
         backBtn = findViewById(R.id.back_btn)
         menu = findViewById(R.id.menu)
         recyclerView = findViewById(R.id.cartRecyclerView)
 
         // Initialize RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Provide itemClickListener as a lambda (empty for now, can be implemented later)
-        cartAdapter = CartAdapter(this, cartList, { /* Handle item click */ }, ::removeItem)
-
+        cartAdapter = CartAdapter(this, cartList, {}, ::removeItem)
         recyclerView.adapter = cartAdapter
 
-        // Sample data for the cart (replace with your data source)
-        loadSampleData()
-
+        // Check for new cart item
+        val newCartItem = intent.getParcelableExtra<CartItem>("cartItem")
+        newCartItem?.let {
+            cartList.add(it)
+            cartAdapter.notifyDataSetChanged()
+        }
         // Setup Navigation Drawer
         setupNavigationDrawer()
 
@@ -58,16 +57,6 @@ class CartActivity : AppCompatActivity() {
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
-    }
-
-
-    private fun loadSampleData() {
-        cartList.apply {
-            add(CartItem(1, 101, 2)) // Sample CartItem with userId, productId, and quantity
-            add(CartItem(1, 102, 1))
-            add(CartItem(1, 103, 3))
-        }
-        cartAdapter.notifyDataSetChanged() // Notify adapter about data changes
     }
 
 

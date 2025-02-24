@@ -1,13 +1,15 @@
 package com.rendonapp.thriftique
 
-import profile.ProfileActivity
+import Products.ProductAdapter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -15,47 +17,37 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import clothing.CartActivity
-import clothing.CartAdapter
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.Volley
+import com.example.android.models.Product
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import message.MessageActivity
 
+
 class Homepage : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var recyclerView: RecyclerView
-    private lateinit var clothingAdapter: CartAdapter
-    private lateinit var homeClothingItems: List<CartItem>
-    private lateinit var seeAllClothingItems: List<CartItem>
-    private var cartItems: MutableList<CartItem> = mutableListOf()
-    private lateinit var tvSeeAll: TextView
+    private lateinit var productAdapter: ProductAdapter
+    private val productList = mutableListOf<Product>()
     private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var tvSeeAll: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_homepage)
 
-        // Sample data for Homepage
-        homeClothingItems = listOf(
-            CartItem(userId = 1, productId = 201, quantity = 1),
-            CartItem(userId = 1, productId = 202, quantity = 1)
-        )
-
-        // Sample data for See All
-        seeAllClothingItems = listOf(
-            CartItem(userId = 1, productId = 301, quantity = 1),
-            CartItem(userId = 1, productId = 302, quantity = 1)
-        )
-
-        // Initialize the RecyclerView and Adapter
-        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView = findViewById(R.id.Products)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
-        clothingAdapter = CartAdapter(this, homeClothingItems, this::onItemClicked, this::onAddToCartClicked)
-        recyclerView.adapter = clothingAdapter
+        productAdapter = ProductAdapter(this, productList)
+        recyclerView.adapter = productAdapter
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
         setupNavigationDrawer()
+        fetchProducts()
 
         tvSeeAll = findViewById(R.id.tv_seeAll)
         val cart = findViewById<ImageView>(R.id.cart)
@@ -70,11 +62,10 @@ class Homepage : AppCompatActivity() {
         }
     }
 
-    // 📌 Setup the Navigation Drawer
     private fun setupNavigationDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-        val toolbar = findViewById<MaterialToolbar>(R.id.menu) // Ensure toolbar is correctly set in XML
+        val toolbar = findViewById<MaterialToolbar>(R.id.menu)
 
         setSupportActionBar(toolbar)
 
@@ -93,11 +84,11 @@ class Homepage : AppCompatActivity() {
                     true
                 }
                 R.id.nav_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java)) // ✅ Corrected
+                    startActivity(Intent(this, ProfileActivity::class.java))
                     true
                 }
                 R.id.nav_settings -> {
-                    startActivity(Intent(this, Homepage::class.java)) // ✅ Corrected
+                    startActivity(Intent(this, Homepage::class.java))
                     true
                 }
                 R.id.nav_logout -> {
@@ -110,7 +101,7 @@ class Homepage : AppCompatActivity() {
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> true // Stays on Home
+                R.id.nav_home -> true
                 R.id.nav_message -> {
                     startActivity(Intent(this, MessageActivity::class.java))
                     false
@@ -124,29 +115,39 @@ class Homepage : AppCompatActivity() {
         }
     }
 
-    // ✅ Fix the hover issue when coming back from another activity
     override fun onResume() {
         super.onResume()
-        bottomNavigationView.selectedItemId = R.id.nav_home // Ensures Home is selected when resuming
+        bottomNavigationView.selectedItemId = R.id.nav_home
     }
 
-    // 📌 Function triggered when an item is clicked
-    private fun onItemClicked(item: CartItem) {
-        vibrate()
-        val intent = Intent(this, ItemDetailActivity::class.java)
-        intent.putExtra("ITEM_DATA", item) // Ensure CartItem implements Parcelable
-        startActivity(intent)
+    private fun fetchProducts() {
+        val url = "http://192.168.100.184/thriftique_db/includes/v1/Products/get_products.php"
+
+        val request = JsonArrayRequest(Request.Method.GET, url, null,
+            { response ->
+                val products = mutableListOf<Product>()
+                for (i in 0 until response.length()) {
+                    val item = response.getJSONObject(i)
+                    products.add(
+                        Product(
+                            id = item.getInt("id"),
+                            name = item.getString("name"),
+                            description = item.getString("description"),
+                            price = item.getDouble("price"),
+                            image = item.getString("image")
+                        )
+                    )
+                }
+                productAdapter.updateList(products)
+            },
+            { error ->
+                Toast.makeText(this, "Failed to load products", Toast.LENGTH_SHORT).show()
+                Log.e("API_ERROR", "Error: ${error.message}")
+            })
+
+        Volley.newRequestQueue(this).add(request)
     }
 
-    // 📌 Function triggered when add to cart button is clicked
-    private fun onAddToCartClicked(item: CartItem) {
-        if (!cartItems.contains(item)) {
-            cartItems.add(item)
-            // Example: Toast.makeText(this, "Item added to cart", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // 📌 Vibration Feedback
     private fun vibrate() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {

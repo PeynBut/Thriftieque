@@ -156,25 +156,28 @@
 
             <TextView
                 android:id="@+id/tv_seeAll"
-                android:text="See All"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorPrimary"
+                android:layout_width="71dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
                 android:clickable="true"
-                android:focusable="true" android:layout_width="10dp"
-                android:layout_height="10dp" />
+                android:focusable="true"
+                android:text="See All"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- RecyclerView -->
+
+        <!-- Bottom Navigation -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/Products"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="8dp"
-            tools:listitem="@layout/item_clothing"/>
+            tools:listitem="@layout/item_clothing" />
 
-        <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"

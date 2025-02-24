@@ -5,82 +5,114 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import clothing.CartAdapter
+import com.example.android.models.ApiResponse
+import com.example.android.models.Product
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.math.max
 
 class SeeAllItemsActivity : Activity() {
-    private var recyclerView: RecyclerView? = null
-    private var cartAdapter: CartAdapter? = null
-    private var itemList: MutableList<CartItem> = mutableListOf() // List of CartItem for CartAdapter
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var cartAdapter: CartAdapter
+    private var itemList: MutableList<CartItem> = mutableListOf() // List for RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_see_all_items)
 
         recyclerView = findViewById(R.id.recyclerViewAll)
+        recyclerView.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
 
-        // Set GridLayoutManager based on screen width
-        recyclerView?.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
+        // Initialize adapter
+        cartAdapter = CartAdapter(this, itemList, ::onItemClicked, ::onRemoveClicked)
+        recyclerView.adapter = cartAdapter
 
-        // Set up CartAdapter with click listeners
-        cartAdapter = CartAdapter(this, itemList, { item ->
-            this.onItemClicked(item) // Item click listener
-        }, { item ->
-            this.onRemoveClicked(item) // Remove button click listener
-        })
-
-        recyclerView?.adapter = cartAdapter
-
-        // Initialize the list with sample data
-        itemList.addAll(sampleClothingItems)
-        cartAdapter?.notifyDataSetChanged() // Notify the adapter of data changes
+        // Fetch products from API
+        fetchProducts()
     }
 
-    // Function to calculate the number of columns dynamically
+    // ✅ Fetch products from backend API
+    private fun fetchProducts() {
+        RetrofitClient.instance.getProducts().enqueue(object : Callback<ApiResponse> {
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    val products = apiResponse?.data ?: emptyList() // Safe call for null
+
+                    if (products.isNotEmpty()) {
+                        itemList.clear()
+                        itemList.addAll(products.map { product ->
+                            CartItem(
+                                userId = 0,
+                                productId = product.id,
+                                quantity = 1,
+                                productName = product.name ?: "Unknown Product", // Default if name is null
+                                productImage = product.image ?: "", // Default if image is null
+                                productPrice = product.price // Assuming price is non-nullable in Product model
+                            )
+                        })
+                        cartAdapter.notifyDataSetChanged()
+                    } else {
+                        showToast("No products available")
+                    }
+                } else {
+                    showToast("Failed to load products: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                Log.e("FetchProducts", "Error fetching products: ${t.message}")
+                showToast("Failed to fetch products. Check your connection.")
+            }
+        })
+    }
+
+
+
+
+    // ✅ Dynamically calculate number of columns
     private fun calculateNoOfColumns(): Int {
         val displayMetrics = resources.displayMetrics
-        val widthPixels = displayMetrics.widthPixels
-        val dpWidth = widthPixels / displayMetrics.density
-        val columnWidth = 180 // Approximate width of each column
-
-        return max((dpWidth / columnWidth).toInt(), 2) // Ensure at least 2 columns
+        val dpWidth = displayMetrics.widthPixels / displayMetrics.density
+        val columnWidth = 180 // Column width estimate
+        return max((dpWidth / columnWidth).toInt(), 2) // Minimum 2 columns
     }
 
-    private val sampleClothingItems: List<CartItem>
-        get() {
-            val items: MutableList<CartItem> = ArrayList()
-            items.add(CartItem(userId = 1, productId = 1, quantity = 1)) // Sample CartItem
-            items.add(CartItem(userId = 1, productId = 2, quantity = 1))
-            items.add(CartItem(userId = 1, productId = 3, quantity = 1))
-            items.add(CartItem(userId = 1, productId = 4, quantity = 1))
-            return items
-        }
-
-
-    // Function triggered when an item is clicked
+    // ✅ Handle item click: Navigate to ItemDetailActivity
     private fun onItemClicked(item: CartItem) {
-        vibrate() // Vibrate on item click
-        val intent = Intent(this, ItemDetailActivity::class.java)
-        intent.putExtra("ITEM_DATA", item) // Pass item data to the detail activity
+        vibrate() // Vibration feedback
+        val intent = Intent(this, ItemDetailActivity::class.java).apply {
+            putExtra("ITEM_DATA", item) // Pass item data
+        }
         startActivity(intent)
     }
 
-    // Function triggered when the remove button is clicked
+    // ✅ Handle remove button click
     private fun onRemoveClicked(item: CartItem) {
-        // Remove the item from the list
-        itemList.remove(item)
-        cartAdapter?.notifyDataSetChanged() // Notify the adapter to refresh the list
-        Toast.makeText(this, "Removed ${item.productId} from the list", Toast.LENGTH_SHORT).show()
+        val position = itemList.indexOf(item)
+        if (position != -1) {
+            itemList.removeAt(position)
+            cartAdapter.notifyItemRemoved(position) // Optimized notify
+            showToast("Removed ${item.productName} from the list")
+        }
     }
 
-    // Function for vibration feedback
+    // ✅ Vibration feedback
     private fun vibrate() {
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {
             vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
         }
+    }
+
+    // ✅ Helper function for toasts
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

@@ -22,7 +22,8 @@
         android:theme="@style/Theme.Thriftique"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity android:name="profile.ProfileActivity" />
+        <activity android:name="Products.ProductDetailsActivity" />
+        <activity android:name=".ProfileActivity" />
         <activity android:name="message.MessageActivity" />
         <activity android:name=".ItemDetailActivity"/>
         <activity

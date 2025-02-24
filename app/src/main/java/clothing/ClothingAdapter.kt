@@ -51,7 +51,7 @@ class ClothingAdapter(
 
     override fun onBindViewHolder(holder: ClothingViewHolder, position: Int) {
         val currentItem = itemList[position]
-        holder.imageView.setImageResource(currentItem.imageResId)
+        holder.imageView.setImageResource(currentItem.imageResId ?: R.drawable.user)
         holder.titleView.text = currentItem.title
         holder.descriptionView.text = currentItem.description
     }

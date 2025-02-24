@@ -126,11 +126,11 @@ class RegisterPart2 : AppCompatActivity() {
                     startActivity(Intent(this@RegisterPart2, Homepage::class.java))
                     finish()
                 } else {
-                    Toast.makeText(this@RegisterPart2, "Registration failed: ${response.errorBody()?.string()}", Toast.LENGTH_SHORT).show()
+                    val errorMessage = response.errorBody()?.string() ?: "Unknown error"
+                    Toast.makeText(this@RegisterPart2, "Registration failed: $errorMessage", Toast.LENGTH_LONG).show()
+                    Log.e("API Error", errorMessage)
                 }
             }
-
-
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                 progressDialog.dismiss()
                 Toast.makeText(this@RegisterPart2, "Error: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
