@@ -1,6 +1,8 @@
 package com.example.android.models
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 // ✅ Register Part 1 (Basic User Info)
 data class RegisterPart1(
@@ -11,23 +13,25 @@ data class RegisterPart1(
     val confirmPassword: String  // Add this field
 )
 
-
 // ✅ Register Part 2 (Address & Location)
-data class RegisterUserRequest (
+data class RegisterUserRequest(
+    val phone: String,  // ✅ Added phone number field
     val barangay: String,
     val municipality: String,
     val country: String,
     val province: String,
-    @SerializedName("postal_code") val postalCode: String, // Ensuring correct JSON field mapping
-    val postalCode1: String
+    @SerializedName("postal_code") val postalCode: String
 )
+
 
 
 // ✅ API Generic Response
 data class ApiResponse(
-    @SerializedName("error") val error: Boolean = false,
-    @SerializedName("message") val message: String? = null,
-    @SerializedName("token") val token: String? = null
+    val error: Boolean = false,
+    val message: String? = null,
+    val product: Product? = null,
+    val products: List<Product>? = null, // Ensure proper field usage with nullability
+    val data: List<Product> // or List<Product_see> depending on your use case
 )
 
 // ✅ Login Request Model
@@ -49,4 +53,27 @@ data class LoginResponse(
     @SerializedName("address") val address: String? = null,
     @SerializedName("error") val error: Boolean = false,
     @SerializedName("message") val message: String? = ""
+)
+
+// Cart Item Model
+data class CartItem(
+    @SerializedName("user_id") val userId: String, // User who is adding the item to the cart
+    @SerializedName("product_id") val productId: Int // ID of the product being added
+)
+
+// Product Model
+@Parcelize
+data class Product(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val price: Double,
+    val image: String
+) : Parcelable
+
+data class Product_see(
+    val id: Int,
+    val name: String,
+    val image: String,
+    val price: Double
 )

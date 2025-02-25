@@ -7,171 +7,143 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/color">
+    android:background="@color/white"
+    android:padding="24dp"
+    tools:context="Authentication.RegisterPart2">
 
+    <!-- Back Button -->
     <ImageView
         android:id="@+id/backbtn"
-        android:layout_width="wrap_content"
+        android:layout_width="64dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Go back"
+        android:padding="8dp"
         android:src="@drawable/baseline_backspace_24" />
 
+    <!-- Title -->
     <TextView
-        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#71879D"
+        android:textColor="@color/black"
         android:fontFamily="@font/poppins_semibold"
-        android:textSize="40sp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
+        android:textSize="28sp"
+        android:textStyle="bold"
         android:gravity="center"
-        android:text="Information"/>
+        android:text="Enter Your Information"
+        android:layout_marginBottom="16dp"/>
 
     <!-- Progress Indicator -->
-    <LinearLayout
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_indicator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center">
-
-        <View
-            android:id="@+id/step1"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/progress_inactive"
-            android:layout_marginEnd="10dp"/>
-
-        <View
-            android:id="@+id/progress_line"
-            android:layout_width="50dp"
-            android:layout_height="4dp"
-            android:background="@color/gray"/>
-
-        <View
-            android:id="@+id/step2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/progress_active"
-            android:layout_marginStart="10dp"/>
-    </LinearLayout>
+        android:layout_height="8dp"
+        android:layout_marginBottom="16dp"
+        app:trackColor="@color/light_gray"
+        app:indicatorColor="@color/primary_color"
+        android:indeterminate="true"/>
 
     <!-- Phone Field -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/et_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="8dp"
-        android:hint="Phone"
+        android:hint="Phone Number"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_phone_edit"
+            android:id="@+id/et_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
-            android:maxLength="11"/>
+            android:maxLength="11"
+            android:contentDescription="Enter phone number"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <!-- Address Fields -->
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp">
+        android:hint="Barangay"
+        android:layout_marginTop="12dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <!-- Barangay -->
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_barangay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Barangay"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:contentDescription="Enter Barangay"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_barangay_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Municipality"
+        android:layout_marginTop="12dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <!-- Municipality -->
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_municipality"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Municipality"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:contentDescription="Enter Municipality"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_municipality_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Province"
+        android:layout_marginTop="12dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <!-- Country -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/et_country"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Country"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_country_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Province -->
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_province"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Province"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:contentDescription="Enter Province"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_province_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Country"
+        android:layout_marginTop="12dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <!-- Postal Code -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/et_postalCode"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_country"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Postal Code"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:contentDescription="Enter Country"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_postalCode_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:maxLength="4"/>
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Postal Code"
+        android:layout_marginTop="12dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    </LinearLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_postal_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="4"
+            android:contentDescription="Enter Postal Code"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Register Button -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="#71879D"
         android:text="Register"
-        android:textColor="@android:color/white" />
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        app:cornerRadius="12dp"
+        android:contentDescription="Submit registration"
+        app:backgroundTint="@color/primary_color"/>
 
 </LinearLayout>

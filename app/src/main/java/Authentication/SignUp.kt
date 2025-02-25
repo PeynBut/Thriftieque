@@ -24,6 +24,10 @@ import com.rendonapp.thriftique.R
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.os.Vibrator
+import android.os.VibrationEffect
+import android.content.Context
+
 
 class SignUp : AppCompatActivity() {
     private lateinit var backBtn: ImageView
@@ -63,6 +67,23 @@ class SignUp : AppCompatActivity() {
         backBtn.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            vibrateDevice(50)
+            if (validateInputs()) {
+                val firstname = etFirstname.text.toString().trim()
+                val lastname = etLastname.text.toString().trim()
+                val email = etEmail.text.toString().trim()
+                val pass = etPassword.text.toString().trim()
+                val confirmpass = etConfirmPassword.text.toString().trim()
+
+                Log.d(
+                    "SignUp",
+                    "Registering: FirstName=$firstname, LastName=$lastname, Email=$email"
+                )
+
+                registerUser(firstname, lastname, email, pass, confirmpass)
+            } else {
+                Log.e("SignUp", "Validation failed")
+            }
         }
 
         alreadyHaveAccount.setOnClickListener {
@@ -79,7 +100,10 @@ class SignUp : AppCompatActivity() {
                 val pass = etPassword.text.toString().trim()
                 val confirmpass = etConfirmPassword.text.toString().trim()
 
-                Log.d("SignUp", "Registering: FirstName=$firstname, LastName=$lastname, Email=$email")
+                Log.d(
+                    "SignUp",
+                    "Registering: FirstName=$firstname, LastName=$lastname, Email=$email"
+                )
 
                 registerUser(firstname, lastname, email, pass, confirmpass)
             } else {
@@ -87,6 +111,23 @@ class SignUp : AppCompatActivity() {
             }
         }
     }
+
+    private fun vibrateDevice(duration: Long = 100) {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) { // Check if the device supports vibration
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        duration,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            } else {
+                vibrator.vibrate(duration)
+            }
+        }
+    }
+
 
     private fun updateProgressView(step: Int) {
         val step1 = findViewById<View>(R.id.step1)
@@ -99,6 +140,7 @@ class SignUp : AppCompatActivity() {
                 progressLine.setBackgroundColor(ContextCompat.getColor(this, R.color.gray))
                 step2.setBackgroundResource(R.drawable.progress_inactive)
             }
+
             2 -> {
                 step1.setBackgroundResource(R.drawable.progress_active)
                 progressLine.setBackgroundColor(ContextCompat.getColor(this, R.color.active))
@@ -143,6 +185,10 @@ class SignUp : AppCompatActivity() {
             isValid = false
         }
 
+        if (!isValid) {
+            vibrateDevice(200) // Vibrate for 200ms on validation error
+        }
+
         return isValid
     }
 
@@ -153,57 +199,30 @@ class SignUp : AppCompatActivity() {
         password: String,
         confirmPassword: String
     ) {
-        val progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Registering...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-
-        // Ensure RegisterPart1 includes confirmPassword
         val user = RegisterPart1(firstname, lastname, email, password, confirmPassword)
-
-        Log.d("SignUp", "Sending request: $user")
 
         val apiService = RetrofitClient.retrofit.create(ApiService::class.java)
         apiService.registerUser(user).enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                progressDialog.dismiss()
-                Log.d("SignUp", "Response Code: ${response.code()}")
-
                 if (response.isSuccessful) {
-                    val apiResponse = response.body()
-                    if (apiResponse != null && !apiResponse.error) {
-                        Log.d("SignUp", "Registration successful")
-                        Toast.makeText(
-                            this@SignUp,
-                            "Step 1 Complete! Proceed to Step 2",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val intent = Intent(this@SignUp, RegisterPart2::class.java)
-                        intent.putExtra("email", email)
-                        startActivity(intent)
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    } else {
-                        Log.e("SignUp", "Failed: ${apiResponse?.message ?: "Unknown error"}")
-                        Toast.makeText(
-                            this@SignUp,
-                            "Registration Failed: ${apiResponse?.message ?: "Unknown error"}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } else {
-                    Log.e("SignUp", "Server Error: ${response.code()} ${response.message()}")
+                    Log.d("SignUp", "Step 1 successful: ${response.body()?.message}")
                     Toast.makeText(
                         this@SignUp,
-                        "Failed to register user. Try again.",
+                        "Step 1 Complete! Proceed to Step 2",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    // Proceed to Step 2 (RegisterPart2)
+                    val intent = Intent(this@SignUp, RegisterPart2::class.java)
+                    intent.putExtra("email", email) // Pass email to Step 2
+                    startActivity(intent)
+                } else {
+                    Log.e("SignUp", "Step 1 failed: ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                progressDialog.dismiss()
-                Log.e("SignUp", "Network Error: ${t.message}")
-                Toast.makeText(this@SignUp, "Registration Failed: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                Log.e("SignUp", "Step 1 network error: ${t.message}")
             }
         })
     }

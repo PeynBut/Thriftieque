@@ -6,286 +6,191 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".homepage">
+    tools:context=".Homepage">
 
     <!-- Main Content -->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- Your existing content layout -->
-        <LinearLayout
-            android:id="@+id/content_layout"
+        <!-- Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/menu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_above="@id/bottom_nav">
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
+            app:title="Thriftique"
+            app:navigationIcon="@drawable/ic_action_name"
+            app:menu="@menu/top_menu" />
 
-            <!-- Top Bar -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:background="#000000"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+        <!-- Search Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="8dp"
+            android:background="@color/white">
 
-                <ImageView
-                    android:id="@+id/menu"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_action_name"
-                    android:scaleType="centerInside"
-                    android:layout_marginStart="12dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:endIconMode="clear_text">
 
-                <TextView
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/searchView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Thriftique"
-                    android:fontFamily="@font/poppins"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp"
-                    android:layout_weight="1"
-                    android:gravity="center"/>
-            </LinearLayout>
+                    android:hint="Search here..."
+                    android:textColor="@android:color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Search Bar -->
+            <ImageView
+                android:id="@+id/cart"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/shopping_cart"
+                android:scaleType="centerInside"
+                android:padding="8dp"/>
+        </LinearLayout>
+
+        <!-- Categories -->
+        <TextView
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Categories"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:padding="8dp">
 
-                <SearchView
-                    android:id="@+id/searchView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="10dp"
-                    android:queryHint="Search here..."
-                    android:iconifiedByDefault="false"
-                    android:background="@android:color/white"/>
+                <!-- Category Cards -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="100dp"
+                    android:layout_height="120dp"
+                    app:cardCornerRadius="12dp"
+                    android:layout_marginEnd="8dp">
 
-                <ImageView
-                    android:id="@+id/cart"
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/shopping_cart"
-                    android:scaleType="fitCenter"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/user"
+                            android:scaleType="centerCrop"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Men"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="100dp"
+                    android:layout_height="120dp"
+                    app:cardCornerRadius="12dp"
+                    android:layout_marginEnd="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:src="@drawable/user"
+                            android:scaleType="centerCrop"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Women"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
             </LinearLayout>
+        </HorizontalScrollView>
 
-            <!-- Category Title -->
+        <!-- Popular Items -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
             <TextView
-                android:text="Categories"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <!-- Horizontal Scroll for Categories -->
-            <HorizontalScrollView
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fillViewport="true"
-                android:scrollbars="none">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <!-- Category: Men -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="120dp"
-                        app:cardCornerRadius="10dp"
-                        android:layout_marginEnd="10dp"
-                        app:cardElevation="4dp"
-                        android:clickable="true">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:src="@drawable/user"
-                                android:scaleType="centerCrop"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Men"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginTop="8dp"/>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <!-- Category: Women -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="120dp"
-                        app:cardCornerRadius="10dp"
-                        android:layout_marginEnd="10dp"
-                        app:cardElevation="4dp"
-                        android:clickable="true">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:src="@drawable/user"
-                                android:scaleType="centerCrop"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Women"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginTop="8dp"/>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                    <!-- Category: Women -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="120dp"
-                        app:cardCornerRadius="10dp"
-                        android:layout_marginEnd="10dp"
-                        app:cardElevation="4dp"
-                        android:clickable="true">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:src="@drawable/house"
-                                android:scaleType="centerCrop"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="kid"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginTop="8dp"/>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                    <!-- Category: Women -->
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="100dp"
-                        android:layout_height="120dp"
-                        app:cardCornerRadius="10dp"
-                        android:layout_marginEnd="10dp"
-                        app:cardElevation="4dp"
-                        android:clickable="true">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:src="@drawable/message"
-                                android:scaleType="centerCrop"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="adult"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:layout_marginTop="8dp"/>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-            </HorizontalScrollView>
-
-            <!-- Popular Items Section -->
-            <TextView
+                android:layout_weight="1"
                 android:text="Popular Items"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="10dp" />
 
-            <!-- RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                tools:listitem="@layout/item_clothing" />
+            <TextView
+                android:id="@+id/tv_seeAll"
+                android:layout_width="71dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="See All"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- RecyclerView -->
 
-        <!-- Bottom Navigation Bar -->
-        <LinearLayout
-            android:id="@+id/bottom_nav"
+        <!-- Bottom Navigation -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/Products"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#FFFFFF"
-            android:orientation="horizontal"
-            android:elevation="8dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:padding="8dp"
-            android:layout_alignParentBottom="true">
+            tools:listitem="@layout/item_clothing" />
 
-            <ImageView
-                android:id="@+id/nav_message"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/message"
-                android:contentDescription="Messages"
-                android:scaleType="centerInside"/>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:elevation="8dp"
+            app:menu="@menu/bottom_nav_menu"
+            app:itemIconTint="@color/nav_item_color"
+            app:itemTextColor="@color/nav_item_color"
+            app:labelVisibilityMode="labeled"
+            android:layout_gravity="bottom"/>
 
-            <ImageView
-                android:id="@+id/nav_home"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/house"
-                android:contentDescription="Home"
-                android:scaleType="centerInside"/>
-
-            <ImageView
-                android:id="@+id/nav_profile"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/user"
-                android:contentDescription="Profile"
-                android:scaleType="centerInside"/>
-        </LinearLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
@@ -293,8 +198,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/nav_menu"
         app:headerLayout="@layout/nav_header"
-        android:background="@android:color/white"/>
+        app:menu="@menu/nav_menu"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>

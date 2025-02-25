@@ -1,5 +1,9 @@
 package clothing
 
+import ClothingItem
+import android.content.Context
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,26 +12,46 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.rendonapp.thriftique.R
 
-class ClothingAdapter(private val itemList: List<ClothingItem>) :
-    RecyclerView.Adapter<ClothingAdapter.ClothingViewHolder>() {
+class ClothingAdapter(
+    private val context: Context,
+    private val itemList: List<ClothingItem>,
+    private val onItemClick: (ClothingItem) -> Unit // ✅ Click Listener
+) : RecyclerView.Adapter<ClothingAdapter.ClothingViewHolder>() {
 
-    // ViewHolder class to hold the item views
-    class ClothingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: ImageView = view.findViewById(R.id.item_image)
-        val titleView: TextView = view.findViewById(R.id.item_title)
-        val descriptionView: TextView = view.findViewById(R.id.item_description)
+    inner class ClothingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val imageView: ImageView = view.findViewById(R.id.product_image)
+        val titleView: TextView = view.findViewById(R.id.product_title)
+        val descriptionView: TextView = view.findViewById(R.id.product_description)
+
+        init {
+            view.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = itemList[position]
+                    vibrateDevice() // ✅ Vibrate on click
+                    onItemClick(item) // ✅ Trigger click function
+                }
+            }
+        }
+
+        // Function to handle vibration feedback
+        private fun vibrateDevice() {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (vibrator.hasVibrator()) {
+                val effect = VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
+                vibrator.vibrate(effect)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClothingViewHolder {
-        // Inflate the item view for each grid item (your item_clothing.xml)
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_clothing, parent, false)
         return ClothingViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ClothingViewHolder, position: Int) {
-        // Get the current item and bind the data to the views
         val currentItem = itemList[position]
-        holder.imageView.setImageResource(currentItem.imageResId)
+        holder.imageView.setImageResource(currentItem.imageResId ?: R.drawable.user)
         holder.titleView.text = currentItem.title
         holder.descriptionView.text = currentItem.description
     }

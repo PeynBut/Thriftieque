@@ -1,78 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="6dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    android:clickable="true"
+    android:focusable="true">
 
-    <!-- Inside CardView (Clothing Item Layout) -->
+    <!-- Item Container -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp"
-        android:background="#FFFFFF"
-        android:clipToPadding="false"
-        android:gravity="center">
+        android:padding="16dp"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal">
 
-        <!-- Clothing Item Image -->
-        <ImageView
-            android:id="@+id/item_image"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:scaleType="centerCrop"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/user" /> <!-- Placeholder image -->
+    <!-- Product Image -->
+    <ImageView
+        android:id="@+id/product_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:background="@android:color/darker_gray"
+        android:adjustViewBounds="true"
+        android:src="@drawable/polo" />
 
-        <!-- Clothing Title -->
-        <TextView
-            android:id="@+id/item_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="T-Shirt"
-            android:textSize="18sp"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp"
-            android:layout_gravity="center_horizontal"/>
+    <!-- Product Title -->
+    <TextView
+        android:id="@+id/product_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Product Name"
+        android:textSize="20sp"
+    android:textColor="#000000"
+    android:textStyle="bold"
+    android:paddingTop="8dp"
+    android:gravity="center"
+    android:paddingHorizontal="4dp" />
 
-        <!-- Clothing Description -->
-        <TextView
-            android:id="@+id/item_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comfortable cotton t-shirt"
-            android:textSize="14sp"
-            android:textColor="#757575"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="center_horizontal"/>
+    <!-- Product Description -->
+    <TextView
+        android:id="@+id/product_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Product description here"
+        android:textSize="15sp"
+    android:textColor="#757575"
+    android:gravity="center"
+    android:paddingTop="4dp"
+    android:paddingBottom="8dp"
+    android:paddingHorizontal="4dp" />
 
-        <!-- Price -->
-        <TextView
-            android:id="@+id/item_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$19.99"
-            android:textSize="16sp"
-            android:textColor="#FF5722"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="center_horizontal"/>
+    <!-- Price -->
+    <TextView
+        android:id="@+id/product_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$0.00"
+        android:textSize="18sp"
+    android:textColor="#FF5722"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:paddingBottom="8dp" />
 
-        <!-- Add to Cart Button -->
+    <!-- Quantity Selector -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="4dp">
+
         <Button
-            android:id="@+id/item_add_to_cart"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:text="Add to Cart"
-            android:textColor="#FFFFFF"
-            android:background="#FF5722"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"/>
+            android:id="@+id/btn_decrease_quantity"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:backgroundTint="#FF5722"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp" />
 
+
+        <TextView
+            android:id="@+id/product_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <Button
+            android:id="@+id/btn_increase_quantity"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:backgroundTint="#FF5722"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp" />
     </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</LinearLayout>
+    </androidx.cardview.widget.CardView>
