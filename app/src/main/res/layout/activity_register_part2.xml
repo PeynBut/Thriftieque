@@ -7,20 +7,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/color">
+    android:background="@drawable/gray_background">
 
     <ImageView
         android:id="@+id/backbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:src="@drawable/baseline_backspace_24" />
+        android:src="@drawable/Back" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#71879D"
+        android:textColor="#FFFFFF"
         android:fontFamily="@font/poppins_semibold"
         android:textSize="40sp"
         android:layout_marginBottom="20dp"
@@ -47,7 +47,7 @@
             android:id="@+id/progress_line"
             android:layout_width="50dp"
             android:layout_height="4dp"
-            android:background="@color/gray"/>
+            android:background="@color/white"/>
 
         <View
             android:id="@+id/step2"
@@ -65,6 +65,9 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="8dp"
         android:hint="Phone"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@android:color/white"
+        app:boxStrokeWidth="3dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -91,6 +94,9 @@
             android:layout_height="wrap_content"
             android:hint="Barangay"
             android:layout_marginTop="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -106,6 +112,9 @@
             android:layout_height="wrap_content"
             android:hint="Municipality"
             android:layout_marginTop="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -121,6 +130,9 @@
             android:layout_height="wrap_content"
             android:hint="Country"
             android:layout_marginTop="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -136,6 +148,9 @@
             android:layout_height="wrap_content"
             android:hint="Province"
             android:layout_marginTop="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -151,6 +166,9 @@
             android:layout_height="wrap_content"
             android:hint="Postal Code"
             android:layout_marginTop="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -170,8 +188,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="10dp"
-        android:backgroundTint="#71879D"
+        android:backgroundTint="#FFFFFF"
         android:text="Register"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/black" />
 
 </LinearLayout>

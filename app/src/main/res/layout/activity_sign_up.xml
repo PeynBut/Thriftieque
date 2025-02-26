@@ -7,22 +7,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/color"
+    android:background="@drawable/gray_background"
     tools:context="com.example.android.SignUp">
+
 
     <ImageView
         android:id="@+id/backbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:src="@drawable/baseline_backspace_24" />
-
+        android:src="@drawable/Back"
+        android:layout_marginEnd="36dp" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#71879D"
+        android:textColor="#FFFFFF"
         android:fontFamily="@font/poppins_semibold"
         android:textSize="60sp"
         android:layout_marginBottom="20dp"
@@ -52,7 +53,7 @@
             android:id="@+id/progress_line"
             android:layout_width="50dp"
             android:layout_height="4dp"
-            android:background="@color/gray"/>
+            android:background="@color/white"/>
 
         <View
             android:id="@+id/step2"
@@ -79,12 +80,16 @@
             android:layout_weight="1"
             android:hint="First Name"
             android:layout_marginEnd="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_firstname_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:boxStrokeColor="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Last Name -->
@@ -94,6 +99,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Last Name"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -112,6 +120,9 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="8dp"
         android:hint="Email"
+        android:textColorHint="@color/white"
+        app:boxStrokeColor="@android:color/white"
+        app:boxStrokeWidth="3dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -135,6 +146,9 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:layout_marginTop="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:passwordToggleEnabled="true">
 
@@ -152,6 +166,9 @@
             android:layout_height="wrap_content"
             android:hint="Confirm Password"
             android:layout_marginTop="8dp"
+            android:textColorHint="@color/white"
+            app:boxStrokeColor="@android:color/white"
+            app:boxStrokeWidth="3dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:passwordToggleEnabled="true">
 
@@ -171,9 +188,9 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="10dp"
-        android:backgroundTint="#71879D"
+        android:backgroundTint="#FFFFFF"
         android:text="Next"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/black" />
 
     <!-- Already Have an Account? -->
     <TextView
@@ -185,6 +202,7 @@
         android:paddingHorizontal="10dp"
         android:paddingTop="5dp"
         android:text="Already have an account?"
-        android:textSize="15sp"/>
+        android:textSize="15sp"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>
