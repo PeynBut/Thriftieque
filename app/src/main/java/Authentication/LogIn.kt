@@ -41,6 +41,13 @@ class LogIn : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (isUserLoggedIn()) {
+            startActivity(Intent(this, Homepage::class.java))
+            finish()
+            return  // Prevents further execution
+        }
+
         setContentView(R.layout.activity_log_in)
 
         // Initialize Vibrator
@@ -55,6 +62,12 @@ class LogIn : AppCompatActivity() {
         // Set up click listeners
         setupListeners()
     }
+
+    private fun isUserLoggedIn(): Boolean {
+        val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("is_logged_in", false)
+    }
+
 
     private fun initializeViews() {
         emailLayout = findViewById(R.id.emailLayout) // Ensure correct ID for TextInputLayout
@@ -126,7 +139,6 @@ class LogIn : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
-        // Make sure you have the correct method for your Retrofit instance
         val apiService = RetrofitClient.instance.loginUser(LoginRequest(email, password))
 
         apiService.enqueue(object : Callback<LoginResponse> {
@@ -138,6 +150,8 @@ class LogIn : AppCompatActivity() {
                     Log.d("LoginDebug", "Response Body: $responseBody")
 
                     if (responseBody?.id != null && responseBody.token != null) {
+                        saveUserSession(responseBody.id, responseBody.token)
+
                         Toast.makeText(this@LogIn, "Login Successful", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@LogIn, Homepage::class.java))
                         finish()
@@ -156,6 +170,16 @@ class LogIn : AppCompatActivity() {
             }
         })
     }
+
+    private fun saveUserSession(userId: Int, token: String) {
+        val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("user_id", userId)
+        editor.putString("token", token)
+        editor.putBoolean("is_logged_in", true)
+        editor.apply()
+    }
+
 
     private fun vibrate() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

@@ -1,5 +1,6 @@
 package com.rendonapp.thriftique
 
+import Authentication.LogIn
 import Products.ProductAdapter
 import android.content.Context
 import android.content.Intent
@@ -38,6 +39,13 @@ class Homepage : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!isUserLoggedIn()) {
+            startActivity(Intent(this, LogIn::class.java))
+            finish()
+            return  // Prevents further execution
+        }
+
         setContentView(R.layout.activity_homepage)
 
         recyclerView = findViewById(R.id.Products)
@@ -61,6 +69,13 @@ class Homepage : AppCompatActivity() {
             startActivity(Intent(this, CartActivity::class.java))
         }
     }
+
+    private fun isUserLoggedIn(): Boolean {
+        val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("is_logged_in", false)
+    }
+
+
 
     private fun setupNavigationDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -92,9 +107,11 @@ class Homepage : AppCompatActivity() {
                     true
                 }
                 R.id.nav_logout -> {
-                    finish()
+                    logoutUser(this)
                     true
                 }
+
+
                 else -> false
             }
         }
