@@ -39,6 +39,7 @@ android {
 
 
 dependencies {
+    implementation ("org.java-websocket:Java-WebSocket:1.5.2")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation ("com.google.code.gson:gson:2.8.9")
