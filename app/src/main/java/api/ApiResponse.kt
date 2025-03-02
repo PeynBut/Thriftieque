@@ -55,11 +55,15 @@ data class LoginResponse(
     @SerializedName("message") val message: String? = ""
 )
 
-// Cart Item Model
+@Parcelize
 data class CartItem(
-    @SerializedName("user_id") val userId: String, // User who is adding the item to the cart
-    @SerializedName("product_id") val productId: Int // ID of the product being added
-)
+    val userId: Int,
+    val productId: Int,
+    val productName: String,
+    val imageUrl: String, // Add image URL
+    val quantity: Int
+) : Parcelable
+
 
 // Product Model
 @Parcelize

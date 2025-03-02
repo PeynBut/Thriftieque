@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import clothing.CartActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.android.models.Product
 import com.google.android.material.appbar.MaterialToolbar
@@ -123,22 +124,28 @@ class Homepage : AppCompatActivity() {
     private fun fetchProducts() {
         val url = "http://192.168.100.184/thriftique_db/includes/v1/Products/get_products.php"
 
-        val request = JsonArrayRequest(Request.Method.GET, url, null,
+        val request = JsonObjectRequest(Request.Method.GET, url, null,
             { response ->
-                val products = mutableListOf<Product>()
-                for (i in 0 until response.length()) {
-                    val item = response.getJSONObject(i)
-                    products.add(
-                        Product(
-                            id = item.getInt("id"),
-                            name = item.getString("name"),
-                            description = item.getString("description"),
-                            price = item.getDouble("price"),
-                            image = item.getString("image")
+                if (response.getBoolean("success")) {
+                    val productsArray = response.getJSONArray("products")
+                    val products = mutableListOf<Product>()
+
+                    for (i in 0 until productsArray.length()) {
+                        val item = productsArray.getJSONObject(i)
+                        products.add(
+                            Product(
+                                id = item.getInt("id"),
+                                name = item.getString("name"),
+                                description = item.getString("description"),
+                                price = item.getDouble("price"),
+                                image = item.getString("image")
+                            )
                         )
-                    )
+                    }
+                    productAdapter.updateList(products)
+                } else {
+                    Toast.makeText(this, "No products found", Toast.LENGTH_SHORT).show()
                 }
-                productAdapter.updateList(products)
             },
             { error ->
                 Toast.makeText(this, "Failed to load products", Toast.LENGTH_SHORT).show()
@@ -147,6 +154,7 @@ class Homepage : AppCompatActivity() {
 
         Volley.newRequestQueue(this).add(request)
     }
+
 
     private fun vibrate() {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
