@@ -138,7 +138,7 @@ class Homepage : AppCompatActivity() {
     }
 
     private fun fetchProducts() {
-        val url = "http://192.168.100.184/thriftique_db/includes/v1/Products/get_products.php"
+        val url = "http://192.168.100.184/thriftique_db/includes/v1/Products/get_products.php/"
 
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             { response ->

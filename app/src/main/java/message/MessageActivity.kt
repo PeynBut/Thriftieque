@@ -56,6 +56,13 @@ class MessageActivity : AppCompatActivity(), WebSocketListener {
     }
 
     private fun sendMessage(sender: String, receiver: String, messageText: String) {
+        if (messageText.isBlank()) {
+            runOnUiThread {
+                showSystemMessage("Message cannot be empty")
+            }
+            return
+        }
+
         val messageJson = JSONObject()
         messageJson.put("sender", sender)
         messageJson.put("receiver", receiver)
@@ -70,11 +77,26 @@ class MessageActivity : AppCompatActivity(), WebSocketListener {
         }
     }
 
+
+
     override fun onConnected() {
         runOnUiThread {
             showSystemMessage("Connected to server")
+            requestChatHistory()
         }
     }
+
+    private fun requestChatHistory() {
+        val requestJson = JSONObject()
+        requestJson.put("action", "get_chat_history")
+        requestJson.put("sender", currentUser)
+        requestJson.put("receiver", chatPartner)
+
+        if (chatWebSocket.isOpen) {
+            chatWebSocket.send(requestJson.toString())
+        }
+    }
+
 
     override fun onMessageReceived(message: String) {
         runOnUiThread {
@@ -93,6 +115,7 @@ class MessageActivity : AppCompatActivity(), WebSocketListener {
             }
         }
     }
+
 
     override fun onDisconnected() {
         runOnUiThread {
