@@ -30,6 +30,7 @@ class ProductAdapter(private val context: Context, private var productList: List
         holder.tvName.text = product.name
         holder.tvPrice.text = "$${product.price}"
 
+<<<<<<< HEAD
         // Ensure image URL is correctly formatted
         val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
 
@@ -44,15 +45,31 @@ class ProductAdapter(private val context: Context, private var productList: List
 // Load image using Glide
         Glide.with(context)
             .load(imageUrl ?: R.drawable.user) // Default if null
+=======
+        // Base URL for product images
+        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+
+        // Ensure image is properly formatted
+        val imageUrl = if (!product.image.isNullOrEmpty() && !product.image.startsWith("http")) {
+            baseUrl + product.image.trim()
+        } else {
+            product.image?.trim()
+        }
+
+        // Load image with Glide
+        Glide.with(context)
+            .load(imageUrl ?: R.drawable.user) // Default to user image if null
+>>>>>>> FEB9
             .apply(
                 RequestOptions()
-                    .placeholder(R.drawable.blouse)
-                    .error(R.drawable.message)
+                    .placeholder(R.drawable.blouse)  // Show while loading
+                    .error(R.drawable.message)       // If load fails
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .fitCenter()
             )
             .into(holder.ivProductImage)
 
+<<<<<<< HEAD
 
         // Load image using Glide
         Glide.with(context)
@@ -66,6 +83,8 @@ class ProductAdapter(private val context: Context, private var productList: List
             )
             .into(holder.ivProductImage)
 
+=======
+>>>>>>> FEB9
         // Handle image click to open ProductDetailsActivity with vibration
         holder.ivProductImage.setOnClickListener {
             vibrate()

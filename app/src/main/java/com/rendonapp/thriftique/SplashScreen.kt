@@ -1,8 +1,7 @@
 package com.rendonapp.thriftique
 
-
-
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class SplashScreen : AppCompatActivity() {
-    // Variables
     private lateinit var topAnimation: Animation
     private lateinit var bottomAnimation: Animation
     private lateinit var image: ImageView
@@ -24,7 +22,7 @@ class SplashScreen : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash_screen) // Replace with your splash layout file
+        setContentView(R.layout.activity_splash_screen)
 
         // Load Animations
         topAnimation = AnimationUtils.loadAnimation(this, R.anim.top_anim)
@@ -40,11 +38,19 @@ class SplashScreen : AppCompatActivity() {
         image.animation = topAnimation
         textView.animation = bottomAnimation
 
-        // Transition to MainActivity after 3 seconds
+        // Delay transition
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, Homepage::class.java)
-            startActivity(intent)
-            finish() // Close this activity to prevent going back to it
-        }, 3000) // 3000 ms = 3 seconds
+            if (isUserLoggedIn()) {
+                startActivity(Intent(this, Homepage::class.java)) // Stay on Homepage if logged in
+            } else {
+                startActivity(Intent(this, MainActivity::class.java)) // Go to MainActivity if not logged in
+            }
+            finish() // Close this activity
+        }, 3000) // 3 seconds delay
+    }
+
+    private fun isUserLoggedIn(): Boolean {
+        val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("is_logged_in", false)
     }
 }

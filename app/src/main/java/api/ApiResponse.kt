@@ -31,7 +31,8 @@ data class ApiResponse(
     val message: String? = null,
     val product: Product? = null,
     val products: List<Product>? = null, // Ensure proper field usage with nullability
-    val data: List<Product> // or List<Product_see> depending on your use case
+    val data: List<Product>?, // or List<Product_see> depending on your use case
+    val success: Boolean
 )
 
 // ✅ Login Request Model

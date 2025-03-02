@@ -41,41 +41,46 @@ class SeeAllItemsActivity : Activity() {
     private fun fetchProducts() {
         RetrofitClient.instance.getProducts().enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                if (response.isSuccessful) {
-                    val apiResponse = response.body()
-                    val products = apiResponse?.data ?: emptyList() // Safe call for null
+                Log.d("FetchProducts", "Raw response: ${response.raw()}")
+                Log.d("FetchProducts", "Response Code: ${response.code()}")
 
-                    if (products.isNotEmpty()) {
+                val apiResponse = response.body()
+
+                if (response.isSuccessful && apiResponse != null) {
+                    Log.d("FetchProducts", "Response Body: $apiResponse")
+
+                    val products = apiResponse.data
+
+                    if (products.isNullOrEmpty()) {
+                        Log.e("FetchProducts", "API returned empty or null product list")
+                        showToast("No products available")
+                    } else {
                         itemList.clear()
                         itemList.addAll(products.map { product ->
                             CartItem(
                                 userId = 0,
                                 productId = product.id,
                                 quantity = 1,
-                                productName = product.name ?: "Unknown Product", // Default if name is null
-                                productImage = product.image ?: "", // Default if image is null
-                                productPrice = product.price // Assuming price is non-nullable in Product model
+                                productName = product.name ?: "Unknown Product",
+                                productImage = product.image ?: "",
+                                productPrice = product.price
                             )
                         })
                         cartAdapter.notifyDataSetChanged()
-                    } else {
-                        showToast("No products available")
                     }
                 } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("FetchProducts", "API Error: ${response.code()} - $errorBody")
                     showToast("Failed to load products: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                Log.e("FetchProducts", "Error fetching products: ${t.message}")
-                showToast("Failed to fetch products. Check your connection.")
+                Log.e("FetchProducts", "Network error: ${t.message}")
+                showToast("Failed to fetch products. Check your internet connection.")
             }
         })
     }
-
-
-
-
     // ✅ Dynamically calculate number of columns
     private fun calculateNoOfColumns(): Int {
         val displayMetrics = resources.displayMetrics
