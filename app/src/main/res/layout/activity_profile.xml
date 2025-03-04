@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/white">
@@ -10,17 +10,17 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:title="Profile"
-        android:navigationIcon="@drawable/baseline_backspace_24"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:navigationIcon="@drawable/baseline_backspace_24" />
 
     <!-- Profile Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:padding="16dp">
 
         <ImageView
@@ -29,13 +29,13 @@
             android:layout_height="80dp"
             android:src="@drawable/user"
             android:scaleType="centerCrop"
-            android:background="@drawable/car_ui_divider"/>
+            android:background="@drawable/car_ui_divider"
+            android:layout_marginEnd="16dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="16dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvUserName"
@@ -43,14 +43,16 @@
                 android:layout_height="wrap_content"
                 android:text="John Doe"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="john.doe@email.com"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:textColor="@color/gray"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -60,47 +62,63 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:layout_marginTop="10dp"
-        android:background="@color/white"
-        app:cardElevation="3dp"
+        app:cardElevation="4dp"
         app:cardCornerRadius="12dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            <Button
+            <!-- Orders Button -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnOrders"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="My Orders"
-                android:drawableLeft="@drawable/house"
-                android:background="?attr/selectableItemBackground"/>
+                android:drawablePadding="12dp"
+                app:icon="@drawable/house"
+                app:iconTint="@color/black"
+                app:iconGravity="start"/>
 
-            <Button
+            <!-- Wishlist Button -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnWishlist"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Wishlist"
-                android:drawableLeft="@drawable/blouse"
-                android:background="?attr/selectableItemBackground"/>
+                android:drawablePadding="12dp"
+                app:icon="@drawable/blouse"
+                app:iconTint="@color/black"
+                app:iconGravity="start"/>
 
-            <Button
+            <!-- Settings Button -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSettings"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Settings"
-                android:drawableLeft="@drawable/settings"
-                android:background="?attr/selectableItemBackground"/>
+                android:drawablePadding="12dp"
+                app:icon="@drawable/settings"
+                app:iconTint="@color/black"
+                app:iconGravity="start"/>
 
-            <Button
+            <!-- Logout Button -->
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Logout"
-                android:textColor="@color/gray"
-                android:drawableLeft="@drawable/aklogo"
-                android:background="?attr/selectableItemBackground"/>
+                android:textColor="#E60A0A"
+                android:drawablePadding="12dp"
+                app:icon="@drawable/aklogo"
+                app:iconTint="#E60A0A"
+                app:iconGravity="start"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

@@ -20,6 +20,8 @@ import com.rendonapp.thriftique.R
 class ProductAdapter(private val context: Context, private var productList: List<Product>) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
+    private val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_product, parent, false)
         return ProductViewHolder(view)
@@ -30,11 +32,7 @@ class ProductAdapter(private val context: Context, private var productList: List
         holder.tvName.text = product.name
         holder.tvPrice.text = "$${product.price}"
 
-<<<<<<< HEAD
-        // Ensure image URL is correctly formatted
-        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
-
-// Ensure the image path is correct
+        // Format Image URL
         val imageUrl = when {
             product.image.isNullOrEmpty() -> null  // Use default placeholder
             product.image.startsWith("http") -> product.image.trim()  // Already a full URL
@@ -42,24 +40,9 @@ class ProductAdapter(private val context: Context, private var productList: List
             else -> baseUrl + product.image.trim() // Standard case
         }
 
-// Load image using Glide
+        // Load image using Glide
         Glide.with(context)
-            .load(imageUrl ?: R.drawable.user) // Default if null
-=======
-        // Base URL for product images
-        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
-
-        // Ensure image is properly formatted
-        val imageUrl = if (!product.image.isNullOrEmpty() && !product.image.startsWith("http")) {
-            baseUrl + product.image.trim()
-        } else {
-            product.image?.trim()
-        }
-
-        // Load image with Glide
-        Glide.with(context)
-            .load(imageUrl ?: R.drawable.user) // Default to user image if null
->>>>>>> FEB9
+            .load(imageUrl ?: R.drawable.user) // Default image if null
             .apply(
                 RequestOptions()
                     .placeholder(R.drawable.blouse)  // Show while loading
@@ -69,22 +52,6 @@ class ProductAdapter(private val context: Context, private var productList: List
             )
             .into(holder.ivProductImage)
 
-<<<<<<< HEAD
-
-        // Load image using Glide
-        Glide.with(context)
-            .load(imageUrl)
-            .apply(
-                RequestOptions()
-                    .placeholder(R.drawable.blouse)  // Placeholder while loading
-                    .error(R.drawable.message)       // Error image if loading fails
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .fitCenter()
-            )
-            .into(holder.ivProductImage)
-
-=======
->>>>>>> FEB9
         // Handle image click to open ProductDetailsActivity with vibration
         holder.ivProductImage.setOnClickListener {
             vibrate()

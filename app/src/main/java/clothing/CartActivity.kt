@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +12,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
@@ -23,18 +23,17 @@ class CartActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var cartAdapter: CartAdapter
     private val cartList = mutableListOf<CartItem>()
-    private lateinit var backBtn: ImageView
-    private lateinit var menu: ImageView
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var toolbar: MaterialToolbar
 
-    // In CartActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
 
-        backBtn = findViewById(R.id.back_btn)
-        menu = findViewById(R.id.menu)
+        // Initialize UI elements
+        toolbar = findViewById(R.id.topAppBar)
+        drawerLayout = findViewById(R.id.drawer_layout)
         recyclerView = findViewById(R.id.cartRecyclerView)
 
         // Initialize RecyclerView
@@ -42,32 +41,28 @@ class CartActivity : AppCompatActivity() {
         cartAdapter = CartAdapter(this, cartList, {}, ::removeItem)
         recyclerView.adapter = cartAdapter
 
-        // Check for new cart item
+        // Handle cart item addition (Prevents duplicate entries)
         val newCartItem = intent.getParcelableExtra<CartItem>("cartItem")
-        newCartItem?.let {
-            cartList.add(it)
-            cartAdapter.notifyDataSetChanged()
+        newCartItem?.let { item ->
+            if (!cartList.contains(item)) {
+                cartList.add(item)
+                cartAdapter.notifyItemInserted(cartList.size - 1)
+            }
         }
+
         // Setup Navigation Drawer
         setupNavigationDrawer()
 
-        // Back button listener with vibration
-        backBtn.setOnClickListener {
+        // Back button listener
+        toolbar.setNavigationOnClickListener {
             vibrate()
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
     }
 
-
     private fun setupNavigationDrawer() {
-        drawerLayout = findViewById(R.id.drawer_layout)
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-
-        if (drawerLayout == null || navigationView == null) {
-            Log.e("CartActivity", "DrawerLayout or NavigationView not found!")
-            return
-        }
 
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
@@ -76,22 +71,31 @@ class CartActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, Homepage::class.java))
-                // Add your other navigation actions here
+                // Add other navigation actions here
             }
             drawerLayout.closeDrawers()
             true
         }
 
-        menu.setOnClickListener {
+        // Handle menu icon click (drawer open)
+        toolbar.setNavigationOnClickListener {
             vibrate()
             drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 
     private fun removeItem(cartItem: CartItem) {
-        cartList.remove(cartItem)
-        cartAdapter.notifyDataSetChanged()
-        Toast.makeText(this, "Removed ${cartItem.productId} from cart", Toast.LENGTH_SHORT).show()
+        val index = cartList.indexOf(cartItem)
+        if (index != -1) {
+            cartList.removeAt(index)
+            cartAdapter.notifyItemRemoved(index)
+            Toast.makeText(this, "Removed item from cart", Toast.LENGTH_SHORT).show()
+        }
+
+        // Check if cart is empty after removing an item
+        if (cartList.isEmpty()) {
+            Toast.makeText(this, "Your cart is empty", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun vibrate() {
