@@ -2,6 +2,8 @@ package Products
 
 import android.content.Context
 import android.content.Intent
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,20 +30,64 @@ class ProductAdapter(private val context: Context, private var productList: List
         holder.tvName.text = product.name
         holder.tvPrice.text = "$${product.price}"
 
-        val imageUrl = product.image?.trim()
+<<<<<<< HEAD
+        // Ensure image URL is correctly formatted
+        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+
+// Ensure the image path is correct
+        val imageUrl = when {
+            product.image.isNullOrEmpty() -> null  // Use default placeholder
+            product.image.startsWith("http") -> product.image.trim()  // Already a full URL
+            product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/") // Prevent double "uploads/"
+            else -> baseUrl + product.image.trim() // Standard case
+        }
+
+// Load image using Glide
         Glide.with(context)
-            .load(imageUrl.takeIf { !it.isNullOrEmpty() } ?: R.drawable.user)
+            .load(imageUrl ?: R.drawable.user) // Default if null
+=======
+        // Base URL for product images
+        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+
+        // Ensure image is properly formatted
+        val imageUrl = if (!product.image.isNullOrEmpty() && !product.image.startsWith("http")) {
+            baseUrl + product.image.trim()
+        } else {
+            product.image?.trim()
+        }
+
+        // Load image with Glide
+        Glide.with(context)
+            .load(imageUrl ?: R.drawable.user) // Default to user image if null
+>>>>>>> FEB9
             .apply(
                 RequestOptions()
-                    .placeholder(R.drawable.blouse)
-                    .error(R.drawable.message)
+                    .placeholder(R.drawable.blouse)  // Show while loading
+                    .error(R.drawable.message)       // If load fails
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .fitCenter()
             )
             .into(holder.ivProductImage)
 
-        // Handle image click to open ProductDetailsActivity
+<<<<<<< HEAD
+
+        // Load image using Glide
+        Glide.with(context)
+            .load(imageUrl)
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.blouse)  // Placeholder while loading
+                    .error(R.drawable.message)       // Error image if loading fails
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .fitCenter()
+            )
+            .into(holder.ivProductImage)
+
+=======
+>>>>>>> FEB9
+        // Handle image click to open ProductDetailsActivity with vibration
         holder.ivProductImage.setOnClickListener {
+            vibrate()
             val intent = Intent(context, ProductDetailsActivity::class.java).apply {
                 putExtra("product", product)
             }
@@ -76,6 +122,14 @@ class ProductAdapter(private val context: Context, private var productList: List
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
             return oldList[oldItemPosition] == newList[newItemPosition]
+        }
+    }
+
+    // Function to trigger vibration
+    private fun vibrate() {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
         }
     }
 }

@@ -16,6 +16,7 @@ import com.rendonapp.thriftique.CartItem
 import message.MessageActivity
 
 class ProductDetailsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product_details)
@@ -33,8 +34,18 @@ class ProductDetailsActivity : AppCompatActivity() {
             tvProductName.text = it.name
             tvProductPrice.text = "$${it.price}"
 
+            // Handle image URL
+            val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+            val imageUrl = when {
+                it.image.isNullOrEmpty() -> null  // Use default placeholder
+                it.image.startsWith("http") -> it.image.trim()  // Already a full URL
+                it.image.startsWith("uploads/") -> baseUrl + it.image.removePrefix("uploads/") // Prevent double "uploads/"
+                else -> baseUrl + it.image.trim() // Standard case
+            }
+
+            // Load the product image into the ImageView
             Glide.with(this)
-                .load(it.image ?: R.drawable.user)
+                .load(imageUrl ?: R.drawable.user) // Placeholder image if null
                 .into(ivProductImage)
 
             // Handle Add to Cart click
@@ -42,12 +53,6 @@ class ProductDetailsActivity : AppCompatActivity() {
                 showAddToCartPopup(product)
             }
 
-            // Handle Buy Now click
-            btnBuyNow.setOnClickListener {
-                val checkoutIntent = Intent(this, MessageActivity::class.java)
-                checkoutIntent.putExtra("product", product)
-                startActivity(checkoutIntent)
-            }
         }
     }
 
@@ -61,11 +66,21 @@ class ProductDetailsActivity : AppCompatActivity() {
         val etNotes: EditText = view.findViewById(R.id.etNotes)
         val btnConfirm: Button = view.findViewById(R.id.btnConfirmAddToCart)
 
+        // Handle image URL
+        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+        val imageUrl = when {
+            product.image.isNullOrEmpty() -> null  // Use default placeholder
+            product.image.startsWith("http") -> product.image.trim()  // Already a full URL
+            product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/") // Prevent double "uploads/"
+            else -> baseUrl + product.image.trim() // Standard case
+        }
+
         // Load product image dynamically using Glide
         Glide.with(this)
-            .load(product.image ?: R.drawable.blouse) // Placeholder if null
+            .load(imageUrl ?: R.drawable.user) // Placeholder image if null
             .into(ivProductImage)
 
+        // Set product price in the dialog
         tvProductPrice.text = "$${product.price}"
 
         btnConfirm.setOnClickListener {
@@ -87,8 +102,9 @@ class ProductDetailsActivity : AppCompatActivity() {
                 productPrice = product.price
             )
 
+            // Create an Intent to navigate to the CartActivity
             val intent = Intent(this, CartActivity::class.java)
-            intent.putExtra("cartItem", cartItem)
+            intent.putExtra("cartItem", cartItem) // Pass CartItem to CartActivity
             startActivity(intent)
 
             dialog.dismiss()
