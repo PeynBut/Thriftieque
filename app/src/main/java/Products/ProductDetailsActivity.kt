@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import api.Constants
 import com.bumptech.glide.Glide
 import com.example.android.models.Product
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -35,7 +36,7 @@ class ProductDetailsActivity : AppCompatActivity() {
             tvProductPrice.text = "$${it.price}"
 
             // Handle image URL
-            val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+            val baseUrl = Constants.getBaseUrl(this)
             val imageUrl = when {
                 it.image.isNullOrEmpty() -> null  // Use default placeholder
                 it.image.startsWith("http") -> it.image.trim()  // Already a full URL
@@ -53,8 +54,21 @@ class ProductDetailsActivity : AppCompatActivity() {
                 showAddToCartPopup(product)
             }
 
+            btnBuyNow.setOnClickListener {
+                product?.let { selectedProduct ->
+                    proceedToCheckout(selectedProduct)
+                }
+            }
+
+
         }
     }
+    private fun proceedToCheckout(product: Product) {
+        val intent = Intent(this, CheckoutActivity::class.java)
+        intent.putExtra("selectedProduct", product)
+        startActivity(intent)
+    }
+
 
     private fun showAddToCartPopup(product: Product) {
         val dialog = BottomSheetDialog(this)
@@ -67,7 +81,7 @@ class ProductDetailsActivity : AppCompatActivity() {
         val btnConfirm: Button = view.findViewById(R.id.btnConfirmAddToCart)
 
         // Handle image URL
-        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+        val baseUrl = Constants.getBaseUrl(this)
         val imageUrl = when {
             product.image.isNullOrEmpty() -> null  // Use default placeholder
             product.image.startsWith("http") -> product.image.trim()  // Already a full URL

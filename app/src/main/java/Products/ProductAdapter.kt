@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import api.Constants
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -20,7 +21,7 @@ import com.rendonapp.thriftique.R
 class ProductAdapter(private val context: Context, private var productList: List<Product>) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
-    private val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+    private val baseUrl = Constants.getBaseUrl(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_product, parent, false)
@@ -30,7 +31,7 @@ class ProductAdapter(private val context: Context, private var productList: List
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
         holder.tvName.text = product.name
-        holder.tvPrice.text = "$${product.price}"
+        holder.tvPrice.text = "₱${product.price}"
 
         // Format Image URL
         val imageUrl = when {
@@ -45,8 +46,9 @@ class ProductAdapter(private val context: Context, private var productList: List
             .load(imageUrl ?: R.drawable.user) // Default image if null
             .apply(
                 RequestOptions()
-                    .placeholder(R.drawable.blouse)  // Show while loading
-                    .error(R.drawable.message)       // If load fails
+                    .override(200, 200) // Set exact image size
+                    .placeholder(R.drawable.blouse) // Show while loading
+                    .error(R.drawable.message) // Show error image if load fails
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .fitCenter()
             )
@@ -57,6 +59,15 @@ class ProductAdapter(private val context: Context, private var productList: List
             vibrate()
             val intent = Intent(context, ProductDetailsActivity::class.java).apply {
                 putExtra("product", product)
+            }
+            context.startActivity(intent)
+        }
+
+        // Handle price click to go directly to CheckoutActivity
+        holder.tvPrice.setOnClickListener {
+            val intent = Intent(context, CheckoutActivity::class.java).apply {
+                putExtra("selectedProduct", product) // Pass full Product object
+                putExtra("selectedQuantity", 1) // Default quantity = 1
             }
             context.startActivity(intent)
         }
