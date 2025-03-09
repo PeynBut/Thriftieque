@@ -33,7 +33,7 @@ class ProductDetailsActivity : AppCompatActivity() {
 
         product?.let {
             tvProductName.text = it.name
-            tvProductPrice.text = "$${it.price}"
+            tvProductPrice.text = "₱${it.price}"
 
             // Handle image URL
             val baseUrl = Constants.getBaseUrl(this)
@@ -95,7 +95,7 @@ class ProductDetailsActivity : AppCompatActivity() {
             .into(ivProductImage)
 
         // Set product price in the dialog
-        tvProductPrice.text = "$${product.price}"
+        tvProductPrice.text = "₱${product.price}"
 
         btnConfirm.setOnClickListener {
             val quantity = etQuantity.text.toString().trim()
@@ -106,23 +106,30 @@ class ProductDetailsActivity : AppCompatActivity() {
 
             val quantityInt = quantity.toIntOrNull() ?: 1
 
-            // Create a new CartItem including the image URL
+            val baseUrl = Constants.getBaseUrl(this)
+            val imageUrl = when {
+                product.image.isNullOrEmpty() -> "" // Default empty string if no image
+                product.image.startsWith("http") -> product.image.trim()
+                product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/")
+                else -> baseUrl + product.image.trim()
+            }
+
             val cartItem = CartItem(
-                userId = 1,
+                userId = 1, // Change this dynamically for actual user
                 productId = product.id,
                 quantity = quantityInt,
                 productName = product.name,
-                productImage = product.image ?: "", // Ensure image is passed
+                productImage = imageUrl, // Ensure image URL is set correctly
                 productPrice = product.price
             )
 
-            // Create an Intent to navigate to the CartActivity
             val intent = Intent(this, CartActivity::class.java)
-            intent.putExtra("cartItem", cartItem) // Pass CartItem to CartActivity
+            intent.putExtra("cartItem", cartItem)
             startActivity(intent)
 
             dialog.dismiss()
         }
+
 
         dialog.setContentView(view)
         dialog.show()

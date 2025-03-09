@@ -29,7 +29,7 @@ class CheckoutActivity : AppCompatActivity() {
 
         product?.let {
             tvCheckoutProductName.text = it.name
-            tvCheckoutPrice.text = "$${it.price}"
+            tvCheckoutPrice.text = "₱${it.price}"
             tvCheckoutQuantity.text = "Quantity: $quantity"
 
             val totalPrice = it.price * quantity

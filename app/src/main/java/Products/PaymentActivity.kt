@@ -25,7 +25,7 @@ class PaymentActivity : AppCompatActivity() {
 
         // Retrieve total price from checkout
         val totalAmount = intent.getDoubleExtra("totalAmount", 0.0)
-        tvPaymentTotal.text = "Total: $$totalAmount"
+        tvPaymentTotal.text = "Total: ₱$totalAmount"
 
         btnConfirmPayment.setOnClickListener {
             processPayment(totalAmount)
@@ -45,7 +45,7 @@ class PaymentActivity : AppCompatActivity() {
             else -> "Unknown"
         }
 
-        Toast.makeText(this, "Processing $paymentMethod payment of $$totalAmount", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Processing $paymentMethod payment of ₱$totalAmount", Toast.LENGTH_LONG).show()
 
         // Navigate to Order Confirmation screen
         val intent = Intent(this, OrderConfirmationActivity::class.java)

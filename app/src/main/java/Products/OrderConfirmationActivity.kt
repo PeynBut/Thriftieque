@@ -27,7 +27,7 @@ class OrderConfirmationActivity : AppCompatActivity() {
         val totalAmount = intent.getDoubleExtra("totalAmount", 0.0)
 
         tvConfirmationMessage.text = "Your order has been placed successfully!"
-        tvPaymentDetails.text = "Payment Method: $paymentMethod\nTotal Paid: $$totalAmount"
+        tvPaymentDetails.text = "Payment Method: $paymentMethod\nTotal Paid: ₱$totalAmount"
 
         btnBackToHome.setOnClickListener {
             val intent = Intent(this, Homepage::class.java)

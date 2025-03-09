@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
-import com.rendonapp.thriftique.CartItem // Import your CartItem class
+import com.rendonapp.thriftique.CartItem
 
 class CartActivity : AppCompatActivity() {
 
@@ -26,6 +27,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var toolbar: MaterialToolbar
+    private lateinit var tvTotalPrice: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,20 +37,12 @@ class CartActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.topAppBar)
         drawerLayout = findViewById(R.id.drawer_layout)
         recyclerView = findViewById(R.id.cartRecyclerView)
+        tvTotalPrice = findViewById(R.id.totalPrice)
 
-        // Initialize RecyclerView
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         cartAdapter = CartAdapter(this, cartList, {}, ::removeItem)
         recyclerView.adapter = cartAdapter
-
-        // Handle cart item addition (Prevents duplicate entries)
-        val newCartItem = intent.getParcelableExtra<CartItem>("cartItem")
-        newCartItem?.let { item ->
-            if (!cartList.contains(item)) {
-                cartList.add(item)
-                cartAdapter.notifyItemInserted(cartList.size - 1)
-            }
-        }
 
         // Setup Navigation Drawer
         setupNavigationDrawer()
@@ -59,7 +53,23 @@ class CartActivity : AppCompatActivity() {
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
+        val cartItem = intent.getParcelableExtra<CartItem>("cartItem")
+        cartItem?.let {
+            cartList.add(it)
+            cartAdapter.notifyDataSetChanged()
+            calculateTotalPrice()
+            CartStorage.saveCart(this, cartList) // Save the cart
+        }
+
+
+
+
     }
+    private fun calculateTotalPrice() {
+        val totalPrice = cartList.sumOf { it.productPrice * it.quantity }
+        tvTotalPrice.text = "Total: ₱%.2f".format(totalPrice)
+    }
+
 
     private fun setupNavigationDrawer() {
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
@@ -71,17 +81,19 @@ class CartActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> startActivity(Intent(this, Homepage::class.java))
-                // Add other navigation actions here
             }
             drawerLayout.closeDrawers()
             true
         }
 
-        // Handle menu icon click (drawer open)
         toolbar.setNavigationOnClickListener {
             vibrate()
             drawerLayout.openDrawer(GravityCompat.START)
         }
+        cartList.addAll(CartStorage.getCart(this)) // Load saved cart
+        cartAdapter.notifyDataSetChanged()
+        calculateTotalPrice()
+
     }
 
     private fun removeItem(cartItem: CartItem) {
@@ -89,14 +101,18 @@ class CartActivity : AppCompatActivity() {
         if (index != -1) {
             cartList.removeAt(index)
             cartAdapter.notifyItemRemoved(index)
+            calculateTotalPrice()
+            CartStorage.saveCart(this, cartList) // Save the cart
             Toast.makeText(this, "Removed item from cart", Toast.LENGTH_SHORT).show()
         }
 
-        // Check if cart is empty after removing an item
         if (cartList.isEmpty()) {
+            tvTotalPrice.text = "Total: ₱0.00"
             Toast.makeText(this, "Your cart is empty", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     private fun vibrate() {
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator

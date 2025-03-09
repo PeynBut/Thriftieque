@@ -27,6 +27,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import message.MessageActivity
+import setting.SettingsActivity
 
 
 class Homepage : AppCompatActivity() {
@@ -104,7 +105,7 @@ class Homepage : AppCompatActivity() {
                     true
                 }
                 R.id.nav_settings -> {
-                    startActivity(Intent(this, Homepage::class.java))
+                    startActivity(Intent(this, SettingsActivity::class.java))
                     true
                 }
                 R.id.nav_logout -> {

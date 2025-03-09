@@ -2,6 +2,7 @@ package Authentication
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Shader
@@ -38,20 +39,24 @@ class LogIn : AppCompatActivity() {
     private lateinit var backBtn: ImageView
     private lateinit var textView: TextView
     private lateinit var vibrator: Vibrator
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_log_in) // Move this above everything
 
+        // Initialize SharedPreferences
+        sharedPreferences = getSharedPreferences("Settings", Context.MODE_PRIVATE)
+
+        // Initialize Vibrator
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        // Check if user is already logged in
         if (isUserLoggedIn()) {
             startActivity(Intent(this, Homepage::class.java))
             finish()
             return  // Prevents further execution
         }
-
-        setContentView(R.layout.activity_log_in)
-
-        // Initialize Vibrator
-        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         // Initialize views
         initializeViews()
@@ -63,15 +68,19 @@ class LogIn : AppCompatActivity() {
         setupListeners()
     }
 
+    // Function to check if vibration is enabled
+    private fun isVibrationEnabled(): Boolean {
+        return sharedPreferences.getBoolean("vibration", true) // Default: ON
+    }
+
     private fun isUserLoggedIn(): Boolean {
         val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean("is_logged_in", false)
     }
 
-
     private fun initializeViews() {
-        emailLayout = findViewById(R.id.emailLayout) // Ensure correct ID for TextInputLayout
-        passwordLayout = findViewById(R.id.passwordLayout) // Ensure correct ID for TextInputLayout
+        emailLayout = findViewById(R.id.emailLayout)
+        passwordLayout = findViewById(R.id.passwordLayout)
         emailEditText = findViewById(R.id.etEmail)
         passwordEditText = findViewById(R.id.etPassword)
         forgotPassword = findViewById(R.id.forgotPassword)
@@ -94,23 +103,23 @@ class LogIn : AppCompatActivity() {
     private fun setupListeners() {
         logInBtn.setOnClickListener { view ->
             view.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            vibrate()
+            if (isVibrationEnabled()) vibrate() // Check setting before vibrating
             validateAndLogin()
         }
 
         newAccount.setOnClickListener {
-            vibrate()
+            if (isVibrationEnabled()) vibrate()
             startActivity(Intent(this, SignUp::class.java))
         }
 
         backBtn.setOnClickListener {
-            vibrate()
+            if (isVibrationEnabled()) vibrate()
             startActivity(Intent(this, MainActivity::class.java))
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
 
         forgotPassword.setOnClickListener {
-            vibrate()
+            if (isVibrationEnabled()) vibrate()
             Toast.makeText(this, "Forgot Password Clicked", Toast.LENGTH_SHORT).show()
         }
     }
@@ -179,7 +188,6 @@ class LogIn : AppCompatActivity() {
         editor.putBoolean("is_logged_in", true)
         editor.apply()
     }
-
 
     private fun vibrate() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import api.Constants
+import clothing.CartActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -62,6 +63,14 @@ class ProductAdapter(private val context: Context, private var productList: List
             }
             context.startActivity(intent)
         }
+        // Handle click to add product to the cart
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, CartActivity::class.java).apply {
+                putExtra("selectedProduct", product) // Product must be Parcelable
+            }
+            context.startActivity(intent)
+        }
+
 
         // Handle price click to go directly to CheckoutActivity
         holder.tvPrice.setOnClickListener {

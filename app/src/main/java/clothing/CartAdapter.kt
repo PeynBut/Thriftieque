@@ -31,7 +31,7 @@ class CartAdapter(
         val cartItem = cartList[position]
 
         holder.tvProductName.text = cartItem.productName
-        holder.tvProductPrice.text = "$${cartItem.productPrice}"
+        holder.tvProductPrice.text = "₱${cartItem.productPrice}"
         holder.tvQuantity.text = "Qty: ${cartItem.quantity}"
 
         // Load the product image dynamically
