@@ -1,49 +1,118 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/ivProductImage"
-        android:layout_gravity="center"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:scaleType="centerCrop" />
-
-    <TextView
-        android:id="@+id/tvProductName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Product Name"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="12dp">
 
-    <TextView
-        android:id="@+id/tvProductPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="₱99.99"
-        android:textSize="18sp"
-        android:textColor="@android:color/holo_red_dark"
-        android:paddingTop="4dp" />
+        <!-- Product Image -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:elevation="4dp"
+            android:radius="12dp">
 
-    <Button
-        android:id="@+id/btnAddToCart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add to Cart"
-        android:backgroundTint="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="12dp"/>
+            <ImageView
+                android:id="@+id/ivProductImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user" />
+        </androidx.cardview.widget.CardView>
 
-    <Button
-        android:id="@+id/btnBuyNow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Buy Now"
-        android:backgroundTint="@android:color/holo_green_dark"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="8dp"/>
-</LinearLayout>
+        <!-- Product Name -->
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Product Name"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:paddingTop="10dp" />
+
+        <!-- Product Price -->
+        <TextView
+            android:id="@+id/tvProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="₱99.99"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@android:color/holo_red_dark"
+            android:paddingTop="4dp" />
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/tvProductDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a short product description. It highlights the features and benefits."
+            android:textSize="14sp"
+            android:textAlignment="center"
+            android:paddingTop="6dp"
+            android:paddingBottom="10dp"
+            android:textColor="@color/dark_gray" />
+
+        <!-- Rating Bar -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:stepSize="0.5"
+                android:numStars="5"
+                android:rating="4.5"
+                android:isIndicator="true"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:progressTint="#FF9D00" />
+        </LinearLayout>
+
+        <!-- Add to Cart and Buy Now Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnAddToCart"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="Add to Cart"
+                android:textSize="16sp"
+                android:backgroundTint="@android:color/holo_blue_dark"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="6dp"
+                android:padding="10dp"/>
+            <Button
+                android:id="@+id/btnBuyNow"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="Buy Now"
+                android:textSize="16sp"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:textColor="@android:color/white"
+                android:padding="10dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
