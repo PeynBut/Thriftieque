@@ -126,11 +126,11 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnContinueShoppingBottom"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Continue Shopping"
                     android:layout_weight="1"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:text="Continue Shopping" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnPlaceOrder"

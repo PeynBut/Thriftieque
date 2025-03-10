@@ -1,5 +1,6 @@
 package clothing
 
+import Products.CheckoutActivity
 import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -14,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
@@ -28,6 +30,8 @@ class CartActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var toolbar: MaterialToolbar
     private lateinit var tvTotalPrice: TextView
+    private lateinit var btnContinueShoppingBottom: MaterialButton
+    private lateinit var btnPlaceOrder: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,8 @@ class CartActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         recyclerView = findViewById(R.id.cartRecyclerView)
         tvTotalPrice = findViewById(R.id.totalPrice)
+        btnContinueShoppingBottom = findViewById(R.id.btnContinueShoppingBottom)
+        btnPlaceOrder = findViewById(R.id.btnPlaceOrder)
 
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -60,7 +66,23 @@ class CartActivity : AppCompatActivity() {
             calculateTotalPrice()
             CartStorage.saveCart(this, cartList) // Save the cart
         }
-
+        btnContinueShoppingBottom.setOnClickListener {
+            startActivity(Intent(this, Homepage::class.java))
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            finish()
+        }
+        btnPlaceOrder.setOnClickListener {
+            val selectedItems = cartAdapter.getSelectedItems()
+            if (selectedItems.isEmpty()) {
+                Toast.makeText(this, "Please select at least one item to place an order.", Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = Intent(this, CheckoutActivity::class.java)
+                intent.putParcelableArrayListExtra("selectedItems", ArrayList(selectedItems))
+                startActivity(intent)
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+                finish()
+            }
+        }
 
 
 

@@ -1,77 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:gravity="center"
-    android:background="@color/white">
+    android:padding="16dp">
 
-    <!-- Product Image -->
-    <ImageView
-        android:id="@+id/ivCheckout_ProductImage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/user"
-        android:layout_marginBottom="20dp" />
-
-    <!-- Product Name -->
     <TextView
-        android:id="@+id/tvCheckout_ProductName"
+        android:id="@+id/tvCheckout_Header"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Product Name"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:paddingBottom="10dp" />
-
-    <!-- Product Price -->
-    <TextView
-        android:id="@+id/tvCheckout_Price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Price"
-        android:textSize="16sp"
-        android:textColor="@android:color/holo_red_dark"
-        android:paddingBottom="20dp" />
-
-    <!-- Order Summary Section -->
-    <TextView
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Order Summary"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:paddingBottom="10dp"
-        android:gravity="center" />
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/tvCheckout_Quantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Quantity: 1"
-        android:textSize="16sp"
-        android:paddingBottom="5dp" />
+    <!-- RecyclerView for Product List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCheckout_Items"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="10dp"
+        android:scrollbars="vertical"/>
 
+    <!-- Total Price -->
     <TextView
         android:id="@+id/tvCheckout_Total"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Total: $0.00"
-        android:textSize="16sp"
-        android:textColor="@android:color/holo_blue_dark"
-        android:paddingBottom="20dp" />
+        android:text="Total: ₱0.00"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="10dp"/>
 
     <!-- Proceed to Payment Button -->
     <Button
         android:id="@+id/btnProceedTo_Payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Proceed to Payment"
-        android:backgroundTint="@android:color/holo_green_dark"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        android:layout_marginTop="10dp" />
-
+        android:text="Proceed to Payment"/>
 </LinearLayout>

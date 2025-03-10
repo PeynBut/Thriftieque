@@ -7,6 +7,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.rendonapp.thriftique.CartItem
 import com.rendonapp.thriftique.R
 
 class PaymentActivity : AppCompatActivity() {
@@ -23,8 +24,11 @@ class PaymentActivity : AppCompatActivity() {
         rgPaymentMethods = findViewById(R.id.rgPaymentMethods)
         btnConfirmPayment = findViewById(R.id.btnConfirmPayment)
 
-        // Retrieve total price from checkout
-        val totalAmount = intent.getDoubleExtra("totalAmount", 0.0)
+        // Retrieve cart items from CheckoutActivity
+        val selectedProducts = intent.getParcelableArrayListExtra<CartItem>("selectedItems") ?: arrayListOf()
+
+        // Calculate total amount dynamically
+        val totalAmount = selectedProducts.sumOf { it.productPrice * it.quantity }
         tvPaymentTotal.text = "Total: ₱$totalAmount"
 
         btnConfirmPayment.setOnClickListener {

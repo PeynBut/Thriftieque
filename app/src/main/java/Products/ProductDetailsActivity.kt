@@ -64,10 +64,20 @@ class ProductDetailsActivity : AppCompatActivity() {
         }
     }
     private fun proceedToCheckout(product: Product) {
+        val baseUrl = Constants.getBaseUrl(this)
+        val imageUrl = when {
+            product.image.isNullOrEmpty() -> "" // Default empty string if no image
+            product.image.startsWith("http") -> product.image.trim()
+            product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/")
+            else -> baseUrl + product.image.trim()
+        }
+
         val intent = Intent(this, CheckoutActivity::class.java)
         intent.putExtra("selectedProduct", product)
+        intent.putExtra("productImage", imageUrl) // Pass the image URL
         startActivity(intent)
     }
+
 
 
     private fun showAddToCartPopup(product: Product) {
@@ -77,7 +87,6 @@ class ProductDetailsActivity : AppCompatActivity() {
         val ivProductImage: ImageView = view.findViewById(R.id.ivProductImage)
         val tvProductPrice: TextView = view.findViewById(R.id.tvProductPrice)
         val etQuantity: EditText = view.findViewById(R.id.etQuantity)
-        val etNotes: EditText = view.findViewById(R.id.etNotes)
         val btnConfirm: Button = view.findViewById(R.id.btnConfirmAddToCart)
 
         // Handle image URL

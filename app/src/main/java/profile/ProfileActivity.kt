@@ -8,7 +8,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import clothing.CartActivity
 import com.google.android.material.appbar.MaterialToolbar
+import setting.SettingsActivity
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -37,17 +39,12 @@ class ProfileActivity : AppCompatActivity() {
 
         // 🛒 Navigate to Order History
         btnOrders.setOnClickListener {
-            startActivity(Intent(this, Homepage::class.java))
-        }
-
-        // ❤️ Navigate to Wishlist
-        btnWishlist.setOnClickListener {
-            startActivity(Intent(this, Homepage::class.java))
+            startActivity(Intent(this, CartActivity::class.java))
         }
 
         // ⚙️ Navigate to Settings
         btnSettings.setOnClickListener {
-            startActivity(Intent(this, Homepage::class.java))
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         // 🚪 Logout Functionality
