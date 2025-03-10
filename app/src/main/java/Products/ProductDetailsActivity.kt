@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import api.Constants
 import com.bumptech.glide.Glide
 import com.example.android.models.Product
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -32,10 +33,10 @@ class ProductDetailsActivity : AppCompatActivity() {
 
         product?.let {
             tvProductName.text = it.name
-            tvProductPrice.text = "$${it.price}"
+            tvProductPrice.text = "₱${it.price}"
 
             // Handle image URL
-            val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+            val baseUrl = Constants.getBaseUrl(this)
             val imageUrl = when {
                 it.image.isNullOrEmpty() -> null  // Use default placeholder
                 it.image.startsWith("http") -> it.image.trim()  // Already a full URL
@@ -53,8 +54,31 @@ class ProductDetailsActivity : AppCompatActivity() {
                 showAddToCartPopup(product)
             }
 
+            btnBuyNow.setOnClickListener {
+                product?.let { selectedProduct ->
+                    proceedToCheckout(selectedProduct)
+                }
+            }
+
+
         }
     }
+    private fun proceedToCheckout(product: Product) {
+        val baseUrl = Constants.getBaseUrl(this)
+        val imageUrl = when {
+            product.image.isNullOrEmpty() -> "" // Default empty string if no image
+            product.image.startsWith("http") -> product.image.trim()
+            product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/")
+            else -> baseUrl + product.image.trim()
+        }
+
+        val intent = Intent(this, CheckoutActivity::class.java)
+        intent.putExtra("selectedProduct", product)
+        intent.putExtra("productImage", imageUrl) // Pass the image URL
+        startActivity(intent)
+    }
+
+
 
     private fun showAddToCartPopup(product: Product) {
         val dialog = BottomSheetDialog(this)
@@ -63,11 +87,10 @@ class ProductDetailsActivity : AppCompatActivity() {
         val ivProductImage: ImageView = view.findViewById(R.id.ivProductImage)
         val tvProductPrice: TextView = view.findViewById(R.id.tvProductPrice)
         val etQuantity: EditText = view.findViewById(R.id.etQuantity)
-        val etNotes: EditText = view.findViewById(R.id.etNotes)
         val btnConfirm: Button = view.findViewById(R.id.btnConfirmAddToCart)
 
         // Handle image URL
-        val baseUrl = "http://192.168.100.184/thriftique_db/includes/v1/Products/uploads/"
+        val baseUrl = Constants.getBaseUrl(this)
         val imageUrl = when {
             product.image.isNullOrEmpty() -> null  // Use default placeholder
             product.image.startsWith("http") -> product.image.trim()  // Already a full URL
@@ -81,7 +104,7 @@ class ProductDetailsActivity : AppCompatActivity() {
             .into(ivProductImage)
 
         // Set product price in the dialog
-        tvProductPrice.text = "$${product.price}"
+        tvProductPrice.text = "₱${product.price}"
 
         btnConfirm.setOnClickListener {
             val quantity = etQuantity.text.toString().trim()
@@ -92,23 +115,30 @@ class ProductDetailsActivity : AppCompatActivity() {
 
             val quantityInt = quantity.toIntOrNull() ?: 1
 
-            // Create a new CartItem including the image URL
+            val baseUrl = Constants.getBaseUrl(this)
+            val imageUrl = when {
+                product.image.isNullOrEmpty() -> "" // Default empty string if no image
+                product.image.startsWith("http") -> product.image.trim()
+                product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/")
+                else -> baseUrl + product.image.trim()
+            }
+
             val cartItem = CartItem(
-                userId = 1,
+                userId = 1, // Change this dynamically for actual user
                 productId = product.id,
                 quantity = quantityInt,
                 productName = product.name,
-                productImage = product.image ?: "", // Ensure image is passed
+                productImage = imageUrl, // Ensure image URL is set correctly
                 productPrice = product.price
             )
 
-            // Create an Intent to navigate to the CartActivity
             val intent = Intent(this, CartActivity::class.java)
-            intent.putExtra("cartItem", cartItem) // Pass CartItem to CartActivity
+            intent.putExtra("cartItem", cartItem)
             startActivity(intent)
 
             dialog.dismiss()
         }
+
 
         dialog.setContentView(view)
         dialog.show()

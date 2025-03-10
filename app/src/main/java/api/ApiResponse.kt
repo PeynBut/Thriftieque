@@ -1,5 +1,6 @@
 package com.example.android.models
 
+import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -56,14 +57,40 @@ data class LoginResponse(
     @SerializedName("message") val message: String? = ""
 )
 
-@Parcelize
+
 data class CartItem(
     val userId: Int,
     val productId: Int,
+    val quantity: Int,
     val productName: String,
-    val imageUrl: String, // Add image URL
-    val quantity: Int
-) : Parcelable
+    val productImage: String, // Ensure this holds a proper URL
+    val productPrice: Double
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readDouble()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(userId)
+        parcel.writeInt(productId)
+        parcel.writeInt(quantity)
+        parcel.writeString(productName)
+        parcel.writeString(productImage)
+        parcel.writeDouble(productPrice)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<CartItem> {
+        override fun createFromParcel(parcel: Parcel) = CartItem(parcel)
+        override fun newArray(size: Int) = arrayOfNulls<CartItem?>(size)
+    }
+}
 
 
 // Product Model
