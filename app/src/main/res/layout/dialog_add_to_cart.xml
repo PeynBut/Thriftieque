@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_bg"
+    android:padding="20dp">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add to Cart"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="10dp" />
+
+    <!-- Product Image and Price -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/ivProductImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/blouse"
+            android:background="@drawable/image_border"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/tvProductPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$25.99"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:paddingStart="15dp"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <!-- Quantity Input -->
+    <EditText
+        android:id="@+id/etQuantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter quantity"
+        android:inputType="number"
+        android:background="@drawable/rounded_edittext_bg"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Special Notes Input -->
+    <EditText
+        android:id="@+id/etNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Add special notes (optional)"
+        android:background="@drawable/rounded_edittext_bg"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- Confirm Button -->
+    <Button
+        android:id="@+id/btnConfirmAddToCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add to Cart"
+        android:backgroundTint="@color/primary_color"
+        android:textColor="@android:color/white"
+        android:padding="10dp" />
+</LinearLayout>

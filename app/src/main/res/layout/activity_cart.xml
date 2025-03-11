@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Main Content Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Toolbar Section -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/black"
+            android:title="Your Cart"
+            android:titleTextColor="@color/white"
+            app:navigationIcon="@drawable/baseline_backspace_24"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+        <!-- Scrollable Cart Content -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Empty Cart View (Initially Hidden) -->
+                <LinearLayout
+                    android:id="@+id/emptyCartView"
+                    android:layout_width="41dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="50dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/shopping_cart" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:text="Your cart is empty"
+                        android:textColor="@color/gray"
+                        android:textSize="18sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnContinueShopping"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/black"
+                        android:text="Continue Shopping"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <!-- Cart Items RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cartRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"/>
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Checkout Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="16dp"
+            android:elevation="8dp"
+            android:orientation="vertical">
+
+            <!-- Order Summary -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/totalPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Total: $0.00"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/poppins"
+                    android:textStyle="bold"
+                    android:layout_weight="1"/>
+
+                <TextView
+                    android:id="@+id/tvItemCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(0 items)"
+                    android:textSize="14sp"
+                    android:textColor="@color/gray"/>
+            </LinearLayout>
+
+            <!-- Checkout & Place Order Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="12dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnContinueShoppingBottom"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Continue Shopping" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPlaceOrder"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Place Order"
+                    android:backgroundTint="@color/black"
+                    android:textColor="@color/white"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/nav_menu"
+        app:headerLayout="@layout/nav_header"
+        android:background="@android:color/white"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

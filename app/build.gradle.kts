@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id ("kotlin-parcelize") // ✅ Required for @Parcelize
+
 }
 
 android {
@@ -35,7 +37,12 @@ android {
     }
 }
 
+
 dependencies {
+    implementation ("org.java-websocket:Java-WebSocket:1.5.2")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation ("com.google.code.gson:gson:2.8.9")
     implementation ("com.google.android.gms:play-services-location:18.0.0")
     implementation("androidx.core:core-splashscreen:1.0.0")
     implementation("com.android.volley:volley:1.2.0")
@@ -44,6 +51,7 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.2")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.2")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
+    implementation ("androidx.cardview:cardview:1.0.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

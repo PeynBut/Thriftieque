@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/ivProductImage"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/tvProductName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Product Name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvProductPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="₱99.99"
+        android:textSize="18sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:paddingTop="4dp" />
+
+    <Button
+        android:id="@+id/btnAddToCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add to Cart"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"/>
+
+    <Button
+        android:id="@+id/btnBuyNow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buy Now"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"/>
+</LinearLayout>
