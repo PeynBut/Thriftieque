@@ -1,5 +1,6 @@
 package clothing
 
+import Authentication.LogIn
 import Products.CheckoutActivity
 import android.content.Intent
 import android.os.Bundle
@@ -11,15 +12,21 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import api.OrderApiService
+import api.OrderRequest
+import api.OrderResponse
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
 import com.rendonapp.thriftique.CartItem
+import retrofit2.Call
+import retrofit2.Response
 
 class CartActivity : AppCompatActivity() {
 
@@ -86,28 +93,85 @@ class CartActivity : AppCompatActivity() {
             finish()
         }
 
-       btnContinueShoppingBottom.setOnClickListener {
-           val intent = Intent(this, Homepage::class.java)
-           startActivity(intent)
-           overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-           finish()
-       }
+        btnContinueShoppingBottom.setOnClickListener {
+            val intent = Intent(this, Homepage::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            finish()
+        }
 
         btnPlaceOrder.setOnClickListener {
             val selectedItems = cartAdapter.getSelectedItems()
             if (selectedItems.isEmpty()) {
-                Toast.makeText(this, "Please select at least one item to place an order.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Please select at least one item to place an order.",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                val intent = Intent(this, CheckoutActivity::class.java)
-                intent.putParcelableArrayListExtra("selectedItems", ArrayList(selectedItems))
-                startActivity(intent)
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-                finish()
+                val firstItem = selectedItems[0] // Assuming single-item checkout for now
+
+                // Retrieve user ID from SharedPreferences (using "user_session")
+                val sharedPreferences = getSharedPreferences("user_session", MODE_PRIVATE)
+                val userId = sharedPreferences.getInt("user_id", -1) // Default value is -1 if not found
+
+                // Check if user ID is valid
+                if (userId == -1) {
+                    Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // Now, create the order request using the actual user ID
+                val orderRequest = OrderRequest(
+                    user_id = userId, // Use the logged-in user's ID
+                    product_id = firstItem.productId,
+                    quantity = firstItem.quantity,
+                    total_price = firstItem.productPrice * firstItem.quantity,
+                    phone = "1234567890" // Replace with actual user phone
+                )
+
+                val apiService = RetrofitClient.orderInstance // No need to call .create() here
+                apiService.createOrder(orderRequest)
+                    .enqueue(object : retrofit2.Callback<OrderResponse> {
+                        override fun onResponse(
+                            call: Call<OrderResponse>,
+                            response: Response<OrderResponse>
+                        ) {
+                            if (response.isSuccessful) {
+                                val orderResponse = response.body()
+                                if (orderResponse != null && !orderResponse.error) {
+                                    Toast.makeText(
+                                        this@CartActivity,
+                                        "Order placed: ${orderResponse.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    cartList.clear()
+                                    cartAdapter.notifyDataSetChanged()
+                                    CartStorage.saveCart(this@CartActivity, cartList)
+                                    updateCartUI()
+                                } else {
+                                    Toast.makeText(
+                                        this@CartActivity,
+                                        "Order failed: ${orderResponse?.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
+                            Toast.makeText(
+                                this@CartActivity,
+                                "Error: ${t.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    })
             }
         }
     }
 
-    // Updates UI based on cart contents
+        // Updates UI based on cart contents
     private fun updateCartUI() {
         val totalPrice = cartList.sumOf { it.productPrice * it.quantity }
         tvTotalPrice.text = "Total: ₱%.2f".format(totalPrice)
