@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -30,8 +30,11 @@ class CartActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var toolbar: MaterialToolbar
     private lateinit var tvTotalPrice: TextView
+    private lateinit var tvItemCount: TextView
     private lateinit var btnContinueShoppingBottom: MaterialButton
     private lateinit var btnPlaceOrder: MaterialButton
+    private lateinit var emptyCartView: LinearLayout
+    private lateinit var btnContinueShopping: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +45,13 @@ class CartActivity : AppCompatActivity() {
         drawerLayout = findViewById(R.id.drawer_layout)
         recyclerView = findViewById(R.id.cartRecyclerView)
         tvTotalPrice = findViewById(R.id.totalPrice)
+        tvItemCount = findViewById(R.id.tvItemCount)
         btnContinueShoppingBottom = findViewById(R.id.btnContinueShoppingBottom)
         btnPlaceOrder = findViewById(R.id.btnPlaceOrder)
+        emptyCartView = findViewById(R.id.emptyCartView)
+        btnContinueShopping = findViewById(R.id.btnContinueShopping)
 
-
+        // Setup RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
         cartAdapter = CartAdapter(this, cartList, {}, ::removeItem)
         recyclerView.adapter = cartAdapter
@@ -53,24 +59,40 @@ class CartActivity : AppCompatActivity() {
         // Setup Navigation Drawer
         setupNavigationDrawer()
 
+        // Load saved cart
+        cartList.addAll(CartStorage.getCart(this))
+        cartAdapter.notifyDataSetChanged()
+        updateCartUI()
+
+        // Handle Intent data (if item added from product page)
+        val cartItem = intent.getParcelableExtra<CartItem>("cartItem")
+        cartItem?.let {
+            cartList.add(it)
+            cartAdapter.notifyDataSetChanged()
+            CartStorage.saveCart(this, cartList) // Save updated cart
+            updateCartUI()
+        }
+
         // Back button listener
         toolbar.setNavigationOnClickListener {
             vibrate()
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
-        val cartItem = intent.getParcelableExtra<CartItem>("cartItem")
-        cartItem?.let {
-            cartList.add(it)
-            cartAdapter.notifyDataSetChanged()
-            calculateTotalPrice()
-            CartStorage.saveCart(this, cartList) // Save the cart
-        }
-        btnContinueShoppingBottom.setOnClickListener {
-            startActivity(Intent(this, Homepage::class.java))
+        btnContinueShopping.setOnClickListener {
+            val intent = Intent(this, Homepage::class.java)
+            startActivity(intent)
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
             finish()
         }
+
+       btnContinueShoppingBottom.setOnClickListener {
+           val intent = Intent(this, Homepage::class.java)
+           startActivity(intent)
+           overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+           finish()
+       }
+
         btnPlaceOrder.setOnClickListener {
             val selectedItems = cartAdapter.getSelectedItems()
             if (selectedItems.isEmpty()) {
@@ -83,22 +105,27 @@ class CartActivity : AppCompatActivity() {
                 finish()
             }
         }
-
-
-
     }
-    private fun calculateTotalPrice() {
+
+    // Updates UI based on cart contents
+    private fun updateCartUI() {
         val totalPrice = cartList.sumOf { it.productPrice * it.quantity }
         tvTotalPrice.text = "Total: ₱%.2f".format(totalPrice)
-    }
+        tvItemCount.text = "(${cartList.size} items)"
 
+        if (cartList.isEmpty()) {
+            emptyCartView.visibility = LinearLayout.VISIBLE
+            recyclerView.visibility = LinearLayout.GONE
+        } else {
+            emptyCartView.visibility = LinearLayout.GONE
+            recyclerView.visibility = LinearLayout.VISIBLE
+        }
+    }
 
     private fun setupNavigationDrawer() {
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
-
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
 
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -112,29 +139,15 @@ class CartActivity : AppCompatActivity() {
             vibrate()
             drawerLayout.openDrawer(GravityCompat.START)
         }
-        cartList.addAll(CartStorage.getCart(this)) // Load saved cart
-        cartAdapter.notifyDataSetChanged()
-        calculateTotalPrice()
-
     }
 
     private fun removeItem(cartItem: CartItem) {
-        val index = cartList.indexOf(cartItem)
-        if (index != -1) {
-            cartList.removeAt(index)
-            cartAdapter.notifyItemRemoved(index)
-            calculateTotalPrice()
-            CartStorage.saveCart(this, cartList) // Save the cart
-            Toast.makeText(this, "Removed item from cart", Toast.LENGTH_SHORT).show()
-        }
-
-        if (cartList.isEmpty()) {
-            tvTotalPrice.text = "Total: ₱0.00"
-            Toast.makeText(this, "Your cart is empty", Toast.LENGTH_SHORT).show()
-        }
+        cartList.remove(cartItem)
+        cartAdapter.notifyDataSetChanged()
+        CartStorage.saveCart(this, cartList) // Save updated cart
+        updateCartUI()
+        Toast.makeText(this, "Removed item from cart", Toast.LENGTH_SHORT).show()
     }
-
-
 
     private fun vibrate() {
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
