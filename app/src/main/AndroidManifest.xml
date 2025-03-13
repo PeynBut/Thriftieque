@@ -22,6 +22,7 @@
         android:theme="@style/Theme.Thriftique"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity android:name="Category.CategoryActivity" />
         <activity android:name="setting.SettingsActivity" />
         <activity android:name="Products.OrderConfirmationActivity" />
         <activity android:name="Products.PaymentActivity" />

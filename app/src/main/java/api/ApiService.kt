@@ -4,9 +4,12 @@ import com.example.android.models.LoginResponse
 import com.example.android.models.Product
 import com.example.android.models.RegisterPart1
 import com.example.android.models.RegisterUserRequest
+import com.google.android.gms.common.api.Response
 import com.rendonapp.thriftique.CartItem
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -39,6 +42,8 @@ interface ApiService {
     @GET("includes/v1/Products/products.php")
     fun getProducts(): Call<ApiResponse>
 
+    @GET("get_cart.php")
+    fun getCartItems(@Query("user_id") userId: Int): Call<List<CartItem>>
 
 
 }

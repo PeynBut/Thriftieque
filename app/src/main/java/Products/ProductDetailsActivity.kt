@@ -1,22 +1,30 @@
 package Products
 
+import RetrofitClient
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import api.Constants
 import com.bumptech.glide.Glide
 import com.example.android.models.Product
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.rendonapp.thriftique.R
 import clothing.CartActivity
+import com.example.android.models.ApiResponse
 import com.rendonapp.thriftique.CartItem
-import message.MessageActivity
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ProductDetailsActivity : AppCompatActivity() {
+
+    private lateinit var suggestedProductsAdapter: SuggestedProductsAdapter
+    private lateinit var suggestedProductsList: MutableList<Product>
+    private lateinit var rvSuggestedProducts: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +36,20 @@ class ProductDetailsActivity : AppCompatActivity() {
         val btnAddToCart: Button = findViewById(R.id.btnAddToCart)
         val btnBuyNow: Button = findViewById(R.id.btnBuyNow)
 
+        rvSuggestedProducts = findViewById(R.id.rvSuggestedProducts)
+        rvSuggestedProducts.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        // Initialize list and adapter
+        suggestedProductsList = mutableListOf()
+        suggestedProductsAdapter =
+            SuggestedProductsAdapter(this, suggestedProductsList) { product ->
+                val intent = Intent(this, ProductDetailsActivity::class.java)
+                intent.putExtra("product", product)
+                startActivity(intent)
+            }
+        rvSuggestedProducts.adapter = suggestedProductsAdapter
+
         // Get product data from intent
         val product = intent.getParcelableExtra<Product>("product")
 
@@ -35,50 +57,69 @@ class ProductDetailsActivity : AppCompatActivity() {
             tvProductName.text = it.name
             tvProductPrice.text = "₱${it.price}"
 
-            // Handle image URL
-            val baseUrl = Constants.getBaseUrl(this)
-            val imageUrl = when {
-                it.image.isNullOrEmpty() -> null  // Use default placeholder
-                it.image.startsWith("http") -> it.image.trim()  // Already a full URL
-                it.image.startsWith("uploads/") -> baseUrl + it.image.removePrefix("uploads/") // Prevent double "uploads/"
-                else -> baseUrl + it.image.trim() // Standard case
-            }
-
-            // Load the product image into the ImageView
+            val imageUrl = formatImageUrl(it.image)
             Glide.with(this)
                 .load(imageUrl ?: R.drawable.user) // Placeholder image if null
                 .into(ivProductImage)
 
             // Handle Add to Cart click
             btnAddToCart.setOnClickListener {
-                showAddToCartPopup(product)
+                product?.let { showAddToCartPopup(it) }
             }
 
             btnBuyNow.setOnClickListener {
-                product?.let { selectedProduct ->
-                    proceedToCheckout(selectedProduct)
+                product?.let { proceedToCheckout(it) }
+            }
+
+            // Load suggested products immediately
+            loadSuggestedProducts()
+        }
+    }
+
+    private fun loadSuggestedProducts() {
+        val apiService = RetrofitClient.instance
+
+        apiService.getProducts().enqueue(object : Callback<ApiResponse> {
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                if (response.isSuccessful && response.body()?.products != null) {
+                    suggestedProductsList.clear()
+                    suggestedProductsList.addAll(response.body()?.products!!)
+
+                    // Print image URLs for debugging
+                    for (product in suggestedProductsList) {
+                        println("Product Image URL: ${product.image}")
+                    }
+
+                    suggestedProductsAdapter.notifyDataSetChanged()
+                } else {
+                    Toast.makeText(
+                        this@ProductDetailsActivity,
+                        "Failed to load products",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
-
-        }
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                Toast.makeText(
+                    this@ProductDetailsActivity,
+                    "Error: ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
     }
-    private fun proceedToCheckout(product: Product) {
-        val baseUrl = Constants.getBaseUrl(this)
-        val imageUrl = when {
-            product.image.isNullOrEmpty() -> "" // Default empty string if no image
-            product.image.startsWith("http") -> product.image.trim()
-            product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/")
-            else -> baseUrl + product.image.trim()
-        }
 
-        val intent = Intent(this, CheckoutActivity::class.java)
-        intent.putExtra("selectedProduct", product)
-        intent.putExtra("productImage", imageUrl) // Pass the image URL
+
+    private fun proceedToCheckout(product: Product) {
+        val imageUrl = formatImageUrl(product.image)
+
+        val intent = Intent(this, CheckoutActivity::class.java).apply {
+            putExtra("selectedProduct", product)
+            putExtra("productImage", imageUrl) // Pass the image URL
+        }
         startActivity(intent)
     }
-
-
 
     private fun showAddToCartPopup(product: Product) {
         val dialog = BottomSheetDialog(this)
@@ -89,46 +130,22 @@ class ProductDetailsActivity : AppCompatActivity() {
         val etQuantity: EditText = view.findViewById(R.id.etQuantity)
         val btnConfirm: Button = view.findViewById(R.id.btnConfirmAddToCart)
 
-        // Handle image URL
-        val baseUrl = Constants.getBaseUrl(this)
-        val imageUrl = when {
-            product.image.isNullOrEmpty() -> null  // Use default placeholder
-            product.image.startsWith("http") -> product.image.trim()  // Already a full URL
-            product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/") // Prevent double "uploads/"
-            else -> baseUrl + product.image.trim() // Standard case
-        }
-
-        // Load product image dynamically using Glide
+        val imageUrl = formatImageUrl(product.image)
         Glide.with(this)
             .load(imageUrl ?: R.drawable.user) // Placeholder image if null
             .into(ivProductImage)
 
-        // Set product price in the dialog
         tvProductPrice.text = "₱${product.price}"
 
         btnConfirm.setOnClickListener {
-            val quantity = etQuantity.text.toString().trim()
-            if (quantity.isEmpty()) {
-                etQuantity.error = "Enter quantity"
-                return@setOnClickListener
-            }
-
-            val quantityInt = quantity.toIntOrNull() ?: 1
-
-            val baseUrl = Constants.getBaseUrl(this)
-            val imageUrl = when {
-                product.image.isNullOrEmpty() -> "" // Default empty string if no image
-                product.image.startsWith("http") -> product.image.trim()
-                product.image.startsWith("uploads/") -> baseUrl + product.image.removePrefix("uploads/")
-                else -> baseUrl + product.image.trim()
-            }
+            val quantity = etQuantity.text.toString().trim().toIntOrNull() ?: 1
 
             val cartItem = CartItem(
                 userId = 1, // Change this dynamically for actual user
                 productId = product.id,
-                quantity = quantityInt,
+                quantity = quantity,
                 productName = product.name,
-                productImage = imageUrl, // Ensure image URL is set correctly
+                productImage = imageUrl,
                 productPrice = product.price
             )
 
@@ -139,8 +156,17 @@ class ProductDetailsActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
-
         dialog.setContentView(view)
         dialog.show()
+    }
+
+    private fun formatImageUrl(imagePath: String?): String {
+        val baseUrl = Constants.getBaseUrl(this)
+        return when {
+            imagePath.isNullOrEmpty() -> "" // Default empty string if no image
+            imagePath.startsWith("http") -> imagePath.trim()
+            imagePath.startsWith("uploads/") -> baseUrl + imagePath.removePrefix("uploads/")
+            else -> baseUrl + imagePath.trim()
+        }
     }
 }
