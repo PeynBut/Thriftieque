@@ -113,6 +113,26 @@
                 android:textColor="@android:color/white"
                 android:padding="10dp" />
         </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You May Also Like"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:gravity="center" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSuggestedProducts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never" />
+
 
     </LinearLayout>
+
 </ScrollView>
