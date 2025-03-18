@@ -1,11 +1,27 @@
 package com.example.android.models
 
+
 import android.os.Parcel
+import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-// ✅ Register Part 1 (Basic User Info)
+
+
+data class SignUp(
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val password: String,
+    val confirmPassword: String
+)
+data class SignUpResponse(
+    val message: String?,
+    val error: Boolean?,  // Change from String? to Boolean?
+    val token: String?
+)
+
+
 data class RegisterPart1(
     val firstName: String,
     val lastName: String,
@@ -93,7 +109,6 @@ data class CartItem(
 }
 
 
-// Product Model
 @Parcelize
 data class Product(
     val id: Int,
@@ -103,6 +118,7 @@ data class Product(
     val image: String,
     val category: String
 ) : Parcelable
+
 
 data class Product_see(
     val id: Int,

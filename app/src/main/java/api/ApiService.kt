@@ -4,6 +4,8 @@ import com.example.android.models.LoginResponse
 import com.example.android.models.Product
 import com.example.android.models.RegisterPart1
 import com.example.android.models.RegisterUserRequest
+import com.example.android.models.SignUp
+import com.example.android.models.SignUpResponse
 import com.google.android.gms.common.api.Response
 import com.rendonapp.thriftique.CartItem
 import retrofit2.Call
@@ -15,10 +17,14 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface ApiService {
+    @POST("register.php")
+    fun signup(@Body request: SignUp): Call<SignUpResponse>
+
+
     @POST("includes/v1/RegisterPart1.php")
     fun registerUser(@Body registerRequest: RegisterPart1): Call<ApiResponse>
 
-    @POST("includes/v1/userLogin.php")
+    @POST("userLogin.php")
     fun loginUser(@Body request: LoginRequest): Call<LoginResponse>
 
     @POST("includes/v1/RegisterPart2.php")

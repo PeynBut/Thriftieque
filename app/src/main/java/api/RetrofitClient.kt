@@ -3,7 +3,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.100.184/android/"
+    private const val BASE_URL = "http://192.168.100.184/thriftique_db/includes/v1/"
 
     val retrofit: Retrofit by lazy {
         Retrofit.Builder()
@@ -20,4 +20,5 @@ object RetrofitClient {
     val orderInstance: OrderApiService by lazy {
         retrofit.create(OrderApiService::class.java) // Use OrderApiService here
     }
+
 }
