@@ -9,6 +9,11 @@ android {
     namespace = "com.rendonapp.thriftique"
     compileSdk = 35
 
+    buildFeatures {
+        viewBinding = true
+    }
+
+
     defaultConfig {
         applicationId = "com.rendonapp.thriftique"
         minSdk = 34

@@ -169,7 +169,7 @@ class LogIn : AppCompatActivity() {
                         startActivity(Intent(this@LogIn, Homepage::class.java))
                         finish()
                     } else {
-                        Toast.makeText(this@LogIn, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LogIn, "Incorrect email or password", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.e("LoginError", "Server Error: ${response.errorBody()?.string()}")

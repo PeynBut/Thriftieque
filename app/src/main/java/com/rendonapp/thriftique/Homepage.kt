@@ -2,6 +2,7 @@ package com.rendonapp.thriftique
 
 import Authentication.LogIn
 import Category.CategoryActivity
+import Order.OrderActivity
 import Products.ProductAdapter
 import android.content.Context
 import android.content.Intent
@@ -155,6 +156,11 @@ class Homepage : AppCompatActivity() {
                     startActivity(Intent(this, CategoryActivity::class.java))
                     true
                 }
+                R.id.nav_order -> {
+                    startActivity(Intent(this, OrderActivity::class.java))
+                    true
+                }
+
 
                 else -> false
             }
@@ -188,7 +194,7 @@ class Homepage : AppCompatActivity() {
                                 description = item.getString("description"),
                                 price = item.getDouble("price"),
                                 image = item.getString("image"),
-                                category = category  // Use default if missing
+                                category = category,  // Use default if missing
                             )
                         )
                     }
