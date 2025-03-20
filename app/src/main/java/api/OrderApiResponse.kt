@@ -22,6 +22,6 @@ data class OrderResponse(
 
 // Order API Interface
 interface OrderApiService {
-    @POST("includes/v1/Orders/Order.php")
+    @POST("Orders/Order.php")
     fun createOrder(@Body order: OrderRequest): Call<OrderResponse>
 }

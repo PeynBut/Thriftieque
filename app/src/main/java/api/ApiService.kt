@@ -45,8 +45,11 @@ interface ApiService {
     @GET("includes/v1/Products/products.php")
     fun getProductById(@Query("id") id: Int): Call<ApiResponse>
 
-    @GET("includes/v1/Products/products.php")
+
+    @GET("Products/get_products.php")
     fun getProducts(): Call<ApiResponse>
+
+
 
     @GET("get_cart.php")
     fun getCartItems(@Query("user_id") userId: Int): Call<List<CartItem>>

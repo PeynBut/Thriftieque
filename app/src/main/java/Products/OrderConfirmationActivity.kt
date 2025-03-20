@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import clothing.CartStorage
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
 
@@ -28,6 +29,9 @@ class OrderConfirmationActivity : AppCompatActivity() {
 
         tvConfirmationMessage.text = "Your order has been placed successfully!"
         tvPaymentDetails.text = "Payment Method: $paymentMethod\nTotal Paid: ₱$totalAmount"
+
+        // ✅ Clear the cart after confirming the order
+        CartStorage.saveCart(this, emptyList())
 
         btnBackToHome.setOnClickListener {
             val intent = Intent(this, Homepage::class.java)

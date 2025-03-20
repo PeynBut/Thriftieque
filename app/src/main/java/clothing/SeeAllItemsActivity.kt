@@ -50,14 +50,15 @@ class SeeAllItemsActivity : Activity() {
                     Log.d("FetchProducts", "Response Body: $apiResponse")
 
                     val products = apiResponse.products
-                    if (products.isNullOrEmpty()) {
+                    products?.let {
+                        itemList.clear()
+                        itemList.addAll(it) // ✅ Ensures `addAll()` only runs if `products` is not null
+                        productAdapter.notifyDataSetChanged()
+                    } ?: run {
                         Log.e("FetchProducts", "API returned empty or null product list")
                         showToast("No products available")
-                    } else {
-                        itemList.clear()
-                        itemList.addAll(products) // ✅ Directly add products to list
-                        productAdapter.notifyDataSetChanged()
                     }
+
                 } else {
                     val errorBody = response.errorBody()?.string()
                     Log.e("FetchProducts", "API Error: ${response.code()} - $errorBody")

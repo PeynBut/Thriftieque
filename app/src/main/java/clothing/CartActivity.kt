@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -86,6 +85,7 @@ class CartActivity : AppCompatActivity() {
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
+
         btnContinueShopping.setOnClickListener {
             val intent = Intent(this, Homepage::class.java)
             startActivity(intent)
@@ -109,64 +109,9 @@ class CartActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                val firstItem = selectedItems[0] // Assuming single-item checkout for now
-
-                // Retrieve user ID from SharedPreferences (using "user_session")
-                val sharedPreferences = getSharedPreferences("user_session", MODE_PRIVATE)
-                val userId = sharedPreferences.getInt("user_id", -1) // Default value is -1 if not found
-
-                // Check if user ID is valid
-                if (userId == -1) {
-                    Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                // Now, create the order request using the actual user ID
-                val orderRequest = OrderRequest(
-                    user_id = userId, // Use the logged-in user's ID
-                    product_id = firstItem.productId,
-                    quantity = firstItem.quantity,
-                    total_price = firstItem.productPrice * firstItem.quantity,
-                    phone = "1234567890" // Replace with actual user phone
-                )
-
-                val apiService = RetrofitClient.orderInstance // No need to call .create() here
-                apiService.createOrder(orderRequest)
-                    .enqueue(object : retrofit2.Callback<OrderResponse> {
-                        override fun onResponse(
-                            call: Call<OrderResponse>,
-                            response: Response<OrderResponse>
-                        ) {
-                            if (response.isSuccessful) {
-                                val orderResponse = response.body()
-                                if (orderResponse != null && !orderResponse.error) {
-                                    Toast.makeText(
-                                        this@CartActivity,
-                                        "Order placed: ${orderResponse.message}",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    cartList.clear()
-                                    cartAdapter.notifyDataSetChanged()
-                                    CartStorage.saveCart(this@CartActivity, cartList)
-                                    updateCartUI()
-                                } else {
-                                    Toast.makeText(
-                                        this@CartActivity,
-                                        "Order failed: ${orderResponse?.message}",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        }
-
-                        override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
-                            Toast.makeText(
-                                this@CartActivity,
-                                "Error: ${t.message}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    })
+                val intent = Intent(this, CheckoutActivity::class.java)
+                intent.putParcelableArrayListExtra("selected_items", ArrayList(selectedItems))
+                startActivity(intent)
             }
         }
     }
@@ -179,10 +124,10 @@ class CartActivity : AppCompatActivity() {
 
         if (cartList.isEmpty()) {
             emptyCartView.visibility = LinearLayout.VISIBLE
-            recyclerView.visibility = LinearLayout.GONE
+            recyclerView.visibility = RecyclerView.GONE
         } else {
             emptyCartView.visibility = LinearLayout.GONE
-            recyclerView.visibility = LinearLayout.VISIBLE
+            recyclerView.visibility = RecyclerView.VISIBLE
         }
     }
 
@@ -190,6 +135,7 @@ class CartActivity : AppCompatActivity() {
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
+        toggle.syncState() // Ensure toggle is synced
 
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -206,11 +152,14 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun removeItem(cartItem: CartItem) {
-        cartList.remove(cartItem)
-        cartAdapter.notifyDataSetChanged()
-        CartStorage.saveCart(this, cartList) // Save updated cart
-        updateCartUI()
-        Toast.makeText(this, "Removed item from cart", Toast.LENGTH_SHORT).show()
+        val position = cartList.indexOf(cartItem)
+        if (position != -1) {
+            cartList.removeAt(position)
+            cartAdapter.notifyItemRemoved(position)
+            CartStorage.saveCart(this, cartList) // Save updated cart
+            updateCartUI()
+            Toast.makeText(this, "Removed item from cart", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun vibrate() {
