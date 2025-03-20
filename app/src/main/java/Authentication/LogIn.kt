@@ -160,9 +160,10 @@ class LogIn : AppCompatActivity() {
 
                     if (responseBody?.id != null && responseBody.token != null) {
                         // Provide default values for nullable fields
+                        val userName = responseBody.name ?: "Guest User"
                         val userEmail = responseBody.email ?: "guest@example.com"
 
-
+                        saveUserSession(responseBody.id, userName, userEmail, responseBody.token)
 
                         Toast.makeText(this@LogIn, "Login Successful", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@LogIn, Homepage::class.java))

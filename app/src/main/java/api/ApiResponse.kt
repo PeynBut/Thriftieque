@@ -58,20 +58,13 @@ data class LoginRequest(
     @SerializedName("password") val password: String
 )
 
-// ✅ Login Response Model
 data class LoginResponse(
-    @SerializedName("id") val id: Int? = null,
-    @SerializedName("firstName") val firstName: String? = null,
-    @SerializedName("lastName") val lastName: String? = null,
-    @SerializedName("email") val email: String? = null,
-    @SerializedName("token") val token: String? = null,
-    @SerializedName("phone") val phoneNumber: String? = null,
-    @SerializedName("latitude") val latitude: Double? = null,
-    @SerializedName("longitude") val longitude: Double? = null,
-    @SerializedName("address") val address: String? = null,
-    @SerializedName("error") val error: Boolean = false,
-    @SerializedName("message") val message: String? = ""
+    val id: Int,
+    val name: String?,  // Ensure this exists
+    val email: String?,
+    val token: String?
 )
+
 
 
 data class CartItem(

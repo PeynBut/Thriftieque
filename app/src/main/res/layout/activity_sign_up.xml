@@ -31,7 +31,6 @@
         android:text="Sign Up"/>
 
 
-    <!-- Name Fields -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +39,6 @@
         android:paddingBottom="8dp"
         android:weightSum="2">
 
-        <!-- First Name -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_firstname"
             android:layout_width="0dp"
@@ -53,10 +51,11 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_firstname_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:imeOptions="actionNext"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Last Name -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/et_lastname"
             android:layout_width="0dp"
@@ -68,12 +67,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_lastname_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:imeOptions="actionNext"/>
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
-    <!-- Email Field (Now closer to Name Fields) -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_email"
         android:layout_width="match_parent"
@@ -86,8 +86,11 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_email_edit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:imeOptions="actionNext"/>
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <!-- Password Fields -->
     <LinearLayout
