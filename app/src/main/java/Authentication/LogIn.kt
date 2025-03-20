@@ -159,7 +159,11 @@ class LogIn : AppCompatActivity() {
                     Log.d("LoginDebug", "Response Body: $responseBody")
 
                     if (responseBody?.id != null && responseBody.token != null) {
-                        saveUserSession(responseBody.id, responseBody.token)
+                        // Provide default values for nullable fields
+                        val userName = responseBody.name ?: "Guest User"
+                        val userEmail = responseBody.email ?: "guest@example.com"
+
+                        saveUserSession(responseBody.id, userName, userEmail, responseBody.token)
 
                         Toast.makeText(this@LogIn, "Login Successful", Toast.LENGTH_SHORT).show()
                         startActivity(Intent(this@LogIn, Homepage::class.java))
@@ -180,14 +184,19 @@ class LogIn : AppCompatActivity() {
         })
     }
 
-    private fun saveUserSession(userId: Int, token: String) {
+
+
+    private fun saveUserSession(userId: Int, userName: String, userEmail: String, token: String) {
         val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("user_id", userId)
+        editor.putString("user_name", userName)  // Store name
+        editor.putString("user_email", userEmail)  // Store email
         editor.putString("token", token)
         editor.putBoolean("is_logged_in", true)
         editor.apply()
     }
+
 
     private fun vibrate() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

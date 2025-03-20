@@ -95,6 +95,20 @@ class Homepage : AppCompatActivity() {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
+        // Get user details from SharedPreferences
+        val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val userName = sharedPreferences.getString("user_name", "Guest User")
+        val userEmail = sharedPreferences.getString("user_email", "guest@example.com")
+
+        // Access the header view of the navigation drawer
+        if (navigationView.headerCount > 0) {
+            val headerView = navigationView.getHeaderView(0)
+            val navUserEmail = headerView.findViewById<TextView>(R.id.navEmail)
+
+            // Set user data
+            navUserEmail.text = userEmail
+        }
+
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -113,13 +127,14 @@ class Homepage : AppCompatActivity() {
                     logoutUser(this)
                     true
                 }
-
-
                 else -> false
             }
         }
 
-        bottomNavigationView.setOnItemSelectedListener { item ->
+
+
+
+    bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
                     fetchProducts() // Load all products
