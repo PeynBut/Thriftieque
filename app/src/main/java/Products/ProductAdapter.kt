@@ -80,16 +80,25 @@ class ProductAdapter(private val context: Context, private var productList: List
             }
             context.startActivity(intent)
         }
+        holder.itemView.setOnClickListener {
+            vibrate()
+            val intent = Intent(context, ProductDetailsActivity::class.java).apply {
+                putExtra("PRODUCT_ID", product.id)
+            }
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = productList.size
 
     // Optimized data update using DiffUtil
     fun updateList(newList: List<Product>) {
+        productList = newList
         val diffCallback = ProductDiffCallback(productList, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         productList = newList
         diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

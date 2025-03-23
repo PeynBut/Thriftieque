@@ -1,46 +1,61 @@
-package Order
+    package Order
 
-import OrderAdapter
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.rendonapp.thriftique.databinding.BottomNavOrderBinding
 
-class OrderActivity : AppCompatActivity() {
-    private lateinit var binding: BottomNavOrderBinding
-    private lateinit var orderAdapter: OrderAdapter
+    import OrderAdapter
+    import android.content.Context
+    import android.os.Bundle
+    import androidx.appcompat.app.AppCompatActivity
+    import androidx.recyclerview.widget.LinearLayoutManager
+    import com.google.gson.Gson
+    import com.google.gson.reflect.TypeToken
+    import com.rendonapp.thriftique.databinding.BottomNavOrderBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    class OrderActivity : AppCompatActivity() {
+        private lateinit var binding: BottomNavOrderBinding
+        private lateinit var orderAdapter: OrderAdapter
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
 
-        // ✅ Correct ViewBinding usage
-        binding = BottomNavOrderBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+            // ✅ First, initialize binding
+            binding = BottomNavOrderBinding.inflate(layoutInflater)
+            setContentView(binding.root)
 
-        // ✅ Setup RecyclerView with only "Place Order" items initially
-        val initialOrders = getDummyOrders().filter { it.status == "Place Order" }
-        orderAdapter = OrderAdapter(initialOrders)
-        binding.recyclerViewOrders.layoutManager = LinearLayoutManager(this)
-        binding.recyclerViewOrders.adapter = orderAdapter
+            // ✅ Then, set up the back button
+            binding.orderToolbar.setNavigationOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
 
-        // ✅ Handle category button clicks
-        binding.buttonPlaceOrder.setOnClickListener { filterOrders("Place Order") }
-        binding.buttonPreparing.setOnClickListener { filterOrders("Preparing") }
-        binding.buttonReady.setOnClickListener { filterOrders("Ready") }
-        binding.buttonCompleted.setOnClickListener { filterOrders("Completed") }
+            val savedOrders = getSavedOrders()
+            orderAdapter = OrderAdapter(savedOrders)
+
+            binding.recyclerViewOrders.layoutManager = LinearLayoutManager(this)
+            binding.recyclerViewOrders.adapter = orderAdapter
+
+            // ✅ Handle category button clicks
+            binding.buttonPlaceOrder.setOnClickListener { filterOrders("Place Order") }
+            binding.buttonPreparing.setOnClickListener { filterOrders("Preparing") }
+            binding.buttonReady.setOnClickListener { filterOrders("Ready") }
+            binding.buttonCompleted.setOnClickListener { filterOrders("Completed") }
+        }
+
+
+        private fun filterOrders(status: String) {
+            val filteredOrders = getSavedOrders().filter { it.status == status }
+            orderAdapter.updateOrders(filteredOrders)
+        }
+
+        private fun getSavedOrders(): List<Order> {
+            val sharedPreferences = getSharedPreferences("OrdersPref", Context.MODE_PRIVATE)
+            val gson = Gson()
+            val json = sharedPreferences.getString("orders", null)
+            val type = object : TypeToken<List<Order>>() {}.type
+            val orders = json?.let { gson.fromJson<List<Order>>(it, type) } ?: emptyList()
+
+            for (order in orders) {
+                println("Order ID: ${order.orderId}, Status: ${order.status}, Products: ${order.products?.size ?: 0}")
+            }
+
+            return orders
+        }
+
     }
-
-    private fun filterOrders(status: String) {
-        val filteredOrders = getDummyOrders().filter { it.status == status }
-        orderAdapter.updateOrders(filteredOrders)
-    }
-
-    private fun getDummyOrders(): List<Order> {
-        return listOf(
-            Order("Order #1", "Place Order"),
-            Order("Order #2", "Preparing"),
-            Order("Order #3", "Ready"),
-            Order("Order #4", "Completed"),
-        )
-    }
-}

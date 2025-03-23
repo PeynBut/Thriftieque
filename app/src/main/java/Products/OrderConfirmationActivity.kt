@@ -1,15 +1,17 @@
 package Products
 
+import Order.Order
 import OrderedProductAdapter
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import clothing.CartStorage
 import com.example.android.models.Product
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
 
@@ -37,11 +39,9 @@ class OrderConfirmationActivity : AppCompatActivity() {
         tvConfirmationMessage.text = "Your order has been placed successfully!"
         tvPaymentDetails.text = "Payment Method: $paymentMethod\nTotal Paid: ₱$totalAmount"
 
-        // ✅ Setup RecyclerView
-
-        adapter = OrderedProductAdapter(orderedProducts)
-
-        CartStorage.saveCart(this, emptyList())
+        // ✅ Pass ordered products when creating Order instance
+        val order = Order("Order #${System.currentTimeMillis()}", "Placed", orderedProducts)
+        saveOrder(order)
 
         btnBackToHome.setOnClickListener {
             val intent = Intent(this, Homepage::class.java)
@@ -49,5 +49,31 @@ class OrderConfirmationActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun saveOrder(order: Order) {
+        val sharedPreferences = getSharedPreferences("OrdersPref", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        // Retrieve existing orders
+        val gson = Gson()
+        val orderList: MutableList<Order> = getSavedOrders().toMutableList()
+
+        // Add new order
+        orderList.add(order)
+
+        // Save updated list
+        val json = gson.toJson(orderList)
+        editor.putString("orders", json)
+        editor.apply() // ✅ Apply changes to save them
+    }
+
+    // Function to get saved orders
+    private fun getSavedOrders(): List<Order> {
+        val sharedPreferences = getSharedPreferences("OrdersPref", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = sharedPreferences.getString("orders", null)
+        val type = object : TypeToken<List<Order>>() {}.type
+        return gson.fromJson(json, type) ?: emptyList()
     }
 }

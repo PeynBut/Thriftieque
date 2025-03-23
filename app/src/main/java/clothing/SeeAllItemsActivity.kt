@@ -9,7 +9,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import api.Constants
 import com.example.android.models.ApiResponse
 import com.example.android.models.Product
 import retrofit2.Call
@@ -20,68 +19,58 @@ import kotlin.math.max
 class SeeAllItemsActivity : Activity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var productAdapter: ProductAdapter
-    private var itemList: MutableList<Product> = mutableListOf() // ✅ Store Products instead of Adapter
+    private val itemList: MutableList<Product> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_see_all_items)
 
-        recyclerView = findViewById(R.id.recyclerViewAll)
-        recyclerView.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
-
-        // Initialize adapter
-        productAdapter = ProductAdapter(this, itemList)
-        recyclerView.adapter = productAdapter
-
-        // Fetch products from API
+        setupRecyclerView()
         fetchProducts()
     }
 
-    // ✅ Fetch products from backend API
+    private fun setupRecyclerView() {
+        recyclerView = findViewById(R.id.recyclerViewAll)
+        recyclerView.layoutManager = GridLayoutManager(this, calculateNoOfColumns())
+        productAdapter = ProductAdapter(this, itemList)
+        recyclerView.adapter = productAdapter
+    }
+
     private fun fetchProducts() {
         RetrofitClient.instance.getProducts().enqueue(object : Callback<ApiResponse> {
             override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                Log.d("FetchProducts", "Raw response: ${response.raw()}")
-                Log.d("FetchProducts", "Response Code: ${response.code()}")
+                if (!response.isSuccessful) {
+                    logError("API Error", "Response Code: ${response.code()}")
+                    showToast("Failed to load products: ${response.code()}")
+                    return
+                }
 
                 val apiResponse = response.body()
-
-                if (response.isSuccessful && apiResponse != null) {
-                    Log.d("FetchProducts", "Response Body: $apiResponse")
-
-                    val products = apiResponse.products
-                    products?.let {
-                        itemList.clear()
-                        itemList.addAll(it) // ✅ Ensures `addAll()` only runs if `products` is not null
-                        productAdapter.notifyDataSetChanged()
-                    } ?: run {
-                        Log.e("FetchProducts", "API returned empty or null product list")
-                        showToast("No products available")
-                    }
-
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("FetchProducts", "API Error: ${response.code()} - $errorBody")
-                    showToast("Failed to load products: ${response.code()}")
+                if (apiResponse?.products.isNullOrEmpty()) {
+                    logError("FetchProducts", "No products available")
+                    showToast("No products available")
+                    return
                 }
+
+                itemList.clear()
+                itemList.addAll(apiResponse?.products ?: emptyList())
+                productAdapter.notifyDataSetChanged()
             }
 
             override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                Log.e("FetchProducts", "Network error: ${t.message}")
+                logError("Network error", t.message ?: "Unknown error")
                 showToast("Failed to fetch products. Check your internet connection.")
             }
         })
     }
 
-    // ✅ Dynamically calculate number of columns
     private fun calculateNoOfColumns(): Int {
         val displayMetrics = resources.displayMetrics
         val dpWidth = displayMetrics.widthPixels / displayMetrics.density
-        val columnWidth = 300 // Increase column width for bigger images
-        return max((dpWidth / columnWidth).toInt(), 2) // Keep minimum 2 columns
+        val columnWidth = 300
+        return max((dpWidth / columnWidth).toInt(), 2)
     }
 
-    // ✅ Vibration feedback
     private fun vibrate() {
         val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
         if (vibrator.hasVibrator()) {
@@ -89,8 +78,11 @@ class SeeAllItemsActivity : Activity() {
         }
     }
 
-    // ✅ Helper function for toasts
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun logError(tag: String, message: String) {
+        Log.e(tag, message)
     }
 }

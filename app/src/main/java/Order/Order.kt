@@ -1,6 +1,10 @@
 package Order
 
+import com.example.android.models.Product
+
 data class Order(
-    val name: String,  // ✅ Make sure it matches what your adapter is expecting
-    val status: String
+    val orderId: String,
+    val status: String,
+    val products: List<Product>? = emptyList() // ✅ Avoids null issues
 )
+
