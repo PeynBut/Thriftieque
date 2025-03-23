@@ -20,7 +20,6 @@ interface ApiService {
     @POST("register.php")
     fun signup(@Body request: SignUp): Call<SignUpResponse>
 
-
     @POST("includes/v1/RegisterPart1.php")
     fun registerUser(@Body registerRequest: RegisterPart1): Call<ApiResponse>
 

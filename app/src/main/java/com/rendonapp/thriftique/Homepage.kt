@@ -184,8 +184,9 @@ class Homepage : AppCompatActivity() {
                     for (i in 0 until productsArray.length()) {
                         val item = productsArray.getJSONObject(i)
 
-                        // Check if "category" exists in the JSON response
                         val category = if (item.has("category")) item.getString("category") else "Unknown"
+                        val stock = if (item.has("stock")) item.getInt("stock") else 0  // Default to 0 if "stock" is missing
+
 
                         products.add(
                             Product(
@@ -194,7 +195,8 @@ class Homepage : AppCompatActivity() {
                                 description = item.getString("description"),
                                 price = item.getDouble("price"),
                                 image = item.getString("image"),
-                                category = category,  // Use default if missing
+                                category = category,
+                                stock = stock  // Use the safe stock value
                             )
                         )
                     }
@@ -210,6 +212,7 @@ class Homepage : AppCompatActivity() {
 
         Volley.newRequestQueue(this).add(request)
     }
+
 
 
 

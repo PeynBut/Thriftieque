@@ -133,7 +133,11 @@ class SignUp : AppCompatActivity() {
         if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             etEmail.error = "Please enter a valid email"
             isValid = false
+        } else if (!email.endsWith("@gmail.com")) {
+            etEmail.error = "Only Gmail addresses are allowed"
+            isValid = false
         }
+
         if (pass.isEmpty() || pass.length < 8) {
             etPassword.error = "Password must be at least 8 characters"
             isValid = false

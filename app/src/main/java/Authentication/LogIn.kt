@@ -139,6 +139,10 @@ class LogIn : AppCompatActivity() {
             emailLayout.error = "Please enter a valid email"
             return
         }
+        if (!email.endsWith("@gmail.com")) {
+            emailLayout.error = "Only Gmail addresses are allowed"
+            return
+        }
         if (password.isEmpty()) {
             passwordLayout.error = "Please enter your password"
             return
@@ -146,6 +150,7 @@ class LogIn : AppCompatActivity() {
 
         loginUser(email, password)
     }
+
 
     private fun loginUser(email: String, password: String) {
         val apiService = RetrofitClient.instance.loginUser(LoginRequest(email, password))
