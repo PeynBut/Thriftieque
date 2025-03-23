@@ -37,6 +37,7 @@ class ProductDetailsActivity : AppCompatActivity() {
         val tvProductPrice: TextView = findViewById(R.id.tvProductPrice)
         val btnAddToCart: Button = findViewById(R.id.btnAddToCart)
         val btnBuyNow: Button = findViewById(R.id.btnBuyNow)
+        val tvProductDescription: TextView = findViewById(R.id.tvProductDescription)
 
         // Quantity buttons
         val btnIncreaseQuantity: ImageButton = findViewById(R.id.btnIncreaseQuantity)
@@ -61,6 +62,7 @@ class ProductDetailsActivity : AppCompatActivity() {
         product?.let {
             tvProductName.text = it.name
             tvProductPrice.text = "₱${it.price}"
+            tvProductDescription.text = it.description
 
             val imageUrl = formatImageUrl(it.image)
             Glide.with(this).load(imageUrl).placeholder(R.drawable.user).into(ivProductImage)
@@ -103,6 +105,7 @@ class ProductDetailsActivity : AppCompatActivity() {
         // Update UI elements
         findViewById<TextView>(R.id.tvProductName).text = product!!.name
         findViewById<TextView>(R.id.tvProductPrice).text = "₱${product!!.price}"
+        findViewById<TextView>(R.id.tvProductDescription).text = product!!.description
 
         val imageUrl = formatImageUrl(product!!.image)
         Glide.with(this).load(imageUrl).placeholder(R.drawable.user).into(findViewById(R.id.ivProductImage))
@@ -111,6 +114,7 @@ class ProductDetailsActivity : AppCompatActivity() {
         quantity = 1
         updateQuantityUI()
     }
+
 
     private fun proceedToCheckout(product: Product) {
         val cartItem = CartItem(
