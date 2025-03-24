@@ -112,9 +112,20 @@ class CartActivity : AppCompatActivity() {
                 val intent = Intent(this, CheckoutActivity::class.java)
                 intent.putParcelableArrayListExtra("selected_items", ArrayList(selectedItems))
                 startActivity(intent)
+
+                // ✅ Remove ordered items from cart
+                cartList.removeAll(selectedItems)
+                cartAdapter.notifyDataSetChanged()
+
+                // ✅ Save updated cart
+                CartStorage.saveCart(this, cartList)
+
+                // ✅ Update UI
+                updateCartUI()
             }
         }
     }
+
 
         // Updates UI based on cart contents
     private fun updateCartUI() {

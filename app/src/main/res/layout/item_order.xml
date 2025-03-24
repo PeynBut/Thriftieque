@@ -4,13 +4,22 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+    <ImageView
+        android:id="@+id/orderImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/order"
+        android:layout_gravity="start" />
+
     <TextView
         android:id="@+id/tvOrderId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Order #123"
         android:textStyle="bold"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/tvStatus"
@@ -18,12 +27,25 @@
         android:layout_height="wrap_content"
         android:text="Status: Preparing"
         android:textSize="14sp"
-        android:textColor="@android:color/holo_red_dark"/>
+        android:textColor="@android:color/holo_red_dark"
+        android:layout_marginBottom="5dp" />
 
-    <!-- Nested RecyclerView for products -->
+    <TextView
+        android:id="@+id/tvTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: ₱100.00"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginBottom="5dp" />
+
+    <!-- Nested RecyclerView for order items -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProducts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false"/>
+        android:nestedScrollingEnabled="false"
+        android:visibility="gone"/> <!-- Hide if not needed -->
+
 </LinearLayout>

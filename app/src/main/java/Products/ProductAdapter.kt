@@ -19,8 +19,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.android.models.Product
 import com.rendonapp.thriftique.R
 
-class ProductAdapter(private val context: Context, private var productList: List<Product>) :
-    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(
+    private val context: Context,
+    private var productList: List<Product>,
+    private val isOrderView: Boolean = false // Added flag for order view
+) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     private val baseUrl = Constants.getBaseUrl(context)
 
@@ -34,6 +37,12 @@ class ProductAdapter(private val context: Context, private var productList: List
         holder.tvName.text = product.name
         holder.tvPrice.text = "₱${product.price}"
 
+        // ✅ Show quantity only in order view
+        if (isOrderView) {
+            holder.tvQuantity?.visibility = View.VISIBLE
+            holder.tvQuantity?.text = "Qty: ${product.quantity}"
+        }
+
         // Format Image URL
         val imageUrl = when {
             product.image.isNullOrEmpty() -> null  // Use default placeholder
@@ -42,7 +51,7 @@ class ProductAdapter(private val context: Context, private var productList: List
             else -> baseUrl + product.image.trim() // Standard case
         }
 
-        // Load image using Glide
+        // ✅ Load image using Glide
         Glide.with(context)
             .load(imageUrl ?: R.drawable.user) // Default image if null
             .apply(
@@ -55,37 +64,38 @@ class ProductAdapter(private val context: Context, private var productList: List
             )
             .into(holder.ivProductImage)
 
-        // Handle image click to open ProductDetailsActivity with vibration
-        holder.ivProductImage.setOnClickListener {
-            vibrate()
-            val intent = Intent(context, ProductDetailsActivity::class.java).apply {
-                putExtra("product", product)
+        // ✅ Disable click events in order view
+        if (!isOrderView) {
+            holder.ivProductImage.setOnClickListener {
+                vibrate()
+                val intent = Intent(context, ProductDetailsActivity::class.java).apply {
+                    putExtra("product", product)
+                }
+                context.startActivity(intent)
             }
-            context.startActivity(intent)
-        }
-        // Handle click to add product to the cart
-        holder.itemView.setOnClickListener {
-            val intent = Intent(context, CartActivity::class.java).apply {
-                putExtra("selectedProduct", product) // Product must be Parcelable
-            }
-            context.startActivity(intent)
-        }
 
+            holder.itemView.setOnClickListener {
+                val intent = Intent(context, CartActivity::class.java).apply {
+                    putExtra("selectedProduct", product)
+                }
+                context.startActivity(intent)
+            }
 
-        // Handle price click to go directly to CheckoutActivity
-        holder.tvPrice.setOnClickListener {
-            val intent = Intent(context, CheckoutActivity::class.java).apply {
-                putExtra("selectedProduct", product) // Pass full Product object
-                putExtra("selectedQuantity", 1) // Default quantity = 1
+            holder.tvPrice.setOnClickListener {
+                val intent = Intent(context, CheckoutActivity::class.java).apply {
+                    putExtra("selectedProduct", product)
+                    putExtra("selectedQuantity", 1)
+                }
+                context.startActivity(intent)
             }
-            context.startActivity(intent)
-        }
-        holder.itemView.setOnClickListener {
-            vibrate()
-            val intent = Intent(context, ProductDetailsActivity::class.java).apply {
-                putExtra("PRODUCT_ID", product.id)
+
+            holder.itemView.setOnClickListener {
+                vibrate()
+                val intent = Intent(context, ProductDetailsActivity::class.java).apply {
+                    putExtra("PRODUCT_ID", product.id)
+                }
+                context.startActivity(intent)
             }
-            context.startActivity(intent)
         }
     }
 
@@ -93,7 +103,6 @@ class ProductAdapter(private val context: Context, private var productList: List
 
     // Optimized data update using DiffUtil
     fun updateList(newList: List<Product>) {
-        productList = newList
         val diffCallback = ProductDiffCallback(productList, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         productList = newList
@@ -105,6 +114,7 @@ class ProductAdapter(private val context: Context, private var productList: List
         val ivProductImage: ImageView = itemView.findViewById(R.id.productImage)
         val tvName: TextView = itemView.findViewById(R.id.productName)
         val tvPrice: TextView = itemView.findViewById(R.id.productPrice)
+        val tvQuantity: TextView? = itemView.findViewById(R.id.tvQuantity) // Nullable for order view
     }
 
     // DiffUtil class for efficient updates
