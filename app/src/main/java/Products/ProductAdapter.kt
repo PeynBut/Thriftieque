@@ -99,16 +99,16 @@ class ProductAdapter(
         }
     }
 
+
     override fun getItemCount(): Int = productList.size
 
-    // Optimized data update using DiffUtil
     fun updateList(newList: List<Product>) {
         val diffCallback = ProductDiffCallback(productList, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         productList = newList
-        diffResult.dispatchUpdatesTo(this)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this) // ✅ Efficient update
     }
+
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val ivProductImage: ImageView = itemView.findViewById(R.id.productImage)

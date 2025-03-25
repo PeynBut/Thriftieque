@@ -4,6 +4,7 @@ package com.example.android.models
 import android.os.Parcel
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import androidx.recyclerview.widget.DiffUtil
 import com.google.gson.annotations.SerializedName
 
 
@@ -122,3 +123,22 @@ data class Product_see(
     val image: String,
     val price: Double
 )
+
+
+class ProductDiffCallback(
+    private val oldList: List<Product>,
+    private val newList: List<Product>
+) : DiffUtil.Callback() {
+
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition].id == newList[newItemPosition].id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+}
+

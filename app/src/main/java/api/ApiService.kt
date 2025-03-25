@@ -47,6 +47,9 @@ interface ApiService {
 
     @GET("Products/get_products.php")
     fun getProducts(): Call<ApiResponse>
+    @GET("Products/get_products.php")
+    fun getProducts(@Query("category") category: String): Call<ApiResponse>
+
 
 
 

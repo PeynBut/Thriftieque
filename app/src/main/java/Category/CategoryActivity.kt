@@ -4,6 +4,7 @@ import Products.ProductAdapter
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.models.ApiResponse
@@ -21,64 +22,51 @@ class CategoryActivity : AppCompatActivity() {
 
     private lateinit var productAdapter: ProductAdapter
     private lateinit var recyclerViewCategorizedProduct: RecyclerView
-    private var productList: List<Product> = listOf() // Assume this is populated from a database
+    private var productList: List<Product> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category)
 
-        // ✅ Set up the back button
         setupBackButton()
-
-        // ✅ Initialize RecyclerView
         recyclerViewCategorizedProduct = findViewById(R.id.recyclerViewCategorizedProduct)
-
-        getProductsFromDatabaseOrAPI() // ✅ Correct! UI updates automatically
 
         setupRecyclerView()
         setupCategoryButtons()
+
+        // ✅ Initially fetch all products
+        getProductsFromDatabaseOrAPI("All")
     }
-
-
-
-    private fun getProductsFromDatabaseOrAPI() {
+    private fun getProductsFromDatabaseOrAPI(category: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitClient.instance.getProducts().execute() // Synchronous Call
-                if (response.isSuccessful) {
-                    val apiResponse = response.body()
+                val response = RetrofitClient.instance.getProducts(category).execute()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
+                        println("Response: ${apiResponse}") // Debugging
 
-                    withContext(Dispatchers.Main) { // Switch to Main Thread to update UI
-                        if (apiResponse?.status == "success") {
-                            productList = apiResponse.products ?: emptyList() // Ensure non-null
+                        if (apiResponse?.success == true && !apiResponse.products.isNullOrEmpty()) {
+                            productList = apiResponse.products.filter { product ->
+                                category == "All" || product.category == category
+                            }
                             productAdapter.updateList(productList)
                         } else {
-                            Toast.makeText(
-                                this@CategoryActivity,
-                                "No products found",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(this@CategoryActivity, "No products found", Toast.LENGTH_SHORT).show()
+                            productList = emptyList() // Clear the list if no products are found
+                            productAdapter.updateList(productList)
                         }
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@CategoryActivity, "Response error", Toast.LENGTH_SHORT)
-                            .show()
+                    } else {
+                        Toast.makeText(this@CategoryActivity, "Response error: ${response.message()}", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        this@CategoryActivity,
-                        "Failed to load products",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this@CategoryActivity, "Failed to load products: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
-
-
 
 
     private fun setupBackButton() {
@@ -88,14 +76,14 @@ class CategoryActivity : AppCompatActivity() {
         }
     }
 
-
-
-
     private fun setupRecyclerView() {
-        productAdapter = ProductAdapter(this, productList) // Ensure adapter is correctly initialized
-        recyclerViewCategorizedProduct.layoutManager = LinearLayoutManager(this)
+        productAdapter = ProductAdapter(this, productList)
+        recyclerViewCategorizedProduct.layoutManager = GridLayoutManager(this, 2) // Set to grid layout with 2 columns
+        recyclerViewCategorizedProduct.setHasFixedSize(true) // Improves performance
         recyclerViewCategorizedProduct.adapter = productAdapter
     }
+
+
 
     private fun setupCategoryButtons() {
         val categoryButtons = mapOf(
@@ -107,19 +95,9 @@ class CategoryActivity : AppCompatActivity() {
 
         categoryButtons.forEach { (buttonId, category) ->
             findViewById<MaterialButton>(buttonId).setOnClickListener {
-                filterProductsByCategory(category)
+                getProductsFromDatabaseOrAPI(category) // Fetch products from the backend based on category
                 Toast.makeText(this, "$category Selected", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun filterProductsByCategory(category: String) {
-        val filteredList = if (category == "All") {
-            productList // Show all products
-        } else {
-            productList.filter { it.category == category }
-        }
-
-        productAdapter.updateList(filteredList)
     }
 }
