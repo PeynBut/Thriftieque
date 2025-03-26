@@ -28,6 +28,7 @@ import com.example.android.models.Product
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
+import logoutUser
 import message.MessageActivity
 import setting.SettingsActivity
 

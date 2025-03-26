@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-03-26T08:00:11.510314400Z">
+        <DropdownSelection timestamp="2025-03-26T12:57:12.653445500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\StePhen\.android\avd\Peyn_Phone.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=R5CW303WQPA" />
             </handle>
           </Target>
         </DropdownSelection>

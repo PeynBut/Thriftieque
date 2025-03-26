@@ -193,17 +193,27 @@ class LogIn : AppCompatActivity() {
     }
 
 
-
     private fun saveUserSession(userId: Int, userName: String, userEmail: String, token: String) {
         val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        val ordersPref = getSharedPreferences("OrdersPref", Context.MODE_PRIVATE)
+
+        // Retrieve the previous orders for this user before clearing session data
+        val userOrders = ordersPref.getString("orders_$userId", null)
+
         val editor = sharedPreferences.edit()
         editor.putInt("user_id", userId)
-        editor.putString("user_name", userName)  // Store name
-        editor.putString("user_email", userEmail)  // Store email
+        editor.putString("user_name", userName)
+        editor.putString("user_email", userEmail)
         editor.putString("token", token)
         editor.putBoolean("is_logged_in", true)
         editor.apply()
+
+        // Restore user's orders if they exist
+        if (userOrders != null) {
+            ordersPref.edit().putString("orders_$userId", userOrders).apply()
+        }
     }
+
 
 
     private fun vibrate() {

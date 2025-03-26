@@ -35,7 +35,9 @@ class OrderActivity : AppCompatActivity() {
         binding.recyclerViewOrders.adapter = orderAdapter
 
         val userId = getUserIdFromPreferences()
+
         if (userId != -1) {
+            clearUserOrders(userId) // ✅ Clear any previous orders before fetching new ones
             fetchOrders(userId)
         }
 
@@ -46,17 +48,26 @@ class OrderActivity : AppCompatActivity() {
         binding.buttonCompleted.setOnClickListener { filterOrders("Completed") }
     }
 
+
     private fun filterOrders(status: String) {
-        val filteredOrders = getSavedOrders().filter { it.status == status }
+        val userId = getUserIdFromPreferences() // Get the logged-in user's ID
+        if (userId == -1) {
+            showToast("User not logged in")
+            return
+        }
+
+        val filteredOrders = getSavedOrders(userId).filter { it.status == status }
         orderAdapter.updateOrders(filteredOrders)
     }
+
+
     private fun fetchOrders(userId: Int) {
         RetrofitClient.orderInstance.getOrders(userId).enqueue(object : Callback<OrderResponse> {
             override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
                 if (response.isSuccessful) {
                     response.body()?.let { orderResponse ->
-                        if (!orderResponse.error) { // ✅ Check for errors
-                            saveOrders(orderResponse.orders)  // ✅ Now we have orders!
+                        if (!orderResponse.error) {
+                            saveOrders(userId, orderResponse.orders)  // ✅ Store user-specific orders
                             orderAdapter.updateOrders(orderResponse.orders)
                         } else {
                             Log.e(TAG, "Error: ${orderResponse.message}")
@@ -80,16 +91,34 @@ class OrderActivity : AppCompatActivity() {
     }
 
 
-        private fun saveOrders(orders: List<Order>) {
+
+    private fun saveOrders(userId: Int, orders: List<Order>) {
         val sharedPreferences = getSharedPreferences("OrdersPref", Context.MODE_PRIVATE)
-        sharedPreferences.edit().putString("orders", Gson().toJson(orders)).apply()
+        val editor = sharedPreferences.edit()
+        val ordersJson = Gson().toJson(orders)
+
+        // Store orders for the specific user
+        editor.putString("orders_$userId", ordersJson)
+        editor.apply()
     }
 
-    private fun getSavedOrders(): List<Order> {
+
+    private fun getSavedOrders(userId: Int): List<Order> {
         val sharedPreferences = getSharedPreferences("OrdersPref", Context.MODE_PRIVATE)
-        val json = sharedPreferences.getString("orders", null) ?: return emptyList()
+        val json = sharedPreferences.getString("orders_$userId", null) ?: return emptyList()
         return Gson().fromJson(json, object : TypeToken<List<Order>>() {}.type)
     }
+
+    private fun clearUserOrders(userId: Int) {
+        val sharedPreferences = getSharedPreferences("OrdersPref", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        // Remove only the logged-out user's orders
+        editor.remove("orders_$userId")
+        editor.apply()
+    }
+
+
 
     private fun getUserIdFromPreferences(): Int {
         val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE) // ✅ Corrected

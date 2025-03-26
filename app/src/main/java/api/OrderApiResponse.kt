@@ -26,13 +26,9 @@ data class Order(
     val status: String?,
     val total_price: String?,
     val user_name: String?,
+    val userId: Int,
     val image_url: String? // ✅ Now it should receive the full URL from the API
 )
-
-
-
-
-
 
 
 data class OrderResponse(
