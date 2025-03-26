@@ -26,7 +26,7 @@
             android:name="Order.OrderActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:launchMode="singleTop"/>
-
+        <activity android:name="Authentication.ForgetPassword"/>
         <activity android:name="Category.CategoryActivity" />
         <activity android:name="setting.SettingsActivity" />
         <activity android:name="Products.OrderConfirmationActivity" />

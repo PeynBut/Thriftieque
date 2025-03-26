@@ -120,7 +120,10 @@ class LogIn : AppCompatActivity() {
 
         forgotPassword.setOnClickListener {
             if (isVibrationEnabled()) vibrate()
-            Toast.makeText(this, "Forgot Password Clicked", Toast.LENGTH_SHORT).show()
+
+            // Navigate to Forgot Password screen
+            val intent = Intent(this, ForgetPassword::class.java)
+            startActivity(intent)
         }
     }
 

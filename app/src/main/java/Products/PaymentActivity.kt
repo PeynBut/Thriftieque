@@ -28,8 +28,7 @@ class PaymentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment)
 
-        // Initialize UI elements
-        tvPaymentTotal = findViewById(R.id.tvPayment_Total)
+
         rgPaymentMethods = findViewById(R.id.rgPaymentMethods)
         btnPayNow = findViewById(R.id.btnConfirmPayment)
 

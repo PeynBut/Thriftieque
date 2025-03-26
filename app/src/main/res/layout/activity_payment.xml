@@ -7,16 +7,7 @@
     android:gravity="center"
     android:background="@color/white">
 
-    <!-- Order Total -->
-    <TextView
-        android:id="@+id/tvPayment_Total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total: $0.00"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/holo_red_dark"
-        android:paddingBottom="20dp" />
+
 
     <!-- Payment Method Title -->
     <TextView
@@ -39,7 +30,7 @@
             android:id="@+id/rbCashOnDelivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cash on Delivery" />
+            android:text="Pick Up" />
     </RadioGroup>
 
     <!-- Proceed to Payment Button -->
