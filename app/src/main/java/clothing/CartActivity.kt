@@ -2,10 +2,12 @@ package clothing
 
 import Authentication.LogIn
 import Products.CheckoutActivity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -15,17 +17,12 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import api.OrderApiService
-import api.OrderRequest
-import api.OrderResponse
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.navigation.NavigationView
 import com.rendonapp.thriftique.Homepage
 import com.rendonapp.thriftique.R
 import com.rendonapp.thriftique.CartItem
-import retrofit2.Call
-import retrofit2.Response
 
 class CartActivity : AppCompatActivity() {
 
@@ -41,10 +38,20 @@ class CartActivity : AppCompatActivity() {
     private lateinit var btnPlaceOrder: MaterialButton
     private lateinit var emptyCartView: LinearLayout
     private lateinit var btnContinueShopping: MaterialButton
+    private lateinit var userId: String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
+
+        userId = getLoggedInUserId()
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "User not logged in!", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LogIn::class.java))
+            finish()
+            return
+        }
 
         // Initialize UI elements
         toolbar = findViewById(R.id.topAppBar)
@@ -57,88 +64,78 @@ class CartActivity : AppCompatActivity() {
         emptyCartView = findViewById(R.id.emptyCartView)
         btnContinueShopping = findViewById(R.id.btnContinueShopping)
 
-        // Setup RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        cartAdapter = CartAdapter(this, cartList, {}, ::removeItem)
-        recyclerView.adapter = cartAdapter
-
-        // Setup Navigation Drawer
+        setupRecyclerView()
         setupNavigationDrawer()
 
-        // Load saved cart
-        cartList.addAll(CartStorage.getCart(this))
+        // Load user's cart
+        cartList.addAll(CartStorage.getCart(this, userId))
         cartAdapter.notifyDataSetChanged()
         updateCartUI()
 
         // Handle Intent data (if item added from product page)
-        val cartItem = intent.getParcelableExtra<CartItem>("cartItem")
-        cartItem?.let {
-            cartList.add(it)
+        intent.getParcelableExtra<CartItem>("cartItem")?.let { newItem ->
+            val existingItem = cartList.find { it.productId == newItem.productId }
+            if (existingItem != null) {
+                existingItem.quantity += newItem.quantity
+            } else {
+                cartList.add(newItem)
+            }
             cartAdapter.notifyDataSetChanged()
-            CartStorage.saveCart(this, cartList) // Save updated cart
+            CartStorage.saveCart(this, userId, cartList)
             updateCartUI()
         }
 
-        // Back button listener
+        // Set listeners
         toolbar.setNavigationOnClickListener {
             vibrate()
             finish()
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
         }
 
-        btnContinueShopping.setOnClickListener {
-            val intent = Intent(this, Homepage::class.java)
+        btnContinueShopping.setOnClickListener { navigateToHomepage() }
+        btnContinueShoppingBottom.setOnClickListener { navigateToHomepage() }
+        btnPlaceOrder.setOnClickListener { placeOrder() }
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        cartAdapter = CartAdapter(this, cartList, {}, ::removeItem)
+        recyclerView.adapter = cartAdapter
+    }
+
+    private fun navigateToHomepage() {
+        startActivity(Intent(this, Homepage::class.java))
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+        finish()
+    }
+
+    private fun placeOrder() {
+        val selectedItems = cartAdapter.getSelectedItems()
+        if (selectedItems.isEmpty()) {
+            Toast.makeText(this, "Please select at least one item to place an order.", Toast.LENGTH_SHORT).show()
+        } else {
+            val intent = Intent(this, CheckoutActivity::class.java)
+            intent.putParcelableArrayListExtra("selected_items", ArrayList(selectedItems))
             startActivity(intent)
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-            finish()
-        }
 
-        btnContinueShoppingBottom.setOnClickListener {
-            val intent = Intent(this, Homepage::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-            finish()
-        }
-
-        btnPlaceOrder.setOnClickListener {
-            val selectedItems = cartAdapter.getSelectedItems()
-            if (selectedItems.isEmpty()) {
-                Toast.makeText(
-                    this,
-                    "Please select at least one item to place an order.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                val intent = Intent(this, CheckoutActivity::class.java)
-                intent.putParcelableArrayListExtra("selected_items", ArrayList(selectedItems))
-                startActivity(intent)
-
-                // ✅ Remove ordered items from cart
-                cartList.removeAll(selectedItems)
-                cartAdapter.notifyDataSetChanged()
-
-                // ✅ Save updated cart
-                CartStorage.saveCart(this, cartList)
-
-                // ✅ Update UI
-                updateCartUI()
-            }
+            cartList.removeAll(selectedItems)
+            cartAdapter.notifyDataSetChanged()
+            CartStorage.saveCart(this, userId, cartList)
+            updateCartUI()
         }
     }
 
-
-        // Updates UI based on cart contents
     private fun updateCartUI() {
         val totalPrice = cartList.sumOf { it.productPrice * it.quantity }
         tvTotalPrice.text = "Total: ₱%.2f".format(totalPrice)
         tvItemCount.text = "(${cartList.size} items)"
 
         if (cartList.isEmpty()) {
-            emptyCartView.visibility = LinearLayout.VISIBLE
-            recyclerView.visibility = RecyclerView.GONE
+            emptyCartView.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
         } else {
-            emptyCartView.visibility = LinearLayout.GONE
-            recyclerView.visibility = RecyclerView.VISIBLE
+            emptyCartView.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
     }
 
@@ -146,11 +143,11 @@ class CartActivity : AppCompatActivity() {
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
-        toggle.syncState() // Ensure toggle is synced
+        toggle.syncState()
 
         navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> startActivity(Intent(this, Homepage::class.java))
+                R.id.nav_home -> navigateToHomepage()
             }
             drawerLayout.closeDrawers()
             true
@@ -167,7 +164,7 @@ class CartActivity : AppCompatActivity() {
         if (position != -1) {
             cartList.removeAt(position)
             cartAdapter.notifyItemRemoved(position)
-            CartStorage.saveCart(this, cartList) // Save updated cart
+            CartStorage.saveCart(this, userId, cartList)
             updateCartUI()
             Toast.makeText(this, "Removed item from cart", Toast.LENGTH_SHORT).show()
         }
@@ -178,5 +175,10 @@ class CartActivity : AppCompatActivity() {
         if (vibrator.hasVibrator()) {
             vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
         }
+    }
+
+    private fun getLoggedInUserId(): String {
+        val sharedPreferences = getSharedPreferences("user_session", Context.MODE_PRIVATE)
+        return sharedPreferences.getInt("user_id", -1).takeIf { it != -1 }?.toString() ?: ""
     }
 }

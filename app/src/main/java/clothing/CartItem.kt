@@ -6,7 +6,7 @@ import android.os.Parcelable
 data class CartItem(
     val userId: Int,
     val productId: Int,
-    val quantity: Int,
+    var quantity: Int,
     val productName: String,
     val productImage: String, // Add this to store image URL
     val productPrice: Double
