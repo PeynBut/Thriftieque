@@ -22,13 +22,15 @@ data class OrderRequest(
 
 
 data class Order(
-    val id: Int?,
+    val id: Int,
     val status: String?,
     val total_price: String?,
     val user_name: String?,
-    val userId: Int,
-    val image_url: String? // ✅ Now it should receive the full URL from the API
+    val product_name: String?,
+    val quantity: Int,
+    @SerializedName("image") val image_url: String?
 )
+
 
 
 data class OrderResponse(

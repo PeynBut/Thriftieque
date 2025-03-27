@@ -1,3 +1,4 @@
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -6,6 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import api.Order
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.rendonapp.thriftique.R
 
 class OrderAdapter(private var orderList: List<Order>) :
@@ -30,24 +35,40 @@ class OrderAdapter(private var orderList: List<Order>) :
         val price = order.total_price?.replace("₱", "")?.toDoubleOrNull() ?: 0.0
         holder.tvTotalPrice.text = "Total: ₱$price"
 
-        // Handle image URL (check if the URL is valid and not empty)
-        val imageUrl = order.image_url
+        // ✅ Define the image URL properly
+        val imageUrl = order.image_url?.replace("http://http://", "http://") ?: ""
 
-        if (!imageUrl.isNullOrEmpty()) {
-            println("DEBUG: Loading Image URL: $imageUrl")
-            Glide.with(holder.itemView.context)
-                .load(imageUrl)
-                .placeholder(R.drawable.user)  // Default placeholder image
-                .error(R.drawable.user)  // Default error image
-                .into(holder.ivOrderImage)
-        } else {
-            println("DEBUG: Image URL is null or empty for Order ID: ${order.id}")
-            holder.ivOrderImage.setImageResource(R.drawable.user)  // Default fallback image
-        }
+        Glide.with(holder.itemView.context)
+            .load(if (imageUrl.isNotBlank()) imageUrl else R.drawable.shopping_cart) // Use placeholder if empty
+            .placeholder(R.drawable.shopping_cart)
+            .error(R.drawable.skinny_jeans) // Fallback if the image fails
+            .diskCacheStrategy(DiskCacheStrategy.ALL) // Optimize performance
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    println("DEBUG: Glide failed to load image -> ${e?.message}")
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: com.bumptech.glide.load.DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    println("DEBUG: Image loaded successfully: $imageUrl")
+                    return false
+                }
+            })
+            .into(holder.ivOrderImage)
     }
 
-
-    override fun getItemCount(): Int = orderList.size
+        override fun getItemCount(): Int = orderList.size
 
     // Update order list and notify adapter of the change
     fun updateOrders(newOrders: List<Order>) {
