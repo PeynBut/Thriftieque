@@ -15,6 +15,7 @@ import setting.SettingsActivity
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var backbtn : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +26,8 @@ class ProfileActivity : AppCompatActivity() {
         val tvUserName = findViewById<TextView>(R.id.tvUserName)
         val tvEmail = findViewById<TextView>(R.id.tvEmail)
         val btnOrders = findViewById<Button>(R.id.btnOrders)
-        val btnWishlist = findViewById<Button>(R.id.btnWishlist)
+        backbtn = findViewById(R.id.customBackBtn)
+
         val btnSettings = findViewById<Button>(R.id.btnSettings)
         val btnLogout = findViewById<Button>(R.id.btnLogout)
 
@@ -50,6 +52,9 @@ class ProfileActivity : AppCompatActivity() {
         // 🚪 Logout Functionality
         btnLogout.setOnClickListener {
             logoutUser()
+        }
+        backbtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
 
         // Load actual user data from SharedPreferences or Database

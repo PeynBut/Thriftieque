@@ -2,6 +2,7 @@ package Category
 
 import Products.ProductAdapter
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -23,10 +24,13 @@ class CategoryActivity : AppCompatActivity() {
     private lateinit var productAdapter: ProductAdapter
     private lateinit var recyclerViewCategorizedProduct: RecyclerView
     private var productList: List<Product> = listOf()
+    private lateinit var backbtn : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category)
+
+        backbtn = findViewById(R.id.customBackBtn)
 
         setupBackButton()
         recyclerViewCategorizedProduct = findViewById(R.id.recyclerViewCategorizedProduct)
@@ -36,6 +40,10 @@ class CategoryActivity : AppCompatActivity() {
 
         // ✅ Initially fetch all products
         getProductsFromDatabaseOrAPI("All")
+
+        backbtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
     private fun getProductsFromDatabaseOrAPI(category: String) {
         CoroutineScope(Dispatchers.IO).launch {

@@ -13,9 +13,9 @@
     <!-- Back Button -->
     <ImageView
         android:id="@+id/backbtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/baseline_backspace_24"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/left"
         android:layout_gravity="start"
         android:contentDescription="Go Back"
         android:clickable="true"

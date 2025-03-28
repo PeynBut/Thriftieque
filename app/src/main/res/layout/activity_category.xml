@@ -8,7 +8,6 @@
     android:background="@color/white"
     tools:context="Category.CategoryActivity">
 
-    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/categoryToolbar"
         android:layout_width="match_parent"
@@ -16,11 +15,22 @@
         android:background="?attr/colorPrimary"
         android:title="Categories"
         android:titleTextColor="@android:color/white"
-        app:navigationIcon="@drawable/baseline_backspace_24"
         app:popupTheme="@style/ThemeOverlay.Material3.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Custom ImageView (e.g., for Back Button or Other Action) -->
+        <ImageView
+            android:id="@+id/customBackBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/left"
+            android:contentDescription="Back Button"
+            android:padding="8dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="12dp"/>
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Horizontal Category List -->
     <HorizontalScrollView

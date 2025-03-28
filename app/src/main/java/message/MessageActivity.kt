@@ -3,6 +3,7 @@ package message
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ class MessageActivity : AppCompatActivity(), WebSocketListener {
     private lateinit var messageAdapter: MessageAdapter
     private val messages: MutableList<Message> = mutableListOf()
     private lateinit var chatWebSocket: ChatWebSocket
+    private lateinit var backbtn : ImageView
 
     private val currentUser = "User1"
     private val chatPartner = "User2"
@@ -26,12 +28,8 @@ class MessageActivity : AppCompatActivity(), WebSocketListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.messageactivity)
 
-        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
-        setSupportActionBar(topAppBar)
+        backbtn = findViewById(R.id.message_backbtn)
 
-        topAppBar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
 
         recyclerView = findViewById(R.id.recyclerViewMessages)
         val etMessage = findViewById<EditText>(R.id.etMessage)
@@ -52,6 +50,9 @@ class MessageActivity : AppCompatActivity(), WebSocketListener {
                 sendMessage(currentUser, chatPartner, messageText)
                 etMessage.text.clear()
             }
+        }
+        backbtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 

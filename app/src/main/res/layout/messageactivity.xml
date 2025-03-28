@@ -12,8 +12,19 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         android:padding="10dp"
-        android:title="Messages"
-        app:navigationIcon="@drawable/baseline_backspace_24" />
+        android:title="Messages">
+
+        <!-- Custom ImageView (e.g., for Back Button or Other Action) -->
+        <ImageView
+            android:id="@+id/message_backbtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/left"
+            android:contentDescription="Back Button"
+            android:padding="8dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="12dp"/>
+    </com.google.android.material.appbar.MaterialToolbar>
 
 
     <androidx.recyclerview.widget.RecyclerView

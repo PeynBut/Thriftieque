@@ -12,8 +12,20 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:title="Profile"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:navigationIcon="@drawable/baseline_backspace_24" />
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+        <!-- Custom Back Button as ImageView -->
+        <ImageView
+            android:id="@+id/customBackBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/left"
+            android:contentDescription="Back Button"
+            android:padding="8dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="12dp"/>
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Profile Section -->
     <LinearLayout
@@ -83,17 +95,6 @@
                 app:iconTint="@color/black"
                 app:iconGravity="start"/>
 
-            <!-- Wishlist Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnWishlist"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Wishlist"
-                android:drawablePadding="12dp"
-                app:icon="@drawable/blouse"
-                app:iconTint="@color/black"
-                app:iconGravity="start"/>
 
             <!-- Settings Button -->
             <com.google.android.material.button.MaterialButton

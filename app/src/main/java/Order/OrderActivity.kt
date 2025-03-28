@@ -4,6 +4,7 @@ import OrderAdapter
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,16 +16,21 @@ import retrofit2.Callback
 import retrofit2.Response
 import api.Order
 import api.OrderResponse
+import com.rendonapp.thriftique.R
 
 class OrderActivity : AppCompatActivity() {
     private lateinit var binding: BottomNavOrderBinding
     private lateinit var orderAdapter: OrderAdapter
     private val TAG = "OrderActivity"
+    private lateinit var backbtn : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = BottomNavOrderBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        backbtn = findViewById(R.id.customBackBtn)
+
 
         // Set up the back button
         binding.orderToolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
@@ -46,6 +52,10 @@ class OrderActivity : AppCompatActivity() {
         binding.buttonPreparing.setOnClickListener { filterOrders("Preparing") }
         binding.buttonReady.setOnClickListener { filterOrders("Ready") }
         binding.buttonCompleted.setOnClickListener { filterOrders("Completed") }
+
+        backbtn.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
 
