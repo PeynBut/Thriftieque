@@ -142,3 +142,27 @@ class ProductDiffCallback(
     }
 }
 
+data class VerifyEmailResponse(
+    val success: Boolean,
+    val message: String?,
+    val error: String? // Add this to handle errors properly
+)
+
+
+
+data class ResetPasswordRequest(
+    val email: String,
+    val newPassword: String
+)
+
+
+data class ResetPasswordResponse(
+    val success: String? = null, // Change Boolean to String
+    val message: String? = null,
+    val error: String? = null
+)
+
+
+
+
+

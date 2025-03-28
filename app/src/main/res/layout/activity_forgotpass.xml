@@ -11,22 +11,24 @@
     tools:context="Authentication.ForgetPassword">
 
     <!-- Back Button -->
+
+    <!-- Title -->
+
     <ImageView
         android:id="@+id/backbtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/baseline_backspace_24"
         android:layout_gravity="start"
-        android:contentDescription="Go Back"
         android:clickable="true"
+        android:contentDescription="Go Back"
         android:focusable="true"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:src="@drawable/left" />
 
-    <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Forgot Password"
+        android:text="Reset Password"
         android:textColor="#71879D"
         android:textSize="28sp"
         android:fontFamily="@font/poppins_semibold"
@@ -36,15 +38,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter your email to receive a password reset link."
+        android:text="Enter your email to verify your identity."
         android:textColor="#71879D"
         android:textSize="14sp"
         android:layout_marginTop="8dp"
         android:gravity="center" />
 
-    <!-- Email Input -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
@@ -56,10 +56,68 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:importantForAccessibility="yes" />
+            android:importantForAccessibility="yes"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Reset Password Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/verifyEmailBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#0F0FDC"
+        android:text="Verify Email"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:cornerRadius="12dp"/>
+
+
+    <!-- New Password Input (Hidden by Default) -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="New Password"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="24dp"
+        android:visibility="gone">
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/newPasswordLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="New Password"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        app:endIconMode="password_toggle"> <!-- 👀 Eye icon to toggle password -->
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNewPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/confirmPasswordLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm Password"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:endIconMode="password_toggle"> <!-- 👀 Eye icon to toggle password -->
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- ✅ Move Reset Button OUTSIDE TextInputLayout -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/resetPasswordBtn"
         android:layout_width="match_parent"
@@ -69,5 +127,7 @@
         android:text="Reset Password"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        app:cornerRadius="12dp" />
+        app:cornerRadius="12dp"
+        android:visibility="gone"/>
+
 </LinearLayout>

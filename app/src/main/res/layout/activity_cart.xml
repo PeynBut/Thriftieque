@@ -14,7 +14,6 @@
 
         <!-- Toolbar Section -->
 
-        <!-- Cart Items Section -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
@@ -22,8 +21,22 @@
             android:background="#673AB7"
             android:title="Shopping Cart"
             android:titleTextColor="@color/white"
-            app:navigationIcon="@drawable/baseline_backspace_24"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/left"
+                android:contentDescription="Back Button"
+                android:padding="8dp"
+                android:layout_gravity="start|center_vertical"/>
+        </com.google.android.material.appbar.MaterialToolbar>
+
+
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cartRecyclerView"

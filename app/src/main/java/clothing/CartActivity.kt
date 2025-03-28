@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -39,6 +40,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var emptyCartView: LinearLayout
     private lateinit var btnContinueShopping: MaterialButton
     private lateinit var userId: String
+    private lateinit var backbtn : ImageView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +65,7 @@ class CartActivity : AppCompatActivity() {
         btnPlaceOrder = findViewById(R.id.btnPlaceOrder)
         emptyCartView = findViewById(R.id.emptyCartView)
         btnContinueShopping = findViewById(R.id.btnContinueShopping)
+        backbtn = findViewById(R.id.btnBack)
 
         setupRecyclerView()
         setupNavigationDrawer()
@@ -85,12 +88,20 @@ class CartActivity : AppCompatActivity() {
             updateCartUI()
         }
 
-        // Set listeners
         toolbar.setNavigationOnClickListener {
             vibrate()
-            finish()
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START) // Close the drawer if it's open
+            } else {
+                onBackPressedDispatcher.onBackPressed() // Navigate back if the drawer is closed
+            }
         }
+
+        backbtn.setOnClickListener {
+            vibrate()
+            onBackPressedDispatcher.onBackPressed()
+        }
+
 
         btnContinueShopping.setOnClickListener { navigateToHomepage() }
         btnContinueShoppingBottom.setOnClickListener { navigateToHomepage() }

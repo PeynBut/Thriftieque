@@ -1,22 +1,11 @@
-import com.example.android.models.ApiResponse
-import com.example.android.models.LoginRequest
-import com.example.android.models.LoginResponse
-import com.example.android.models.Product
-import com.example.android.models.RegisterPart1
-import com.example.android.models.RegisterUserRequest
-import com.example.android.models.SignUp
-import com.example.android.models.SignUpResponse
-import com.google.android.gms.common.api.Response
+import com.example.android.models.*
 import com.rendonapp.thriftique.CartItem
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiService {
+
+    // ✅ User Registration & Login
     @POST("register.php")
     fun signup(@Body request: SignUp): Call<SignUpResponse>
 
@@ -29,9 +18,22 @@ interface ApiService {
     @POST("includes/v1/RegisterPart2.php")
     fun registerUserPart2(@Body registerRequest: RegisterUserRequest): Call<ApiResponse>
 
+    @GET("verify_email.php")
+    fun verifyEmail(@Query("email") email: String): Call<VerifyEmailResponse>
+
+    @POST("reset_password.php")
+    fun resetPassword(@Body request: ResetPasswordRequest): Call<ResetPasswordResponse>
+
+
+
+    // ✅ Cart Operations
     @POST("includes/v1/Cart/cart.php")
     fun addToCart(@Body cartItem: CartItem): Call<ApiResponse>
 
+    @GET("get_cart.php")
+    fun getCartItems(@Query("user_id") userId: Int): Call<List<CartItem>>
+
+    // ✅ Product Management
     @POST("includes/v1/Products/products.php?action=create")
     fun createProduct(@Body product: Product): Call<ApiResponse>
 
@@ -44,18 +46,7 @@ interface ApiService {
     @GET("includes/v1/Products/products.php")
     fun getProductById(@Query("id") id: Int): Call<ApiResponse>
 
-
     @GET("Products/get_products.php")
-    fun getProducts(): Call<ApiResponse>
-    @GET("Products/get_products.php")
-    fun getProducts(@Query("category") category: String): Call<ApiResponse>
-
-
-
-
-    @GET("get_cart.php")
-    fun getCartItems(@Query("user_id") userId: Int): Call<List<CartItem>>
-
-
+    fun getProducts(@Query("category") category: String? = null): Call<ApiResponse>
 }
 
